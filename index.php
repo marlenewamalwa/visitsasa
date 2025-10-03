@@ -467,7 +467,7 @@ include 'header.php';
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            
+            <h1>Discover Kenya</h1>
             <p>From pristine beaches to wild savannahs, explore the beauty and diversity of Kenya</p>
             
         <form action="destinations.php" method="get" class="search-field">
