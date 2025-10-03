@@ -13,7 +13,7 @@ $package = $_GET['package'] ?? '';
 $amount  = $_GET['amount'] ?? '';
 
 // Save payment record in DB
-$stmt = $pdo->prepare("INSERT INTO payments (user_id, package, amount, status, created_at) VALUES (?, ?, ?, ?, NOW())");
+$stmt = $pdo->prepare("INSERT INTO payments (user_id, package, amount, payment_status, created_at) VALUES (?, ?, ?, ?, NOW())");
 $stmt->execute([$_SESSION['user_id'], $package, $amount, 'Completed']);
 
 // Mark user as paid and store package
