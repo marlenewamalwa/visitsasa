@@ -28,7 +28,8 @@ button:hover { background:#0d3a50; }
   <form method="post" action="submit_premium.php" enctype="multipart/form-data">
     <label for="property_name">Property Name</label>
     <input type="text" id="property_name" name="property_name" required>
-
+ <label for="location">Location</label>
+    <input type="text" id="location" name="location" placeholder="Enter the property location" required>
     <label for="description">Description</label>
     <textarea id="description" name="description" rows="4" required></textarea>
 

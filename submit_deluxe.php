@@ -1,4 +1,9 @@
 <?php
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 include 'config.php';
 
@@ -10,6 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
+    $location = trim($_POST['location']);
     $property_name = trim($_POST['property_name']);
     $description = trim($_POST['description']);
     $additional_features = trim($_POST['additional_features']);
@@ -30,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $target_file = $upload_dir . $new_filename;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
             // Save to database
-            $stmt = $pdo->prepare("INSERT INTO deluxe_forms (user_id, property_name, description, additional_features, banner_advert, video_advert, amenities, image, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            if ($stmt->execute([$user_id, $property_name, $description, $additional_features, $banner_advert, $video_advert, $amenities, $new_filename])) {
+            $stmt = $pdo->prepare("INSERT INTO deluxe_forms (user_id, location, property_name, description, additional_features, banner_advert, video_advert, amenities, image, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,NOW())");
+            if ($stmt->execute([$user_id, $location, $property_name, $description, $additional_features, $banner_advert, $video_advert, $amenities, $new_filename])) {
                 echo "<script>alert('Deluxe form submitted successfully!'); window.location.href='dashboard.php';</script>";
                 exit();
             } else {
