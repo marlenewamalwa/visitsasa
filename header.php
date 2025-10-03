@@ -80,7 +80,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
         }
         .btn-add-listing {
             padding: 0.6rem 1.5rem;
-            background: #11989B;
+            background: #0F445F;
             border: none;
             border-radius: 6px;
             color: #F3FAFB;

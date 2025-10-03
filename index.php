@@ -1,8 +1,8 @@
 <!-- Test update from local -->
 <?php
 include 'config.php';
+include 'header.php';   
 
-include 'header.php';
 // Fetch recent deluxe listings for display
 
 
@@ -106,7 +106,7 @@ include 'header.php';
             border-color: #11989B;
         }
         .btn-search {
-            background: #11989B;
+            background: #0F445F;
             color: white;
             border: none;
             padding: 0 1.5rem;
@@ -389,20 +389,7 @@ include 'header.php';
             font-size: 0.95rem;
         }
 
-        /* Footer */
-        .footer {
-            background: #0F445F;
-            color: #F3FAFB;
-            padding: 4rem 5%;
-            text-align: center;
-        }
-
-        .footer p {
-            margin: 0.5rem 0;
-            font-size: 1rem;
-            font-weight: 300;
-        }
-
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .categories-grid {
@@ -489,7 +476,7 @@ include 'header.php';
         <div class="grid">
             <a href="destinations.php?location=mombasa">
   <div class="destination-card">
-    <img src="images/pembe.jpeg" alt="Mombasa">
+    <img src="images/mombasa.jpeg" alt="Mombasa">
     <div class="destination-info">
       <div class="destination-name">MOMBASA</div>
       <div class="destination-desc">Historic port city with stunning beaches and Swahili culture</div>
@@ -497,31 +484,31 @@ include 'header.php';
   </div>
 </a>
 
-<a href="destinations.php?location=kilifi">
+<a href="destinations.php?location=maasaimara">
   <div class="destination-card">
-    <img src="images/kilifi.jpeg" alt="Kilifi">
+    <img src="images/cheetah.jpg" alt="maasaimara">
     <div class="destination-info">
-      <div class="destination-name">KILIFI</div>
-      <div class="destination-desc">Serene coastal town perfect for water sports and relaxation</div>
+      <div class="destination-name">MAASAI MARA</div>
+      <div class="destination-desc">The Maasai Mara is absolutely spectacular! It's Kenya's most famous wildlife reserve and a leading safari destination in East Africa</div>
+    </div>
+  </div>
+</a>
+
+<a href="destinations.php?location=nakuru">
+  <div class="destination-card">
+    <img src="images/hippos.jpg" alt="Nakuru">
+    <div class="destination-info">
+      <div class="destination-name">LAKE NAKURU</div>
+      <div class="destination-desc">The lake is home to fuchsia pink flamingos, of which there are often more than a million, and sometimes two million</div>
     </div>
   </div>
 </a>
 
 <a href="destinations.php?location=diani">
   <div class="destination-card">
-    <img src="images/Diani.jpeg" alt="Diani">
+    <img src="images/diani.jpg" alt="Watamu">
     <div class="destination-info">
-      <div class="destination-name">DIANI BEACH</div>
-      <div class="destination-desc">Paradise beach with pristine sands and vibrant marine life</div>
-    </div>
-  </div>
-</a>
-
-<a href="destinations.php?location=watamu">
-  <div class="destination-card">
-    <img src="images/watamu.jpeg" alt="Watamu">
-    <div class="destination-info">
-      <div class="destination-name">WATAMU</div>
+      <div class="destination-name">DIANI</div>
       <div class="destination-desc">Marine paradise with coral reefs and sea turtle sanctuary</div>
     </div>
   </div>
@@ -537,22 +524,22 @@ include 'header.php';
   </div>
   
   <div class="categories-grid">
-    <a href="beach-coast.html" class="category-card">
+    <a href="beach_coast.php" class="category-card">
       <h3>Beach & Coast</h3>
       <p>White sand beaches, crystal waters, and coastal culture along the Indian Ocean</p>
     </a>
 
-    <a href="wildlife-safari.html" class="category-card">
+    <a href="wildlife.php" class="category-card">
       <h3>Wildlife Safari</h3>
       <p>Witness the Big Five and incredible wildlife migrations in world-class national parks</p>
     </a>
 
-    <a href="mountains-hiking.html" class="category-card">
+    <a href="mountains_hiking.php" class="category-card">
       <h3>Mountains & Hiking</h3>
       <p>Conquer peaks and explore lush highland landscapes from Mount Kenya to the Rift Valley</p>
     </a>
 
-    <a href="culture-heritage.html" class="category-card">
+    <a href="culture_heritage.php" class="category-card">
       <h3>Culture & Heritage</h3>
       <p>Experience rich traditions, historical landmarks, and vibrant local communities</p>
     </a>
@@ -596,11 +583,7 @@ include 'header.php';
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2024 VisitSasa. All rights reserved.</p>
-        <p>Your trusted Kenya destination guide</p>
-    </footer>
+  
 
     <script>
         function searchDestination() {
