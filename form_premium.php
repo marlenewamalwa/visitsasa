@@ -23,7 +23,12 @@ button:hover { background:#0d3a50; }
 </style>
 </head>
 <body>
+  
 <div class="container">
+  <button type="button" onclick="history.back()" style="background:#0F445F;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin-bottom:15px;">
+  ← Back
+</button>
+
   <h2>Premium Package Form</h2>
   <form method="post" action="submit_premium.php" enctype="multipart/form-data">
     <label for="property_name">Property Name</label>

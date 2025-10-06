@@ -51,7 +51,7 @@ $price = ($package === "Premium") ? 20 : 149;
               alert("Payment completed by " + details.payer.name.given_name);
 
               // Redirect to success page
-              window.location.href = "payment-success.php?package=<?php echo $package; ?>&amount=<?php echo $price; ?>";
+              window.location.href = "payment_success.php?package=<?php echo $package; ?>&amount=<?php echo $price; ?>";
           });
       }
   }).render('#paypal-button-container');

@@ -2,22 +2,20 @@
 session_start();
 include 'config.php';
 
-// Make sure user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: signup.php");
     exit();
 }
 
-// Get package and amount from URL
 $package = $_GET['package'] ?? '';
 $amount  = $_GET['amount'] ?? '';
 
-// Save payment record in DB
+// (Optional) Save payment record in DB
 $stmt = $pdo->prepare("INSERT INTO payments (user_id, package, amount, payment_status, created_at) VALUES (?, ?, ?, ?, NOW())");
 $stmt->execute([$_SESSION['user_id'], $package, $amount, 'Completed']);
 
-// Mark user as paid and store package
-$update = $pdo->prepare("UPDATE users SET paid = 1, package = ? WHERE id = ?");
+// Also mark user as paid (optional if you want a flag)
+$update = $pdo->prepare("UPDATE users SET package = ?, paid = 1 WHERE id = ?");
 $update->execute([$package, $_SESSION['user_id']]);
 ?>
 <!DOCTYPE html>
@@ -38,7 +36,19 @@ $update->execute([$package, $_SESSION['user_id']]);
     <p>Thank you, <?php echo $_SESSION['user_name']; ?>!</p>
     <p>You purchased the <b><?php echo htmlspecialchars($package); ?></b> package.</p>
     <p>Amount Paid: <b>$<?php echo htmlspecialchars($amount); ?></b></p>
-    <a href="dashboard.php">Go to Dashboard</a>
+    <?php
+// Determine correct form link
+$form_link = '';
+if ($package === 'Standard') {
+    $form_link = 'form_standard.php';
+} elseif ($package === 'Premium') {
+    $form_link = 'form_premium.php';
+} elseif ($package === 'Deluxe') {
+    $form_link = 'form_deluxe.php';
+}
+?>
+<a href="<?php echo $form_link; ?>">Continue to Your Form</a>
+
   </div>
 </body>
 </html>

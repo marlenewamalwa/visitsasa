@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id'])) {
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id       = $_SESSION['user_id'];
+    $location     = trim($_POST['location']);
+    $description   = trim($_POST['description']);
     $property_name = trim($_POST['property_name']);
     $description   = trim($_POST['description']);
 
@@ -28,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $target_file = $upload_dir . $new_filename;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
             // Save to database
-            $stmt = $pdo->prepare("INSERT INTO standard_forms (user_id, property_name, description, image, created_at) VALUES (?, ?, ?, ?, NOW())");
-            if ($stmt->execute([$user_id, $property_name, $description, $new_filename])) {
+            $stmt = $pdo->prepare("INSERT INTO standard_forms (user_id, location,  property_name, description, image, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+            if ($stmt->execute([$user_id, $location, $property_name, $description, $new_filename])) {
                 echo "<script>alert('Form submitted successfully!'); window.location.href='dashboard.php';</script>";
                 exit();
             } else {
