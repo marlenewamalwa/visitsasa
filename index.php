@@ -131,7 +131,7 @@ $deluxeListings = $pdo->query("SELECT property_name, location, description, imag
         }
 
         .section-header h2 {
-            color: #0F445F;
+            color: #0F445F;q
             font-size: 3rem;
             margin-bottom: 1rem;
             font-weight: 300;
@@ -153,7 +153,7 @@ $deluxeListings = $pdo->query("SELECT property_name, location, description, imag
         }
 
         .category-card {
-            background: white;
+           
             padding: 2rem 1rem;
             text-align: center;
             cursor: pointer;
@@ -176,7 +176,7 @@ $deluxeListings = $pdo->query("SELECT property_name, location, description, imag
             line-height: 1.6;
             box-sizing: border-box;
             overflow: hidden;
-            background: #FAFCFD;
+            background: #fff;
             margin-left: 10px;
 
         }

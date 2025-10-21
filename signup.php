@@ -102,6 +102,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
             </div>
 
             <button type="submit" class="signup-btn">Create Account</button>
+
+            <div style="text-align:center; margin-top:20px;">
+    <a href="google_login.php" style="
+        display:inline-flex; align-items:center; justify-content:center;
+        gap:10px; background:#fff; color:#444;
+        border:2px solid #e0e0e0; border-radius:10px;
+        padding:12px 20px; text-decoration:none; font-weight:600;
+        transition:0.3s; box-shadow:0 5px 15px rgba(0,0,0,0.05);">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="width:20px;">
+        Continue with Google
+    </a>
+</div>
+
         </form>
 
         <div class="login-link">
