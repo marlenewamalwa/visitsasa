@@ -36,7 +36,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <title>Edit Listing</title>
-<link rel="stylesheet" href="style.css">
+<style>
+    .form-container {
+        width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #f9f9f9;
+    }
+    .form-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .form-container label {
+        display: block;
+        margin-top: 10px;
+    }
+    .form-container input[type="text"],
+    .form-container input[type="url"],
+    .form-container textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    .form-container button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 10px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    .form-container button:hover {
+        background: #218838;
+    }
+</style>
 </head>
 <body>
   <div class="form-container">
