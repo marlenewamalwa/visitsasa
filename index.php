@@ -3,9 +3,6 @@
 include 'config.php';
 include 'header.php';   
 
-// Fetch recent deluxe listings for display
-$deluxeListings = $pdo->query("SELECT property_name, location, description, image FROM deluxe_forms ORDER BY created_at DESC LIMIT 4")->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -545,25 +542,6 @@ $deluxeListings = $pdo->query("SELECT property_name, location, description, imag
     </a>
   </div>
 </section>
-
-    <!-- Deluxe Listings Section -->
-<section class="deluxe-section">
-  <h2>Deluxe Listings</h2>
-  <div class="deluxe-grid">
-    <?php foreach($deluxeListings as $listing): ?>
-      <div class="deluxe-card">
-        <img src="uploads/<?php echo htmlspecialchars($listing['image']); ?>" alt="<?php echo htmlspecialchars($listing['property_name']); ?>">
-        <div class="deluxe-info">
-          <h3><?php echo htmlspecialchars($listing['property_name']); ?></h3>
-          <p><b>Location:</b> <?php echo htmlspecialchars($listing['location']); ?></p>
-          <p><?php echo htmlspecialchars($listing['description']); ?></p>
-        </div>
-      </div>
-    <?php endforeach; ?>
-  </div>
-</section>
-
-
 
 
     <!-- Features Section -->

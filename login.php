@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'config.php';
-
+$google_login_url = $client->createAuthUrl();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email']);
     $password = $_POST['password'];
@@ -85,6 +85,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubunt
             </div>
 
             <button type="submit" class="login-btn">Log In</button>
+            <button type="button" class="login-btn" onclick="window.location.href='<?php echo $google_login_url; ?>'">
+  Continue with Google
+</button>
+
         </form>
 
         <div class="signup-link">

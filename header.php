@@ -121,7 +121,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
                     <!-- Logged in: show name instead of Log In -->
                     <a href="dashboard.php" class="btn-sign-in">👤 <?= $userName ?></a>
                     <button class="btn-add-listing"
-                        onclick="location.href='select-package.php'">
+                        onclick="location.href='select_package.php'">
                         + Add Listing
                     </button>
                 <?php else: ?>
