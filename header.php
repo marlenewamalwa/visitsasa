@@ -8,7 +8,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VisitSasa</title>
@@ -19,6 +19,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
             padding: 1rem 5%;
             position: fixed;
             width: 100%;
+            height: 90px;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -103,13 +104,13 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
             background-color: #f4f4f4;
         }
     </style>
-</head>
+
 <header>
 
     <nav>
         <div class="nav-container">
             <a href="index.php" class="logo">
-    <img src="images/logo.png" alt="VisitSasa Logo" style="height:50px;">
+    <img src="images/logo.png" alt="VisitSasa Logo" style="height:70px;">
 </a>
             <div class="nav-links">
                 <a href="index.php">Home</a>

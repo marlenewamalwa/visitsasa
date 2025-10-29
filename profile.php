@@ -109,7 +109,7 @@ $listings = $listStmt->fetchAll(PDO::FETCH_ASSOC);
   <?php endif; ?>
 
   <p style="margin-top:14px">
-    <a href="select-package.php" class="btn">Add New Listing</a>
+    <a href="select_package.php" class="btn">Add New Listing</a>
   </p>
 </div>
 

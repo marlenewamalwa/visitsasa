@@ -1,7 +1,7 @@
 <!-- Test update from local -->
 <?php
 include 'config.php';
-include 'header.php';   
+include 'header.php';
 
 ?>
 <!DOCTYPE html>
@@ -19,7 +19,7 @@ include 'header.php';
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #F3FAFB;
+            background: #ffff;
             color: #0F445F;
         }
 
@@ -34,6 +34,8 @@ include 'header.php';
             text-align: center;
             padding: 2rem;
             position: relative;
+            overflow: hidden;
+           
         }
 
         .hero::before {
@@ -448,10 +450,11 @@ include 'header.php';
     </style>
 </head>
 <body>
+    
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Discover</h1>
+            <h1>Discover Kenya</h1>
             <p>From pristine beaches to wild savannahs, explore the beauty and diversity of Kenya</p>
             
         <form action="destinations.php" method="get" class="search-field">

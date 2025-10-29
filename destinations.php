@@ -1,40 +1,34 @@
 <?php
-
 include 'config.php';
 include 'header.php';
+// replace the existing fetch block with this:
+$searchTerm = trim($_GET['location'] ?? '');
 
-// Get the search term from the query string
-$search = isset($_GET['location']) ? trim($_GET['location']) : '';
-
-// Fetch Standard destinations
-$standard = $pdo->query("SELECT property_name, description, location, image, 'Standard' AS package FROM standard_forms")->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch Premium destinations
-$premium = $pdo->query("SELECT property_name, description, location, image, 'Premium' AS package FROM premium_forms")->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch Deluxe destinations
-$deluxe = $pdo->query("SELECT property_name, description, location, image, 'Deluxe' AS package FROM deluxe_forms")->fetchAll(PDO::FETCH_ASSOC);
-
-// Combine all destinations into one array
-$destinations = array_merge($standard, $premium, $deluxe);
-
-// Filter results if a location was searched
-if (!empty($search)) {
-    $destinations = array_filter($destinations, function ($d) use ($search) {
-        return stripos($d['location'], $search) !== false ||
-               stripos($d['property_name'], $search) !== false ||
-               stripos($d['description'], $search) !== false;
-    });
+try {
+    if ($searchTerm === '') {
+        $stmt = $pdo->query("SELECT * FROM listings ORDER BY created_at DESC");
+        $listings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $like = '%' . $searchTerm . '%';
+        $stmt = $pdo->prepare("SELECT * FROM listings 
+                               WHERE property_name LIKE ? OR location LIKE ? OR description LIKE ?
+                               ORDER BY created_at DESC");
+        $stmt->execute([$like, $like, $like]);
+        $listings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (PDOException $e) {
+    die("Error fetching listings: " . $e->getMessage());
 }
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Destinations - Visitsasa</title>
-<style>
-      * {
+  <meta charset="UTF-8">
+  <title>Destinations - Visit Sasa</title>
+  <style>
+       * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -45,52 +39,79 @@ if (!empty($search)) {
             background: #F3FAFB;
             color: #0F445F;
         }
-h1 { text-align:center; margin-bottom:20px; margin-top:20px; }
-#searchInput { width:100%; max-width:400px; margin: 0 auto 20px auto; display:block; padding:10px; border-radius:8px; border:1px solid #ccc; }
-.grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; }
-.card { background:white; border-radius:15px; padding:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); text-align:center; }
-.card img { width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
-.card h3 { margin:10px 0 5px 0; }
-.card p { margin:5px 0; color:#555; }
-</style>
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 15px;
+    }
+    .card-content h3 {
+      margin: 0 0 10px;
+      color: #0F445F;
+    }
+    .card-content p {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+  </style>
 </head>
 <body>
 
-<h1>
-  <?php echo !empty($search) ? "Search results for: " . htmlspecialchars($search) : "All Destinations"; ?>
-</h1>
+  <div class="container">
+    <?php if (!empty($listings)): ?>
+      <?php foreach ($listings as $row): ?>
+        <div class="card">
+          <?php 
+      
+         // Decode JSON or fallback
+$imagesData = $row['images'] ?? '';
+$imageArray = json_decode($imagesData, true);
 
-<input type="text" id="searchInput" placeholder="Search by location..." value="<?php echo htmlspecialchars($search); ?>">
+// Handle if JSON decode failed (old data format)
+if (!is_array($imageArray)) {
+  $imageArray = explode(',', $imagesData);
+}
 
-<div class="grid" id="destinationsGrid">
-<?php if (count($destinations) > 0): ?>
-  <?php foreach($destinations as $d): ?>
-    <div class="card" data-location="<?php echo strtolower($d['location']); ?>">
-      <img src="uploads/<?php echo htmlspecialchars($d['image']); ?>" alt="<?php echo htmlspecialchars($d['property_name']); ?>">
-      <h3><?php echo htmlspecialchars($d['property_name']); ?></h3>
-      <p><b>Location:</b> <?php echo htmlspecialchars($d['location']); ?></p>
-      <p><?php echo htmlspecialchars($d['description']); ?></p>
-      <p><b>Package:</b> <?php echo $d['package']; ?></p>
-    </div>
-  <?php endforeach; ?>
-<?php else: ?>
-  <p style="text-align:center;">No destinations found.</p>
-<?php endif; ?>
-</div>
+$firstImage = trim($imageArray[0] ?? '');
+$imagePath = !empty($firstImage) ? 'uploads/' . htmlspecialchars($firstImage) : 'default.jpg';
+          ?>
+          <img src="<?= $imagePath ?>" alt="Destination Image">
 
-<script>
-// Keep the instant JS filtering too
-const searchInput = document.getElementById('searchInput');
-const cards = document.querySelectorAll('.card');
-
-searchInput.addEventListener('input', function() {
-  const value = this.value.toLowerCase();
-  cards.forEach(card => {
-    const location = card.getAttribute('data-location');
-    card.style.display = location.includes(value) ? 'block' : 'none';
-  });
-});
-</script>
-
+          <div class="card-content">
+            
+            <h3><?= htmlspecialchars($row['property_name']); ?></h3>
+            <p><strong>Location:</strong> <?= htmlspecialchars($row['location']); ?></p>
+            <?php if (!empty($row['description'])): ?>
+              <p><?= nl2br(htmlspecialchars(substr($row['description'], 0, 80))); ?>...</p>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p style="text-align:center;">No listings available yet.</p>
+    <?php endif; ?>
+  </div>
 </body>
 </html>

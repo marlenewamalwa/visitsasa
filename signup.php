@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id']   = $userId;
         $_SESSION['user_name'] = $name;
 
-        header('Location: dashboard.php');
+        header('Location: profile.php');
         exit();
     }
 }

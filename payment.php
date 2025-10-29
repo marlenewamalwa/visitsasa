@@ -1,32 +1,22 @@
 <?php
+include 'config.php'; // connect to your database
+
 session_start();
-include 'config.php';
+$user_id = $_SESSION['user_id'] ?? 1; // use your actual logged-in user session
 
-$package = $_GET['package'] ?? 'standard';
+$package = $_GET['package'] ?? 'premium';
 
-// Define package prices
-$prices = [
-  'premium' => 500,
-  'deluxe' => 1000
-];
-
-if (!isset($prices[$package])) {
-  die('Invalid package');
-}
-
-$amount = $prices[$package];
-
-// Simulate a user (replace with your logged-in user)
-$user_id = $_SESSION['user_id'] ?? 1;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Simulate payment success
-  $stmt = $pdo->prepare("INSERT INTO payments (user_id, package, amount, status) VALUES (?, ?, ?, 'paid')");
-  $stmt->execute([$user_id, $package, $amount]);
-
-  // Redirect to listing form after "payment"
-  header("Location: add_listing.php?package=$package");
-  exit;
+// set price based on package
+switch ($package) {
+  case 'deluxe':
+    $price = '10.00';
+    break;
+  case 'premium':
+    $price = '5.00';
+    break;
+  default:
+    $price = '0.00';
+    break;
 }
 ?>
 
@@ -34,20 +24,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Payment</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Payment - Visit Sasa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f7f9;
+      color: #0F445F;
+      text-align: center;
+      padding: 40px;
+    }
+    h2 { margin-bottom: 10px; }
+  </style>
 </head>
 <body>
-  <div class="payment-container">
-    <h2>Confirm Payment</h2>
-    <p>You selected the <strong><?= ucfirst($package) ?></strong> package.</p>
-    <p>Amount: <strong>Ksh <?= $amount ?></strong></p>
+  <h2>Pay for <?php echo ucfirst($package); ?> Package</h2>
+  <p>Amount: $<?php echo $price; ?></p>
 
-    <form method="POST">
-      <button type="submit">Pay Now</button>
-    </form>
+  <div id="paypal-button-container"></div>
 
-    <a href="select_package.php">Cancel</a>
-  </div>
+  <script src="https://www.paypal.com/sdk/js?client-id=AfeEehUOPvTQ5IxHkhx63CBTgmEI2dQKYtKVlgLk908D36K8eFE4EsL_HdUAUXGR-Dwjo5BUABwwgjhP&currency=USD"></script>
+  <script>
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: '<?php echo $price; ?>' }
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          // Save payment details
+          fetch('save_payment.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transaction_id: details.id,
+              payer_name: details.payer.name.given_name,
+              amount: details.purchase_units[0].amount.value,
+              package: '<?php echo $package; ?>'
+            })
+          })
+          .then(response => response.text())
+          .then(data => {
+            // redirect to listing form
+            window.location.href = "add_listing.php?package=<?php echo $package; ?>";
+          });
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
 </body>
 </html>
