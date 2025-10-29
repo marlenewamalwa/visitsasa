@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 require 'config.php';
 
@@ -29,7 +32,7 @@ if (isset($_GET['code'])) {
 
             echo "<script>
                     alert('Welcome back, $name!');
-                    window.location.href='dashboard.php';
+                    window.location.href='profile.php';
                   </script>";
             exit();
         } else {
