@@ -1,5 +1,5 @@
 <?php
-session_start();
+include 'header.php';
 
 // require login
 if (!isset($_SESSION['user_id'])) {
