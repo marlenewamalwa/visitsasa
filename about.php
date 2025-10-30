@@ -1,6 +1,4 @@
- <?php
-
-include 'header.php';
+ <?php include 'header.php';
 ?>
  <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +18,7 @@ include 'header.php';
             background: #F3FAFB;
             color: #0F445F;
         }
+
  
     .section {
       max-width: 1000px;
