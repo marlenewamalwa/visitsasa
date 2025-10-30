@@ -1,6 +1,7 @@
 <?php
-include 'config.php';
 include 'header.php';
+include 'config.php';
+
 // replace the existing fetch block with this:
 $searchTerm = trim($_GET['location'] ?? '');
 

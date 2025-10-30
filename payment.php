@@ -1,7 +1,7 @@
 <?php
 include 'config.php'; // connect to your database
 
-session_start();
+
 $user_id = $_SESSION['user_id'] ?? 1; // use your actual logged-in user session
 
 $package = $_GET['package'] ?? 'premium';
