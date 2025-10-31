@@ -4,11 +4,6 @@ if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header('Location: login.php');
-    exit;
-}
 include 'header.php';
 $userId = $_SESSION['user']['id'];
 $stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
@@ -63,9 +58,8 @@ $userEmail = $user['email'] ?? $_SESSION['user']['email'];
 
     <div class="actions">
       <a href="profile.php" class="btn secondary">Profile</a>
-      <form method="post" style="margin:0">
-        <button type="submit" name="logout" class="btn">Log out</button>
-      </form>
+      <a href="logout.php" class="btn">Log out</a>
+
     </div>
   </div>
 
