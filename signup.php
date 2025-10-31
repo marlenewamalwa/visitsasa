@@ -1,4 +1,4 @@
-<?php session_start();
+<?php
 include 'config.php';
 $google_login_url = $client->createAuthUrl();
 $errors = [];
