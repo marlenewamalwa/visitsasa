@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require 'config.php'; // Includes Google Client setup and $pdo database connection
 // Check if an authorization code was provided by Google
 if (isset($_GET['code'])) {
