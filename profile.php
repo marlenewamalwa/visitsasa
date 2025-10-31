@@ -1,12 +1,11 @@
 <?php
+include 'header.php';
 require 'config.php';
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-    session_unset();
+if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: login.php');
     exit;
@@ -20,7 +19,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $userName  = $user['name'] ?? $_SESSION['user']['name'];
 $userEmail = $user['email'] ?? $_SESSION['user']['email'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +26,6 @@ $userEmail = $user['email'] ?? $_SESSION['user']['email'];
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard - Visitsasa</title>
 <style>
-  :root{--accent:#0F445F}
       * {
             margin: 0;
             padding: 0;
