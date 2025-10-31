@@ -1,5 +1,4 @@
 <?php
-session_start();
 include 'config.php';
 
 // Simulate logged-in user (replace with real session)
