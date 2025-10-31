@@ -1,7 +1,5 @@
 <?php
-include 'header.php';
 include 'config.php';
-
 // replace the existing fetch block with this:
 $searchTerm = trim($_GET['location'] ?? '');
 
@@ -20,7 +18,7 @@ try {
 } catch (PDOException $e) {
     die("Error fetching listings: " . $e->getMessage());
 }
-
+include 'header.php';
 ?>
 
 <!DOCTYPE html>

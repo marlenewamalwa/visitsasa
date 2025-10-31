@@ -1,4 +1,4 @@
-<?php include 'header.php';
+<?php 
 include 'config.php';
 // Fetch deluxe listings
 try {
@@ -9,7 +9,7 @@ try {
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
 }
-
+include 'header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
