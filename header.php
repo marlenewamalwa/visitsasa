@@ -1,8 +1,8 @@
 <?php session_start(); // start session at the very top
 $isLoggedIn = !empty($_SESSION['user']['id']); 
 $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
-    ? htmlspecialchars($_SESSION['user']['name'])
-    : '';   // safe empty string if not set
+? htmlspecialchars($_SESSION['user']['name'])
+: '';
 ?>
 <style>
         /* Navigation */
