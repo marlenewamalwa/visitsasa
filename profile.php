@@ -57,10 +57,8 @@ $userEmail = $user['email'] ?? $_SESSION['user']['email'];
     </div>
 
     <div class="actions">
-      <a href="profile.php" class="btn secondary">Profile</a>
-      <a href="logout.php" class="btn">Log out</a>
-
-    </div>
+      <a href="logout.php" class="btn secondary">Log out</a>
+</div>
   </div>
 
   <div class="grid">
@@ -108,18 +106,6 @@ $listings = $listStmt->fetchAll(PDO::FETCH_ASSOC);
   </p>
 </div>
     </div>
-
-    <aside>
-      <div class="card">
-        <h4>Account</h4>
-        <p class="small"><strong>Name:</strong> <?php echo htmlspecialchars($userName); ?></p>
-        <p class="small"><strong>Email:</strong> <?php echo htmlspecialchars($userEmail); ?></p>
-        <p style="margin-top:12px">
-          <a href="edit_profile.php" class="btn secondary" style="display:inline-block">Edit profile</a>
-          
-        </p>
-      </div>
-    </aside>
   </div>
 </div>
 </body>
