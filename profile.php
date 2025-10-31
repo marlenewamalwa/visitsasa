@@ -12,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     exit;
 }
 
-include 'header.php'; // ✅ safe to include after checks
-
 $userId = $_SESSION['user']['id'];
 $stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
 $stmt->execute([$userId]);
