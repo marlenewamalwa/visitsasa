@@ -1,15 +1,21 @@
-<?php include 'header.php';
+<?php
 require 'config.php';
+session_start(); // ensure session is started before using $_SESSION
+
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     session_unset();
     session_destroy();
     header('Location: login.php');
     exit;
 }
+
+include 'header.php'; // ✅ safe to include after checks
+
 $userId = $_SESSION['user']['id'];
 $stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
 $stmt->execute([$userId]);
@@ -18,6 +24,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $userName  = $user['name'] ?? $_SESSION['user']['name'];
 $userEmail = $user['email'] ?? $_SESSION['user']['email'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
