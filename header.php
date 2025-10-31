@@ -1,22 +1,15 @@
 <?php session_start(); // start session at the very top
-$isLoggedIn = !empty($_SESSION['user_id']); // true if user is logged in
-$userName   = $isLoggedIn && !empty($_SESSION['user_name'])
- ? htmlspecialchars($_SESSION['user_name'])
-: '';   // safe empty string if not set
-
+$isLoggedIn = !empty($_SESSION['user']['id']); 
+$userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
+    ? htmlspecialchars($_SESSION['user']['name'])
+    : '';   // safe empty string if not set
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisitSasa</title>
-    <style>
+<style>
         /* Navigation */
         nav {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 5%;
-            position: fixed;
+            position: relative;
             width: 100%;
             height: 90px;
             top: 0;
@@ -96,21 +89,13 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(17, 152, 155, 0.3);
         }
-        body {
-            margin: 0;
-            padding-top: 70px; /* Prevent content from hiding under fixed nav */
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
     </style>
-
 <header>
-
     <nav>
         <div class="nav-container">
             <a href="index.php" class="logo">
-    <img src="images/logo.png" alt="VisitSasa Logo" style="height:70px;">
-</a>
+                <img src="images/logo.png" alt="VisitSasa Logo" style="height:70px;">
+            </a>
             <div class="nav-links">
                 <a href="index.php">Home</a>
                 <a href="destinations.php">Destinations</a>
@@ -120,15 +105,13 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
                 <?php if ($isLoggedIn): ?>
                     <!-- Logged in: show name instead of Log In -->
                     <a href="profile.php" class="btn-sign-in">👤 <?= $userName ?></a>
-                    <button class="btn-add-listing"
-                        onclick="location.href='select_package.php'">
+                    <button class="btn-add-listing" onclick="location.href='select_package.php'">
                         + Add Listing
                     </button>
                 <?php else: ?>
                     <!-- Not logged in -->
                     <a href="login.php" class="btn-sign-in">👤 Log In</a>
-                    <button class="btn-add-listing"
-                        onclick="location.href='signup.php'">
+                    <button class="btn-add-listing" onclick="location.href='signup.php'">
                         + Add Listing
                     </button>
                 <?php endif; ?>
@@ -136,4 +119,4 @@ $userName   = $isLoggedIn && !empty($_SESSION['user_name'])
         </div>
     </nav>
 </header>
-</html>
+

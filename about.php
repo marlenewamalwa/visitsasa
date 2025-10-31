@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us - VisitSasa</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
   <style>
     * {
             margin: 0;
@@ -144,10 +145,7 @@
       </div>
     </div>
   </section>
-
-  <footer>
-    &copy; <?php echo date('Y'); ?> VisitSasa. All Rights Reserved.
-  </footer>
-
+  <?php include 'footer.php'; ?>
 </body>
+
 </html>

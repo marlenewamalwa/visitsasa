@@ -16,6 +16,7 @@ if (!in_array($package, $allowed)) {
 <head>
   <meta charset="UTF-8">
   <title>Add Listing (<?= ucfirst($package) ?>)</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
   <style>
     .form-container {
       width: 400px;

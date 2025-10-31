@@ -1,14 +1,15 @@
 <?php
 session_start();
 include 'config.php';
-
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user']['id'])) {
   header('Location: login.php');
   exit;
 }
-
-$userId = $_SESSION['user_id'];
-$id = $_GET['id'] ?? 0;
+$userId = $_SESSION['user']['id'];
+$id = $_GET['id'] ?? null;
+if (!$id) {
+  die('Listing ID is required.');
+}
 
 // fetch existing listing
 $stmt = $pdo->prepare("SELECT * FROM listings WHERE id = ? AND user_id = ?");

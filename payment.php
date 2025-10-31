@@ -6,13 +6,14 @@ $user_id = $_SESSION['user_id'] ?? 1; // use your actual logged-in user session
 
 $package = $_GET['package'] ?? 'premium';
 
+
 // set price based on package
 switch ($package) {
   case 'deluxe':
-    $price = '10.00';
+    $price = '1000.00';
     break;
   case 'premium':
-    $price = '5.00';
+    $price = '500.00';
     break;
   default:
     $price = '0.00';

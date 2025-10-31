@@ -1,13 +1,12 @@
 <?php
 include 'header.php';
+require 'config.php';
 
 // require login
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
-
-require 'config.php';
 
 // handle logout from this page
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
@@ -18,15 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
 }
 
 // fetch fresh user data
-$userId = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT id, name, email, avatar FROM users WHERE id = ? LIMIT 1");
+$userId = $_SESSION['user']['id'];
+$stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
 $stmt->execute([$userId]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$userName = $user['name'] ?? ($_SESSION['user_name'] ?? 'User');
-$userEmail = $user['email'] ?? '';
-$avatar = $user['avatar'] ?? 'images/avater_default.jpg';
+$userName  = $user['name'] ?? $_SESSION['user']['name'];
+$userEmail = $user['email'] ?? $_SESSION['user']['email'];
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +35,18 @@ $avatar = $user['avatar'] ?? 'images/avater_default.jpg';
 <title>Dashboard - Visitsasa</title>
 <style>
   :root{--accent:#0F445F}
-  body{font-family:Arial,Helvetica,sans-serif;background:#f3f7f9;margin:0;padding:30px;color:#0f445f}
+      * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffff;
+            color: #0F445F;
+        }
+
   .container{max-width:1000px;margin:0 auto;background:#fff;border-radius:12px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
   .header{display:flex;align-items:center;justify-content:space-between}
   .profile{display:flex;align-items:center;gap:14px}
@@ -54,7 +65,6 @@ $avatar = $user['avatar'] ?? 'images/avater_default.jpg';
 <div class="container">
   <div class="header">
     <div class="profile">
-      <img src="<?php echo htmlspecialchars($avatar); ?>" alt="avatar" class="avatar">
       <div>
         <h1>Welcome, <?php echo htmlspecialchars($userName); ?></h1>
         <div class="muted small"><?php echo htmlspecialchars($userEmail); ?></div>
@@ -96,13 +106,14 @@ $listings = $listStmt->fetchAll(PDO::FETCH_ASSOC);
             <?php echo htmlspecialchars($l['location']); ?> — <?php echo ucfirst($l['package']); ?>
           </span>
         </div>
-        <div style="display:flex;gap:6px">
-          <a href="edit_listing.php?id=<?php echo $l['id']; ?>" class="btn secondary" style="padding:6px 10px;font-size:13px">Edit</a>
-          <form method="POST" action="delete_listing.php" onsubmit="return confirm('Delete this listing?')" style="margin:0">
-            <input type="hidden" name="id" value="<?php echo $l['id']; ?>">
-            <button type="submit" class="btn" style="background:#d9534f;padding:6px 10px;font-size:13px">Delete</button>
-          </form>
-        </div>
+<div style="display:flex;gap:6px">
+    <a href="edit_listing.php?id=<?php echo $l['id']; ?>" class="btn secondary" style="padding:6px 10px;font-size:13px">Edit</a>
+    <form method="POST" action="delete_listing.php" onsubmit="return confirm('Delete this listing?')" style="margin:0">
+        <input type="hidden" name="id" value="<?php echo $l['id']; ?>">
+        <button type="submit" class="btn" style="background:#d9534f;padding:6px 10px;font-size:13px">Delete</button>
+    </form>
+</div>
+
       </li>
       <?php endforeach; ?>
     </ul>
@@ -112,14 +123,6 @@ $listings = $listStmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="select_package.php" class="btn">Add New Listing</a>
   </p>
 </div>
-
-
-
-      <div class="card" style="margin-top:16px">
-        <h3>Saved Destinations</h3>
-        <p class="small">Save favorite destinations to access them quickly.</p>
-        <!-- Placeholder for saved items -->
-      </div>
     </div>
 
     <aside>
@@ -129,6 +132,7 @@ $listings = $listStmt->fetchAll(PDO::FETCH_ASSOC);
         <p class="small"><strong>Email:</strong> <?php echo htmlspecialchars($userEmail); ?></p>
         <p style="margin-top:12px">
           <a href="edit_profile.php" class="btn secondary" style="display:inline-block">Edit profile</a>
+          
         </p>
       </div>
     </aside>

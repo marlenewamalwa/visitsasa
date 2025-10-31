@@ -1,5 +1,15 @@
 <?php include 'header.php';
 include 'config.php';
+// Fetch deluxe listings
+try {
+    // Fetch all listings where package = 'Deluxe'
+    $stmt = $pdo->prepare("SELECT Property_name, location, images FROM listings WHERE package = 'Deluxe'");
+    $stmt->execute();
+    $deluxeListings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +17,7 @@ include 'config.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VisitSasa - Discover Kenya</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
     <style>
         * {
             margin: 0;
@@ -29,7 +40,7 @@ include 'config.php';
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 2rem;
+            padding: 0 2rem;
             position: relative;
             overflow: hidden;
            
@@ -292,58 +303,38 @@ include 'config.php';
             transform: translateY(0);
         }
 
-        .deluxe-section {
-  padding: 50px 20px;
-  background: #f7f9fc;
-  text-align: center;
-}
-
-.deluxe-section h2 {
-  font-size: 32px;
-  margin-bottom: 30px;
-  color: #0F445F;
-}
-
-.deluxe-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.deluxe-card {
-  background: white;
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.deluxe-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-.deluxe-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.deluxe-info h3 {
-  margin: 10px 0 5px 0;
-  color: #1a5c7a;
-}
-
-.deluxe-info p {
-  margin: 5px 0;
-  color: #555;
-}
-
-
+       .listings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .listing {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .listing:hover {
+            transform: translateY(-4px);
+        }
+        .listing img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .listing-info {
+            padding: 15px;
+        }
+        .listing-info h3 {
+            margin: 0 0 8px;
+            color: #e63946;
+        }
+        .listing-info p {
+            color: #555;
+            font-size: 14px;
+        }
         /* Features Section */
         .features-section {
             padding: 6rem 5%;
@@ -543,7 +534,35 @@ include 'config.php';
   </div>
 </section>
 
+<!-- Deluxe Stays Section -->
+    <div class="listings">
+    <?php if (count($deluxeListings) > 0): ?>
+        <?php foreach ($deluxeListings as $listing): ?>
+            <div class="listing">
+ <?php
+$imagePath = $listing['images'];
+if ($imagePath && str_starts_with($imagePath, '[')) {
+    $decoded = json_decode($imagePath, true);
+    if (is_array($decoded) && count($decoded) > 0) {
+        $imagePath = $decoded[0];
+    }
+}
+$imagePath = 'uploads/' . $imagePath; 
+?>
+<img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($listing['Property_name']) ?>">
 
+
+                <div class="listing-info">
+                    <h3><?= htmlspecialchars($listing['Property_name']) ?></h3>
+                    <p><?= htmlspecialchars($listing['location']) ?></p>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p style="text-align:center;">No deluxe listings found.</p>
+    <?php endif; ?>
+</div>
+         
     <!-- Features Section -->
     <section class="features-section">
         <div class="section-header">
@@ -603,4 +622,7 @@ include 'config.php';
         });
     </script>
 </body>
+<?php 
+include 'footer.php';
+?>
 </html>

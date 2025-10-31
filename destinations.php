@@ -28,6 +28,7 @@ try {
 <head>
   <meta charset="UTF-8">
   <title>Destinations - Visit Sasa</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
   <style>
        * {
             margin: 0;
@@ -115,4 +116,5 @@ $imagePath = !empty($firstImage) ? 'uploads/' . htmlspecialchars($firstImage) : 
     <?php endif; ?>
   </div>
 </body>
+<?php include 'footer.php'; ?>
 </html>

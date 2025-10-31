@@ -1,0 +1,12 @@
+.dashboard { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: #1f1f2e; color: #fff; padding: 20px; }
+.sidebar h2 { text-align: center; margin-bottom: 30px; }
+.sidebar ul { list-style: none; }
+.sidebar ul li { margin: 15px 0; }
+.sidebar ul li a { color: #fff; text-decoration: none; font-weight: bold; }
+.sidebar ul li a:hover { color: #ff6b6b; }
+
+.main-content { flex: 1; padding: 30px; background: #f4f4f9; }
+.cards { display: flex; gap: 20px; }
+.card { flex: 1; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; text-decoration: none; color: #333; transition: transform 0.2s; }
+.card:hover { transform: translateY(-5px); }
