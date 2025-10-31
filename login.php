@@ -27,8 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: profile.php");
     exit();
 }
-
-    } else {
+} else {
         echo "<script>alert('Invalid email or password.');</script>";
     }
 }
