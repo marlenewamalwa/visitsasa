@@ -622,7 +622,5 @@ $imagePath = 'uploads/' . $imagePath;
         });
     </script>
 </body>
-<?php 
-include 'footer.php';
-?>
+ <?php include 'footer.php'; ?>
 </html>
