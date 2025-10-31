@@ -1,9 +1,7 @@
-<?php
-session_start();
+<?php session_start();
 include 'config.php';
 $google_login_url = $client->createAuthUrl();
 $errors = [];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name  = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -24,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'An account with that email already exists.';
         }
     }
-
     // Insert user
     if (empty($errors)) {
         $hash = password_hash($pass, PASSWORD_DEFAULT);
