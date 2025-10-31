@@ -1,5 +1,4 @@
 <?php
-include 'header.php';
 require 'config.php';
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
@@ -10,7 +9,7 @@ if (isset($_POST['logout'])) {
     header('Location: login.php');
     exit;
 }
-
+include 'header.php';
 $userId = $_SESSION['user']['id'];
 $stmt = $pdo->prepare("SELECT id, name, email FROM users WHERE id = ? LIMIT 1");
 $stmt->execute([$userId]);
