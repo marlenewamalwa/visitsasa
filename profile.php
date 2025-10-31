@@ -1,7 +1,5 @@
 <?php
 require 'config.php';
-session_start(); // ensure session is started before using $_SESSION
-
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
