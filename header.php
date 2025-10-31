@@ -1,4 +1,4 @@
-<?php session_start(); // start session at the very top
+<?php // start session at the very top
 $isLoggedIn = !empty($_SESSION['user']['id']); 
 $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
 ? htmlspecialchars($_SESSION['user']['name'])
