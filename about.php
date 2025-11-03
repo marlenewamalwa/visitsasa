@@ -128,18 +128,15 @@
       <h2>Meet the Team</h2>
       <div class="team-grid">
         <div class="member">
-          <img src="images/team1.jpg" alt="Team Member 1">
-          <h3>Mary Wanjiku</h3>
+          <h3>Vivien Nasimiyu</h3>
           <p>Founder & CEO</p>
         </div>
         <div class="member">
-          <img src="images/team2.jpg" alt="Team Member 2">
-          <h3>Brian Otieno</h3>
+         <h3>Marlene Wamalwa</h3>
           <p>Lead Developer</p>
         </div>
         <div class="member">
-          <img src="images/team3.jpg" alt="Team Member 3">
-          <h3>Jane Mwangi</h3>
+         <h3>Bruce </h3>
           <p>Marketing & Partnerships</p>
         </div>
       </div>
