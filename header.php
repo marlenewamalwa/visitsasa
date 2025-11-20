@@ -89,6 +89,35 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(17, 152, 155, 0.3);
         }
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .dropdown-content a {
+            color: #11989B;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
     </style>
 <header>
     <nav>
@@ -97,8 +126,20 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
                 <img src="images/logo.png" alt="VisitSasa Logo" style="height:70px;">
             </a>
             <div class="nav-links">
-                <a href="index.php">Home</a>
                 <a href="destinations.php">Destinations</a>
+                
+                <!-- Inside .nav-links div -->
+<div class="dropdown">
+    <a href="#">Experiences ▾</a>
+    <div class="dropdown-content">
+        <a href="foodanddrink.php">Food & Drink</a>
+        <a href="adventures.php">Adventure</a>
+        <a href="beach_coast.php">Beach & Watersports</a>
+        <a href="culture.php">Culture</a>
+        <a href="wildlife.php">Wildlife</a>
+    </div>
+</div>
+<a href="stories.php">Stories</a>
                 <a href="about.php">About</a>
                 <a href="contact.php">Contact</a>
 

@@ -222,119 +222,147 @@ include 'header.php';
             font-size: 0.95rem;
         }
 
-        /* Popular Destinations */
-        .destinations-section {
-            padding: 6rem 5%;
-            background: #F3FAFB;
+      /* Destinations Section */
+        .destinations {
+            padding: 4rem 2rem;
+            background: #fff;
         }
 
-        .grid {
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #2c3643;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #67747c;
+            font-size: 1.1rem;
+        }
+
+        .dest-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+            margin-bottom: 2rem;
         }
 
-        .destination-card {
+        .dest-card {
             position: relative;
+            border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
-            transition: all 0.4s;
-            height: 450px;
         }
 
-        .destination-card:hover {
-            transform: translateY(-8px);
+        .dest-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .destination-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s;
-            filter: brightness(0.85);
+        .dest-image {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
         }
 
-        .destination-card:hover img {
-            transform: scale(1.05);
-            filter: brightness(0.7);
-        }
-
-        .destination-card::before {
+        .dest-image::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: 0;
             right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+
+        .dest-info {
+            position: absolute;
             bottom: 0;
-            background: rgba(15, 68, 95, 0.3);
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            color: white;
             z-index: 1;
         }
 
-        .destination-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 2.5rem;
-            z-index: 2;
+        .dest-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
         }
 
-        .destination-name {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 0.8rem;
-            letter-spacing: 2px;
+        .dest-info p {
+            font-size: 0.9rem;
+            opacity: 0.95;
         }
 
-        .destination-desc {
-            color: white;
-            font-size: 1rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s;
-            font-weight: 300;
+        .view-all {
+            text-align: center;
+            margin-top: 2rem;
         }
 
-        .destination-card:hover .destination-desc {
-            opacity: 1;
-            transform: translateY(0);
+        .view-all a {
+            color: #297CBB;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
-       .listings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+        .view-all a:hover {
+            text-decoration: underline;
         }
-        .listing {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.2s ease;
-        }
-        .listing:hover {
-            transform: translateY(-4px);
-        }
-        .listing img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .listing-info {
-            padding: 15px;
-        }
-        .listing-info h3 {
-            margin: 0 0 8px;
-            color: #e63946;
-        }
-        .listing-info p {
-            color: #555;
-            font-size: 14px;
-        }
+        /* CTA Guide Section */
+.guide-cta {
+    width: 100%;
+    padding: 4rem 5%;
+    background: linear-gradient(135deg, #0F445F, #11989B);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.guide-cta-container {
+    text-align: center;
+    max-width: 700px;
+    color: #F3FAFB;
+}
+
+.guide-cta-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.guide-cta-container p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.guide-btn {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    background: #fff;
+    color: #0F445F;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-weight: 600;
+}
+
+.guide-btn:hover {
+    background: #F3FAFB;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(17,152,155,0.3);
+}
+
         /* Features Section */
         .features-section {
             padding: 6rem 5%;
@@ -454,55 +482,85 @@ include 'header.php';
 </form>
         </div>
     </section>
-
-    <!-- Popular Destinations -->
-    <section class="destinations-section">
-        <div class="section-header">
-            <h2>Popular Destinations</h2>
-            <p>Discover Kenya's most beloved locations</p>
+    
+    <!-- Destinations Section -->
+    <section id="destinations" class="destinations">
+        <div class="container">
+            <div class="section-header">
+                <h2>Where to next?</h2>
+                <p>Explore Kenya's most incredible destinations</p>
+            </div>
+            
+            <div class="dest-grid">
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/maasaimara.jpg'); background-size: cover; background-position: center;">
+                        <div class="dest-info">
+                            <h3>Maasai Mara</h3>
+                            <p>Witness the Great Migration and incredible wildlife</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/diani.jpg'); background-size: cover; background-position: center;" >
+                        <div class="dest-info">
+                            <h3>Diani Beach</h3>
+                            <p>White sands and turquoise waters of the Indian Ocean</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/mtkenya.jpg'); background-size: cover; background-position: center;">
+                        <div class="dest-info">
+                            <h3>Mount Kenya</h3>
+                            <p>Africa's second-highest peak with stunning glaciers</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/nairobi.jpg'); background-size: cover; background-position: center;">
+                        <div class="dest-info">
+                            <h3>Nairobi</h3>
+                            <p>Vibrant capital blending urban energy and wildlife</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/lakenakuru.jpg'); background-size: cover; background-position: center;">
+                        <div class="dest-info">
+                            <h3>Lake Nakuru</h3>
+                            <p>Home to millions of pink flamingos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dest-card">
+                    <div class="dest-image" style="background-image: url('images/lamu1.jpg'); background-size: cover; background-position: center;">
+                        <div class="dest-info">
+                            <h3>Lamu Island</h3>
+                            <p>Ancient Swahili culture meets pristine beaches</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="view-all">
+                <a href="#destinations">View all destinations →</a>
+            </div>
         </div>
-        <div class="grid">
-            <a href="destinations.php?location=mombasa">
-  <div class="destination-card">
-    <img src="images/mombasa.jpeg" alt="Mombasa">
-    <div class="destination-info">
-      <div class="destination-name">MOMBASA</div>
-      <div class="destination-desc">Historic port city with stunning beaches and Swahili culture</div>
+    </section>
+<!-- Guide CTA Section -->
+ <section class="guide-cta">
+    <div class="guide-cta-container">
+        <h2>Your Free Kenya Travel Guide</h2>
+        <p>Discover the best destinations, hidden gems, and travel tips all in one guide.</p>
+        <button onclick="location.href='DestinationGuide.pdf'" class="guide-btn">Download Guide</button>
     </div>
-  </div>
-</a>
-
-<a href="destinations.php?location=maasaimara">
-  <div class="destination-card">
-    <img src="images/cheetah.jpg" alt="maasaimara">
-    <div class="destination-info">
-      <div class="destination-name">MAASAI MARA</div>
-      <div class="destination-desc">The Maasai Mara is absolutely spectacular! It's Kenya's most famous wildlife reserve and a leading safari destination in East Africa</div>
-    </div>
-  </div>
-</a>
-
-<a href="destinations.php?location=nakuru">
-  <div class="destination-card">
-    <img src="images/hippos.jpg" alt="Nakuru">
-    <div class="destination-info">
-      <div class="destination-name">LAKE NAKURU</div>
-      <div class="destination-desc">The lake is home to fuchsia pink flamingos, of which there are often more than a million, and sometimes two million</div>
-    </div>
-  </div>
-</a>
-
-<a href="destinations.php?location=diani">
-  <div class="destination-card">
-    <img src="images/diani.jpg" alt="Watamu">
-    <div class="destination-info">
-      <div class="destination-name">DIANI</div>
-      <div class="destination-desc">Marine paradise with coral reefs and sea turtle sanctuary</div>
-    </div>
-  </div>
-</a>
-        </div>
 </section>
+
 
 <!-- Categories Section -->
     <section class="categories-section">
@@ -534,35 +592,7 @@ include 'header.php';
   </div>
 </section>
 
-<!-- Deluxe Stays Section -->
-    <div class="listings">
-    <?php if (count($deluxeListings) > 0): ?>
-        <?php foreach ($deluxeListings as $listing): ?>
-            <div class="listing">
- <?php
-$imagePath = $listing['images'];
-if ($imagePath && str_starts_with($imagePath, '[')) {
-    $decoded = json_decode($imagePath, true);
-    if (is_array($decoded) && count($decoded) > 0) {
-        $imagePath = $decoded[0];
-    }
-}
-$imagePath = 'uploads/' . $imagePath; 
-?>
-<img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($listing['Property_name']) ?>">
-
-
-                <div class="listing-info">
-                    <h3><?= htmlspecialchars($listing['Property_name']) ?></h3>
-                    <p><?= htmlspecialchars($listing['location']) ?></p>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p style="text-align:center;">No deluxe listings found.</p>
-    <?php endif; ?>
-</div>
-         
+       
     <!-- Features Section -->
     <section class="features-section">
         <div class="section-header">
