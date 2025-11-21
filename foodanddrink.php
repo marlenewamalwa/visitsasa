@@ -3,602 +3,865 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food & Drink in Kenya - Culinary Guide</title>
+    <title>Food & Drink - Explore Kenya's Culinary Scene</title>
     <style>
-        * {
+ * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #2c3643;
-            background-color: #fafafa;
+            color: #1a4d2e;
+            background: #e8f5e9;
         }
 
         header {
-            background: linear-gradient(135deg, #D2691E 0%, #8B4513 100%);
-            color: white;
-            padding: 4rem 2rem;
+            background: linear-gradient(rgba(94, 27, 64, 0.6), rgba(46, 125, 50, 0.7)), url('images/lasagna.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            color: white;
             position: relative;
             overflow: hidden;
         }
 
-        header::before {
-            content: '🍛';
+        .wave {
             position: absolute;
-            font-size: 15rem;
-            opacity: 0.1;
-            top: -3rem;
-            right: -2rem;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path fill="%23e8f5e9" d="M0,60 Q300,0 600,60 T1200,60 L1200,120 L0,120 Z"/></svg>');
+            background-size: cover;
+            animation: wave 10s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { background-position: 0 0; }
+            100% { background-position: 1200px 0; }
         }
 
         header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            position: relative;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: fadeInDown 1s ease-out;
         }
 
         header p {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
+            font-size: 1.3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 40px 20px;
         }
 
-        .intro-section {
+    
+
+        /* Filter Section */
+        .filter-section {
             background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
-        .intro-section h2 {
-            color: #8B4513;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .intro-section p {
-            color: #67747c;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .category-section {
-            margin-bottom: 4rem;
-        }
-
-        .category-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .category-header h2 {
-            font-size: 2.5rem;
-            color: #142b44;
-            margin-bottom: 0.5rem;
+        .filter-controls {
             display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
-            gap: 1rem;
         }
 
-        .category-header p {
-            color: #67747c;
-            font-size: 1.1rem;
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
         }
 
-        .food-grid {
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #11989B;
+        }
+
+        .filter-btn {
+            background: #0F445F;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 24px;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .results-count {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Restaurant Grid */
+        .restaurant-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
+            gap: 30px;
+            padding: 20px;
         }
 
-        .food-card {
+        .restaurant-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            border: 2px solid transparent;
         }
 
-        .food-card:hover {
+        .restaurant-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            border-color: #D2691E;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
 
-        .food-image {
-            height: 200px;
+        .restaurant-image {
+            width: 100%;
+            height: 220px;
             background-size: cover;
             background-position: center;
             position: relative;
         }
 
-        .food-badge {
+        .restaurant-badge {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 15px;
+            right: 15px;
             background: rgba(255,255,255,0.95);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
             font-weight: 600;
-            font-size: 0.85rem;
-            color: #8B4513;
-            backdrop-filter: blur(10px);
+            color: #0F445F;
         }
 
-        .food-content {
-            padding: 1.5rem;
+        .restaurant-content {
+            padding: 25px;
         }
 
-        .food-content h3 {
-            font-size: 1.5rem;
-            color: #142b44;
-            margin-bottom: 0.8rem;
+        .restaurant-header {
+            margin-bottom: 15px;
         }
 
-        .food-content p {
-            color: #67747c;
-            margin-bottom: 1rem;
-            line-height: 1.7;
+        .restaurant-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
         }
 
-        .food-details {
+        .restaurant-location {
+            color: #666;
+            font-size: 0.95em;
             display: flex;
-            gap: 0.8rem;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .restaurant-location::before {
+            content: '📍';
+        }
+
+        .restaurant-cuisine {
+            display: flex;
+            gap: 8px;
             flex-wrap: wrap;
+            margin-bottom: 15px;
         }
 
-        .detail-tag {
-            background: #FFF3E0;
-            color: #D2691E;
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .price-indicator {
-            background: #E8F5E9;
-            color: #2E7D32;
-            padding: 0.4rem 0.9rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-            padding: 2rem;
+        .cuisine-tag {
+            background: #f0f0f0;
+            padding: 5px 12px;
             border-radius: 15px;
-            margin: 3rem 0;
-            border-left: 5px solid #D2691E;
+            font-size: 0.85em;
+            color: #555;
         }
 
-        .highlight-box h3 {
-            color: #8B4513;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .highlight-box ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .highlight-box li {
-            padding: 0.5rem 0;
-            color: #5D4037;
-            font-size: 1.05rem;
-        }
-
-        .highlight-box li::before {
-            content: '✓';
-            color: #D2691E;
-            font-weight: bold;
-            margin-right: 1rem;
-        }
-
-        .drinks-section {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            margin-top: 3rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .drinks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .drink-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid #D2691E;
-            transition: all 0.3s;
-        }
-
-        .drink-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .drink-card h4 {
-            color: #142b44;
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .drink-card p {
-            color: #67747c;
+        .restaurant-description {
+            color: #666;
             line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .restaurant-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .price-range {
+            font-weight: 600;
+            color: #0F445F;
+            font-size: 1.1em;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 25px 25px 0 0;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.8em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 35px;
+        }
+
+        .modal-title {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            color: #0F445F;
+            font-size: 1.4em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+        }
+
+        .modal-section p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .modal-section li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .info-item span {
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .no-results h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: #666;
+            font-size: 1.1em;
         }
 
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5rem;
+            .page-header h1 {
+                font-size: 2.5em;
             }
 
-            .food-grid {
+            .filter-controls {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .restaurant-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .intro-section {
-                padding: 2rem;
             }
         }
     </style>
 </head>
 <body>
-<div class="container">
-               <?php
-        $food_categories = [
-            'Staple Foods & Mains' => [
-                [
-                    'name' => 'Ugali',
-                    'description' => 'Kenya\'s national dish and most popular staple. Made from white or yellow cornmeal cooked in boiling water until thick and dough-like. Served with stews, vegetables, or grilled meat.',
-                    'type' => 'Staple',
-                    'price' => '$',
-                    'color' => '#F5DEB3'
-                ],
-                [
-                    'name' => 'Nyama Choma',
-                    'description' => 'Kenya\'s unofficial national dish meaning "grilled meat" in Swahili. Usually goat, but also beef or chicken, slow-cooked over hot coals until tender. Served with kachumbari and ugali.',
-                    'type' => 'Main Dish',
-                    'price' => '$$',
-                    'color' => '#8B4513'
-                ],
-                [
-                    'name' => 'Pilau',
-                    'description' => 'Fragrant rice dish cooked with aromatic spices including cardamom, cinnamon, cumin, and cloves. Often prepared with meat, tomatoes, and onions. A celebratory dish influenced by Indian cuisine.',
-                    'type' => 'Main Dish',
-                    'price' => '$$',
-                    'color' => '#DAA520'
-                ],
-                [
-                    'name' => 'Githeri',
-                    'description' => 'Nutritious mixture of boiled maize (corn) and beans, sometimes with added vegetables. A hearty, protein-rich dish popular across Kenya. Often served with sukuma wiki and meat.',
-                    'type' => 'Main Dish',
-                    'price' => '$',
-                    'color' => '#CD853F'
-                ],
-                [
-                    'name' => 'Irio (Mukimo)',
-                    'description' => 'Traditional Kikuyu dish of mashed green peas, potatoes, corn, and sometimes spinach or kale. Starchy, filling comfort food often served with grilled meat and stews.',
-                    'type' => 'Side Dish',
-                    'price' => '$',
-                    'color' => '#90EE90'
-                ],
-                [
-                    'name' => 'Matoke',
-                    'description' => 'Rich stew made with green bananas, tomatoes, onions, garlic, and spices. Originally from Uganda but popular in Kenya. Creates a thick, savory gravy perfect with rice or ugali.',
-                    'type' => 'Main Dish',
-                    'price' => '$$',
-                    'color' => '#FFD700'
-                ]
-            ],
-            'Coastal & Swahili Specialties' => [
-                [
-                    'name' => 'Kuku Paka',
-                    'description' => 'Coastal chicken curry cooked in creamy coconut milk with Indian and Arabian spices. Chicken is often grilled first for a smoky flavor. A signature dish of Kenya\'s coast.',
-                    'type' => 'Curry',
-                    'price' => '$$',
-                    'color' => '#FF6347'
-                ],
-                [
-                    'name' => 'Wali wa Nazi',
-                    'description' => 'Coconut rice - white rice cooked with freshly grated coconut meat. Fragrant and slightly sweet, it\'s a coastal staple perfect with fish curries or chicken dishes.',
-                    'type' => 'Rice Dish',
-                    'price' => '$',
-                    'color' => '#F0FFF0'
-                ],
-                [
-                    'name' => 'Biriani',
-                    'description' => 'Aromatic spiced rice dish layered with marinated meat (chicken, goat, or beef), potatoes, and boiled eggs. Infused with saffron, cardamom, and other spices. A festive coastal favorite.',
-                    'type' => 'Main Dish',
-                    'price' => '$$$',
-                    'color' => '#FFD700'
-                ],
-                [
-                    'name' => 'Samaki wa Kupaka',
-                    'description' => 'Grilled fish covered in rich coconut curry sauce with tamarind, garlic, and spices. A popular coastal dish showcasing fresh Indian Ocean seafood.',
-                    'type' => 'Seafood',
-                    'price' => '$$$',
-                    'color' => '#4682B4'
-                ],
-                [
-                    'name' => 'Mkate wa Ufuta',
-                    'description' => 'Coastal bread made with coconut milk, giving it a soft, slightly sweet texture. Perfect for breakfast or as a side with curries and stews.',
-                    'type' => 'Bread',
-                    'price' => '$',
-                    'color' => '#DEB887'
-                ],
-                [
-                    'name' => 'Mahamri',
-                    'description' => 'Sweet, spiced deep-fried bread flavored with coconut milk and cardamom. A coastal breakfast favorite often served with pigeon peas in coconut milk.',
-                    'type' => 'Breakfast',
-                    'price' => '$',
-                    'color' => '#F4A460'
-                ]
-            ],
-            'Street Food & Snacks' => [
-                [
-                    'name' => 'Mandazi',
-                    'description' => 'Kenya\'s beloved "African doughnut" - triangular deep-fried bread slightly sweetened with coconut and cardamom. Best eaten fresh and warm with chai tea.',
-                    'type' => 'Snack',
-                    'price' => '$',
-                    'color' => '#FFE4B5'
-                ],
-                [
-                    'name' => 'Mutura',
-                    'description' => 'Kenyan blood sausage made from goat, cow, or lamb intestines stuffed with meat, blood, onions, and spices. Grilled over charcoal for a smoky flavor. Popular street food.',
-                    'type' => 'Street Food',
-                    'price' => '$',
-                    'color' => '#8B0000'
-                ],
-                [
-                    'name' => 'Chips Mayai',
-                    'description' => 'Popular snack combining French fries folded into an egg omelet. Often served with kachumbari salad and tomato sauce. Simple but satisfying comfort food.',
-                    'type' => 'Street Food',
-                    'price' => '$',
-                    'color' => '#FFD700'
-                ],
-                [
-                    'name' => 'Bhajia (Pakora)',
-                    'description' => 'Crispy deep-fried fritters made with potatoes, onions, or spinach coated in spiced chickpea batter. Served hot with mango chutney (madras) or tamarind sauce.',
-                    'type' => 'Snack',
-                    'price' => '$',
-                    'color' => '#F0E68C'
-                ],
-                [
-                    'name' => 'Roasted Maize',
-                    'description' => 'Fresh corn roasted over charcoal until lightly charred. Often brushed with butter and sprinkled with lime and chili. Found on nearly every street corner.',
-                    'type' => 'Street Food',
-                    'price' => '$',
-                    'color' => '#FFD700'
-                ],
-                [
-                    'name' => 'Mishkaki',
-                    'description' => 'Seasoned meat skewers (beef, goat, or chicken) marinated in spices and grilled over charcoal. Tender, smoky, and bursting with flavor. Popular evening snack.',
-                    'type' => 'Street Food',
-                    'price' => '$$',
-                    'color' => '#A0522D'
-                ],
-                [
-                    'name' => 'Mkate Mayai',
-                    'description' => 'Coastal street food meaning "bread eggs" - a mandazi-like dough stuffed with minced meat and egg, then grilled. A hearty, portable snack.',
-                    'type' => 'Street Food',
-                    'price' => '$',
-                    'color' => '#DEB887'
-                ],
-                [
-                    'name' => 'Samosa',
-                    'description' => 'Triangular pastry filled with spiced meat or vegetables, deep-fried until crispy. Indian-influenced snack found everywhere from street stalls to restaurants.',
-                    'type' => 'Snack',
-                    'price' => '$',
-                    'color' => '#D2691E'
-                ]
-            ],
-            'Vegetables & Side Dishes' => [
-                [
-                    'name' => 'Sukuma Wiki',
-                    'description' => 'Collard greens or kale sautéed with tomatoes, onions, and spices. The name means "stretch the week" - an affordable, nutritious staple served with almost every meal.',
-                    'type' => 'Vegetable',
-                    'price' => '$',
-                    'color' => '#228B22'
-                ],
-                [
-                    'name' => 'Kachumbari',
-                    'description' => 'Fresh tomato and onion salsa with coriander, chili, and lime juice. Tangy and spicy, it\'s the perfect accompaniment to grilled meats and heavy dishes.',
-                    'type' => 'Salad',
-                    'price' => '$',
-                    'color' => '#FF6347'
-                ],
-                [
-                    'name' => 'Maharagwe',
-                    'description' => 'Red kidney beans simmered in rich coconut milk with tomatoes, onions, and aromatic spices. Creamy and satisfying, served with rice, ugali, or chapati.',
-                    'type' => 'Bean Dish',
-                    'price' => '$',
-                    'color' => '#8B0000'
-                ],
-                [
-                    'name' => 'Chapati',
-                    'description' => 'Unleavened flatbread made from wheat flour, water, and oil. Soft, layered, and versatile - the perfect accompaniment to stews, curries, and grilled meats.',
-                    'type' => 'Bread',
-                    'price' => '$',
-                    'color' => '#F5DEB3'
-                ]
-            ],
-            'Desserts & Sweets' => [
-                [
-                    'name' => 'Mabuyu',
-                    'description' => 'Baobab seeds coated in colorful sugar candy, available in flavors like chili, strawberry, and tamarind. A unique coastal sweet sold by street vendors.',
-                    'type' => 'Candy',
-                    'price' => '$',
-                    'color' => '#FF1493'
-                ],
-                [
-                    'name' => 'Biskuti ya Nazi',
-                    'description' => 'Coconut macaroon biscuits - sweet, chewy cookies made with grated coconut. Perfect with tea or as a light dessert.',
-                    'type' => 'Cookie',
-                    'price' => '$',
-                    'color' => '#F5F5DC'
-                ],
-                [
-                    'name' => 'Viazi Karai',
-                    'description' => 'Sweet dessert made with sweet potatoes, grated coconut, coconut milk, cinnamon, and sugar. Baked until golden and served warm.',
-                    'type' => 'Dessert',
-                    'price' => '$',
-                    'color' => '#FF8C00'
-                ],
-                [
-                    'name' => 'Kashata',
-                    'description' => 'Coconut candy squares made from grated coconut and sugar. Sometimes flavored with peanuts or cardamom. A traditional coastal sweet.',
-                    'type' => 'Candy',
-                    'price' => '$',
-                    'color' => '#FFFACD'
-                ]
-            ]
-        ];
+<header>
+    <h1>Food & Drinks</h1>
+    <p>Savour Kenyan Food</p>
+    <div class="wave"></div>
+</header>
 
-        foreach ($food_categories as $category => $foods) {
-            echo '<section class="category-section">';
-            echo '<div class="category-header">';
-            
-            // Add emoji based on category
-            $emoji = '🍽️';
-            if (strpos($category, 'Coastal') !== false) $emoji = '🥥';
-            elseif (strpos($category, 'Street') !== false) $emoji = '🌭';
-            elseif (strpos($category, 'Vegetable') !== false) $emoji = '🥬';
-            elseif (strpos($category, 'Dessert') !== false) $emoji = '🍰';
-            
-            echo '<h2>' . $emoji . ' ' . htmlspecialchars($category) . '</h2>';
-            echo '</div>';
-            
-            echo '<div class="food-grid">';
-            foreach ($foods as $food) {
-                echo '<div class="food-card">';
-                echo '<div class="food-image" style="background: linear-gradient(135deg, ' . $food['color'] . ' 0%, ' . $food['color'] . 'dd 100%);">';
-                echo '<span class="food-badge">' . htmlspecialchars($food['type']) . '</span>';
-                echo '</div>';
-                echo '<div class="food-content">';
-                echo '<h3>' . htmlspecialchars($food['name']) . '</h3>';
-                echo '<p>' . htmlspecialchars($food['description']) . '</p>';
-                echo '<div class="food-details">';
-                echo '<span class="price-indicator">' . htmlspecialchars($food['price']) . '</span>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-            }
-            echo '</div>';
-            echo '</section>';
-        }
-        ?>
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="locationFilter">Location</label>
+                    <select id="locationFilter" class="filter-select">
+                        <option value="all">All Locations</option>
+                        <option value="Nairobi">Nairobi</option>
+                        <option value="Mombasa">Mombasa</option>
+                        <option value="Diani Beach">Diani Beach</option>
+                        <option value="Malindi">Malindi</option>
+                        <option value="Nakuru">Nakuru</option>
+                        <option value="Kisumu">Kisumu</option>
+                        <option value="Lamu">Lamu</option>
+                    </select>
+                </div>
 
-        <div class="highlight-box">
-            <h3>🌟 Must-Try Food Experiences in Kenya</h3>
-            <ul>
-                <li><strong>Nyama Choma Joint:</strong> Visit a local barbecue spot and experience Kenya's meat culture with roasted goat</li>
-                <li><strong>Coastal Seafood:</strong> Enjoy fresh catch of the day in Mombasa or Malindi with coconut-based curries</li>
-                <li><strong>Street Food Tour:</strong> Sample mandazi, bhajia, and mishkaki from Nairobi's vibrant street vendors</li>
-                <li><strong>Traditional Feast:</strong> Experience a home-cooked meal with ugali, sukuma wiki, and stew</li>
-                <li><strong>Swahili Cuisine:</strong> Explore the unique flavors of pilau, biriani, and kuku paka on the coast</li>
-            </ul>
-        </div>
+                <div class="filter-group">
+                    <label for="cuisineFilter">Cuisine Type</label>
+                    <select id="cuisineFilter" class="filter-select">
+                        <option value="all">All Cuisines</option>
+                        <option value="Kenyan">Kenyan</option>
+                        <option value="Indian">Indian</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Seafood">Seafood</option>
+                        <option value="Asian">Asian</option>
+                        <option value="Continental">Continental</option>
+                        <option value="BBQ">BBQ & Grill</option>
+                    </select>
+                </div>
 
-        <div class="drinks-section">
-            <div class="category-header">
-                <h2>🍺 Kenyan Drinks & Beverages</h2>
-                <p>Quench your thirst with Kenya's diverse drink culture</p>
-            </div>
+                <div class="filter-group">
+                    <label for="priceFilter">Price Range</label>
+                    <select id="priceFilter" class="filter-select">
+                        <option value="all">All Prices</option>
+                        <option value="$">$ - Budget Friendly</option>
+                        <option value="$$">$$ - Moderate</option>
+                        <option value="$$$">$$$ - Fine Dining</option>
+                    </select>
+                </div>
 
-            <div class="drinks-grid">
-                <?php
-                $drinks = [
-                    [
-                        'name' => 'Chai (Kenyan Tea)',
-                        'description' => 'The national drink! Sweet, milky tea boiled with tea leaves, milk, and lots of sugar. Often spiced with ginger or cardamom. Enjoyed throughout the day with mandazi or bread.',
-                    ],
-                    [
-                        'name' => 'Kenyan Coffee',
-                        'description' => 'World-renowned coffee grown in the highlands. Rich, bold flavor with fruity and wine-like notes. Often exported, but best enjoyed fresh in Kenya.',
-                    ],
-                    [
-                        'name' => 'Tusker Beer',
-                        'description' => 'Kenya\'s iconic beer brand since 1922. A crisp 4.2% ABV pale lager perfect for hot days. Slogan: "Bia yangu, Nchi yangu" (My beer, My country). Available in Lager, Malt, Lite, and Cider varieties.',
-                    ],
-                    [
-                        'name' => 'Dawa',
-                        'description' => 'Popular cocktail meaning "medicine" in Swahili. Made with vodka, honey, lime, and crushed ice. Served with a wooden stirring stick called a muddler.',
-                    ],
-                    [
-                        'name' => 'Madafu (Coconut Water)',
-                        'description' => 'Fresh coconut water straight from young green coconuts. Naturally sweet and hydrating, found along the coast and in Nairobi markets.',
-                    ],
-                    [
-                        'name' => 'Fresh Fruit Juices',
-                        'description' => 'Kenya\'s tropical fruits make incredible juices: passion fruit, mango, pineapple, watermelon, and tamarind. Freshly squeezed and incredibly refreshing.',
-                    ],
-                    [
-                        'name' => 'White Cap & Senator',
-                        'description' => 'Other popular Kenyan beers. White Cap is crisp and light; Senator is an affordable quality lager made with locally sourced ingredients.',
-                    ],
-                    [
-                        'name' => 'Muratina',
-                        'description' => 'Traditional honey wine made by Kikuyu people from honey, sugar cane, and muratina fruit. Strong alcoholic beverage for special occasions.',
-                    ],
-                    [
-                        'name' => 'Tangawizi (Ginger Beer)',
-                        'description' => 'Spicy ginger ale with strong ginger flavor. Popular non-alcoholic drink made from fresh ginger, sugar, and lemon. Refreshing and zingy.',
-                    ],
-                    [
-                        'name' => 'Stoney Tangawizi',
-                        'description' => 'Commercial ginger-flavored soda with a strong, spicy kick. One of Kenya\'s most popular soft drinks, perfect with grilled meat.',
-                    ]
-                ];
-
-                foreach ($drinks as $drink) {
-                    echo '<div class="drink-card">';
-                    echo '<h4>' . htmlspecialchars($drink['name']) . '</h4>';
-                    echo '<p>' . htmlspecialchars($drink['description']) . '</p>';
-                    echo '</div>';
-                }
-                ?>
+                <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
 
-        <div class="highlight-box" style="margin-top: 3rem;">
-            <h3>💡 Food & Drink Tips for Visitors</h3>
-            <ul>
-                <li><strong>Eat with your hands:</strong> Ugali is traditionally eaten by hand - roll it into a ball and use it to scoop stews</li>
-                <li><strong>Try street food:</strong> Some of Kenya's best food comes from street vendors - look for busy stalls</li>
-                <li><strong>Drink bottled water:</strong> Stick to bottled or filtered water to avoid stomach issues</li>
-                <li><strong>Price guide:</strong> $ = Under 500 KES, $$ = 500-1000 KES, $$$ = Over 1000 KES</li>
-                <li><strong>Nyama Choma etiquette:</strong> It's typically ordered by weight (quarter, half, or full kilo)</li>
-                <li><strong>Coastal vs Inland:</strong> Coastal cuisine is spicier with more coconut; inland is heartier and meat-focused</li>
-                <li><strong>Chai culture:</strong> Refusing chai can be seen as rude - embrace the sweet tea tradition!</li>
-                <li><strong>Tusker varieties:</strong> Tusker Lager is the classic, Tusker Malt is richer, Tusker Lite is low-carb</li>
-            </ul>
+        <div class="results-count" id="resultsCount"></div>
+
+        <!-- Restaurant Grid -->
+        <div class="restaurant-grid" id="restaurantGrid"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="restaurantModal" class="modal" onclick="closeModalOutside(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-header" id="modalHeader"></div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
+
+    <script>
+        const restaurants = [
+            {
+                id: 1,
+                name: "Carnivore Restaurant",
+                location: "Nairobi",
+                cuisine: ["BBQ", "Kenyan"],
+                price: "$$$",
+                image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800",
+                description: "Legendary all-you-can-eat meat experience featuring exotic game meats and traditional Kenyan barbecue.",
+                specialty: "Nyama Choma (grilled meat)",
+                hours: "12:00 PM - 11:00 PM Daily",
+                phone: "+254 20 6009333",
+                highlights: [
+                    "Famous for exotic game meats",
+                    "All-you-can-eat BBQ experience",
+                    "Live entertainment",
+                    "Large outdoor seating area"
+                ]
+            },
+            {
+                id: 2,
+                name: "Tamarind Restaurant",
+                location: "Mombasa",
+                cuisine: ["Seafood", "Continental"],
+                price: "$$$",
+                image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800",
+                description: "Award-winning seafood restaurant with stunning views of the Indian Ocean and Mombasa Old Town.",
+                specialty: "Fresh Lobster & Seafood Platters",
+                hours: "12:00 PM - 11:00 PM Daily",
+                phone: "+254 41 2474600",
+                highlights: [
+                    "Ocean-front dining",
+                    "Fresh daily seafood",
+                    "Romantic sunset views",
+                    "Award-winning wine list"
+                ]
+            },
+            {
+                id: 3,
+                name: "Mama Oliech",
+                location: "Nairobi",
+                cuisine: ["Kenyan"],
+                price: "$",
+                image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800",
+                description: "Authentic Kenyan cuisine serving the best fish and ugali in Nairobi since 1974.",
+                specialty: "Fried Fish with Ugali",
+                hours: "10:00 AM - 10:00 PM Daily",
+                phone: "+254 722 518870",
+                highlights: [
+                    "Legendary family-run restaurant",
+                    "Best fried fish in Nairobi",
+                    "Traditional Kenyan atmosphere",
+                    "Budget-friendly"
+                ]
+            },
+            {
+                id: 4,
+                name: "Ali Barbour's Cave Restaurant",
+                location: "Diani Beach",
+                cuisine: ["Seafood", "Continental"],
+                price: "$$$",
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800",
+                description: "Unique dining experience in a natural coral cave, 10 meters underground with open-air roof.",
+                specialty: "Seafood in a Cave",
+                hours: "6:30 PM - 10:30 PM (Dinner only)",
+                phone: "+254 40 3202033",
+                highlights: [
+                    "Dining in a natural cave",
+                    "Romantic candlelit atmosphere",
+                    "Fresh seafood specialties",
+                    "Unique architectural wonder"
+                ]
+            },
+            {
+                id: 5,
+                name: "Haandi Restaurant",
+                location: "Nairobi",
+                cuisine: ["Indian"],
+                price: "$$",
+                image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
+                description: "Premium Indian cuisine with authentic North Indian flavors and elegant ambiance.",
+                specialty: "Tandoori & Curries",
+                hours: "12:00 PM - 3:00 PM, 6:30 PM - 11:00 PM",
+                phone: "+254 20 4451861",
+                highlights: [
+                    "Authentic Indian cuisine",
+                    "Clay oven specialties",
+                    "Extensive vegetarian options",
+                    "Elegant dining atmosphere"
+                ]
+            },
+            {
+                id: 6,
+                name: "The Talisman",
+                location: "Nairobi",
+                cuisine: ["Continental", "Asian"],
+                price: "$$$",
+                image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800",
+                description: "Chic garden restaurant offering innovative fusion cuisine in a beautiful outdoor setting.",
+                specialty: "Fusion Cuisine",
+                hours: "12:00 PM - 11:00 PM Daily",
+                phone: "+254 20 3860333",
+                highlights: [
+                    "Beautiful garden setting",
+                    "Creative fusion dishes",
+                    "Excellent cocktail menu",
+                    "Romantic ambiance"
+                ]
+            },
+            {
+                id: 7,
+                name: "Forodhani Gardens",
+                location: "Lamu",
+                cuisine: ["Seafood", "Kenyan"],
+                price: "$",
+                image: "https://images.unsplash.com/photo-1580959375944-0b6c33780a0c?w=800",
+                description: "Waterfront dining with fresh seafood and traditional Swahili dishes at sunset.",
+                specialty: "Grilled Seafood & Swahili Dishes",
+                hours: "6:00 PM - 11:00 PM Daily",
+                phone: "+254 722 456789",
+                highlights: [
+                    "Waterfront location",
+                    "Fresh daily catch",
+                    "Sunset dining",
+                    "Traditional Swahili cooking"
+                ]
+            },
+            {
+                id: 8,
+                name: "Nyama Mama",
+                location: "Nairobi",
+                cuisine: ["Kenyan"],
+                price: "$$",
+                image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
+                description: "Modern take on traditional Kenyan cuisine in a vibrant, contemporary setting.",
+                specialty: "Contemporary Kenyan Cuisine",
+                hours: "11:00 AM - 11:00 PM Daily",
+                phone: "+254 707 222333",
+                highlights: [
+                    "Modern Kenyan fusion",
+                    "Trendy atmosphere",
+                    "Creative cocktails",
+                    "Instagram-worthy presentations"
+                ]
+            },
+            {
+                id: 9,
+                name: "Tamambo Karen Blixen",
+                location: "Nairobi",
+                cuisine: ["Continental", "Kenyan"],
+                price: "$$$",
+                image: "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800",
+                description: "Elegant dining in a colonial-style house with beautiful gardens and exceptional service.",
+                specialty: "Contemporary Continental",
+                hours: "12:00 PM - 10:30 PM Daily",
+                phone: "+254 20 8562198",
+                highlights: [
+                    "Historic colonial setting",
+                    "Beautiful gardens",
+                    "Fine dining experience",
+                    "Private dining rooms"
+                ]
+            },
+            {
+                id: 10,
+                name: "Forty Thieves Beach Bar",
+                location: "Diani Beach",
+                cuisine: ["Seafood", "BBQ"],
+                price: "$$",
+                image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800",
+                description: "Beachfront bar and restaurant with fresh seafood and spectacular ocean views.",
+                specialty: "Seafood BBQ",
+                hours: "11:00 AM - 11:00 PM Daily",
+                phone: "+254 726 665544",
+                highlights: [
+                    "Right on the beach",
+                    "Fresh seafood BBQ",
+                    "Tropical cocktails",
+                    "Sunset views"
+                ]
+            },
+            {
+                id: 11,
+                name: "Misono",
+                location: "Nairobi",
+                cuisine: ["Asian"],
+                price: "$$",
+                image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800",
+                description: "Premier Japanese restaurant offering authentic sushi, teppanyaki, and Asian fusion.",
+                specialty: "Sushi & Teppanyaki",
+                hours: "12:00 PM - 2:30 PM, 6:30 PM - 10:30 PM",
+                phone: "+254 20 2719222",
+                highlights: [
+                    "Authentic Japanese cuisine",
+                    "Live teppanyaki stations",
+                    "Fresh sushi bar",
+                    "Elegant ambiance"
+                ]
+            },
+            {
+                id: 12,
+                name: "Tilapia Restaurant",
+                location: "Kisumu",
+                cuisine: ["Kenyan", "Seafood"],
+                price: "$",
+                image: "https://images.unsplash.com/photo-1535140728325-a4d3707eee61?w=800",
+                description: "Lakeside restaurant famous for fresh tilapia from Lake Victoria.",
+                specialty: "Fresh Tilapia",
+                hours: "10:00 AM - 10:00 PM Daily",
+                phone: "+254 57 2021355",
+                highlights: [
+                    "Lake Victoria views",
+                    "Fresh fish daily",
+                    "Traditional preparation",
+                    "Local favorite"
+                ]
+            }
+        ];
+
+        let filteredRestaurants = [...restaurants];
+
+        function renderRestaurants(restaurantsToRender) {
+            const grid = document.getElementById('restaurantGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            if (restaurantsToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results" style="grid-column: 1/-1;">
+                        <h2>No restaurants found</h2>
+                        <p>Try adjusting your filters to see more results</p>
+                    </div>
+                `;
+                resultsCount.textContent = '';
+                return;
+            }
+
+            resultsCount.textContent = `Showing ${restaurantsToRender.length} restaurant${restaurantsToRender.length !== 1 ? 's' : ''}`;
+            
+            grid.innerHTML = restaurantsToRender.map(restaurant => `
+                <div class="restaurant-card" onclick="openModal(${restaurant.id})">
+                    <div class="restaurant-image" style="background-image: url('${restaurant.image}')">
+                        <div class="restaurant-badge">${restaurant.price}</div>
+                    </div>
+                    <div class="restaurant-content">
+                        <div class="restaurant-header">
+                            <h3 class="restaurant-name">${restaurant.name}</h3>
+                            <p class="restaurant-location">${restaurant.location}</p>
+                        </div>
+                        <div class="restaurant-cuisine">
+                            ${restaurant.cuisine.map(c => `<span class="cuisine-tag">${c}</span>`).join('')}
+                        </div>
+                        <p class="restaurant-description">${restaurant.description}</p>
+                        <div class="restaurant-details">
+                            <span class="price-range">${restaurant.price}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const location = document.getElementById('locationFilter').value;
+            const cuisine = document.getElementById('cuisineFilter').value;
+            const price = document.getElementById('priceFilter').value;
+
+            filteredRestaurants = restaurants.filter(restaurant => {
+                const matchLocation = location === 'all' || restaurant.location === location;
+                const matchCuisine = cuisine === 'all' || restaurant.cuisine.includes(cuisine);
+                const matchPrice = price === 'all' || restaurant.price === price;
+                
+                return matchLocation && matchCuisine && matchPrice;
+            });
+
+            renderRestaurants(filteredRestaurants);
+        }
+
+        function openModal(id) {
+            const restaurant = restaurants.find(r => r.id === id);
+            const modal = document.getElementById('restaurantModal');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalBody = document.getElementById('modalBody');
+
+            modalHeader.style.backgroundImage = `url('${restaurant.image}')`;
+
+            modalBody.innerHTML = `
+                <h2 class="modal-title">${restaurant.name}</h2>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>📍 Location</strong>
+                        <span>${restaurant.location}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>💰 Price Range</strong>
+                        <span>${restaurant.price}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>📞 Phone</strong>
+                        <span>${restaurant.phone}</span>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>About</h3>
+                    <p>${restaurant.description}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Specialty</h3>
+                    <p>${restaurant.specialty}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Cuisine</h3>
+                    <p>${restaurant.cuisine.join(', ')}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Opening Hours</h3>
+                    <p>${restaurant.hours}</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Highlights</h3>
+                    <ul>
+                        ${restaurant.highlights.map(h => `<li>${h}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('restaurantModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOutside(event) {
+            if (event.target.id === 'restaurantModal') {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initial render
+        renderRestaurants(restaurants);
+    </script>
 </body>
 </html>

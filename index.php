@@ -125,161 +125,65 @@ include 'header.php';
         .btn-search:hover {
             background: #0F445F;
         }
-
-        /* Categories Section */
-        .categories-section {
+       
+        /* Destinations Section */
+        .destinations {
             padding: 6rem 5%;
-            background: white;
+            background: #F3FAFB;
         }
-
         .section-header {
             text-align: center;
             margin-bottom: 4rem;
         }
-
-        .section-header h2 {
-            color: #0F445F;q
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-
-        .section-header p {
-            color: #11989B;
-            font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .category-card {
-           
-            padding: 2rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid #F3FAFB;
-            position: relative;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            text-decoration: none;
-            color: inherit;
-            font-size: 0.95rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            line-height: 1.6;
-            box-sizing: border-box;
-            overflow: hidden;
-            background: #fff;
-            margin-left: 10px;
-
-        }
-
-        .category-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background: #11989B;
-            transition: width 0.3s;
-        }
-
-        .category-card:hover::after {
-            width: 80%;
-        }
-
-        .category-card:hover {
-            background: #F3FAFB;
-        }
-
-        .category-card h3 {
-            color: #0F445F;
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .category-card p {
-            color: #11989B;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-
-      /* Destinations Section */
-        .destinations {
-            padding: 4rem 2rem;
-            background: #fff;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
         .section-header h2 {
             font-size: 2.5rem;
-            color: #2c3643;
             margin-bottom: 0.5rem;
+            color: #0F445F;
         }
-
         .section-header p {
-            color: #67747c;
+            color: #11989B;
             font-size: 1.1rem;
         }
 
-        .dest-grid {
+         .dest-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+            max-width: 1400px;
+            padding: 0 10px;
         }
 
         .dest-card {
-            position: relative;
-            border-radius: 8px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            height: 300px;
         }
 
         .dest-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
         }
 
         .dest-image {
-            height: 300px;
+            width: 100%;
+            height: 100%;
+            position: relative;
             background-size: cover;
             background-position: center;
-            position: relative;
         }
 
-        .dest-image::after {
+        .dest-image::before {
             content: '';
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            height: 50%;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
         }
 
         .dest-info {
@@ -287,83 +191,319 @@ include 'header.php';
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 1.5rem;
+            padding: 25px;
             color: white;
             z-index: 1;
         }
 
         .dest-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
+            font-size: 1.8em;
+            margin-bottom: 8px;
         }
 
         .dest-info p {
-            font-size: 0.9rem;
-            opacity: 0.95;
+            font-size: 1em;
+            opacity: 0.9;
         }
 
-        .view-all {
-            text-align: center;
-            margin-top: 2rem;
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s ease;
         }
 
-        .view-all a {
-            color: #297CBB;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .view-all a:hover {
-            text-decoration: underline;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        /* CTA Guide Section */
-.guide-cta {
-    width: 100%;
-    padding: 4rem 5%;
-    background: linear-gradient(135deg, #0F445F, #11989B);
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%);
+        }
+
+        .modal-title {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            color: #0F445F;
+            font-size: 1.5em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+        }
+
+        .modal-section p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .modal-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #0F445F;
+            font-weight: bold;
+        }
+.dest-guide{
+    position: relative;
+    min-height: 360px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 60px;
-}
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+  }
 
-.guide-cta-container {
-    text-align: center;
-    max-width: 700px;
-    color: #F3FAFB;
-}
+  /* background image — swap URL for your preferred hero image */
+  .dest-guide::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&h=900&fit=crop");
+    background-size: cover;
+    background-position: center;
+    filter: contrast(0.95) saturate(1.05);
+    transform-origin: center;
+    z-index: 0;
+  }
 
-.guide-cta-container h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-}
+  .dest-guide__overlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55));
+    z-index: 1;
+  }
 
-.guide-cta-container p {
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-}
+  .dest-guide__content{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--max-width);
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 30px;
+    align-items: center;
+  }
 
-.guide-btn {
-    padding: 0.9rem 2rem;
+  /* text column */
+  .dest-guide__text{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    padding: 28px;
+    border-radius: 12px;
+    backdrop-filter: blur(6px) saturate(1.05);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+  }
+
+  .dest-guide__text h2{
+    font-size: 1.9rem;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .dest-guide__text .lead{
+    color: var(--muted);
+    margin-bottom: 16px;
     font-size: 1rem;
-    background: #fff;
-    color: #0F445F;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s ease;
+    max-width: 46ch;
+  }
+
+  .highlights{
+    list-style: none;
+    margin: 0 0 20px 0;
+    padding-left: 0;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .highlights li{
+    padding: 6px 0;
+  }
+
+  .cta-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
+  .btn-download{
+    display:inline-flex;
+    gap:10px;
+    align-items:center;
+    background: var(--accent);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
     font-weight: 600;
+    box-shadow: 0 8px 20px rgba(251,107,53,0.18);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .btn-download svg{ opacity: .95; }
+
+  .btn-download:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(251,107,53,0.22);
+  }
+
+  .btn-learn{
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    font-weight:600;
+    transition: background .12s ease, color .12s ease;
+  }
+
+  .btn-learn:hover{
+    background: rgba(255,255,255,0.04);
+    color: white;
+  }
+
+  /* right image card (decorative) */
+  .dest-guide__image{
+    height: 240px;
+    border-radius: 12px;
+    background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=600&fit=crop");
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+    border: 3px solid rgba(255,255,255,0.06);
+  }
+
+  /* responsive */
+  @media (max-width: 900px){
+    .dest-guide__content{
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+
+    .dest-guide__image{
+      height: 160px;
+      order: -1; /* image above text on small screens */
+      margin-bottom: 14px;
+    }
+  }
+
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+  }
 }
 
-.guide-btn:hover {
-    background: #F3FAFB;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(17,152,155,0.3);
-}
 
         /* Features Section */
+         
         .features-section {
             padding: 6rem 5%;
             background: white;
@@ -389,7 +529,7 @@ include 'header.php';
             border-color: #11989B;
             transform: translateY(-5px);
         }
-
+         .feature
         .feature-card h3 {
             color: #0F445F;
             margin-bottom: 1rem;
@@ -473,18 +613,18 @@ include 'header.php';
             <h1>Discover Kenya</h1>
             <p>From pristine beaches to wild savannahs, explore the beauty and diversity of Kenya</p>
             
-        <form action="destinations.php" method="get" class="search-field">
-    <label>Where To?</label>
-    <div class="search-input-wrapper">
-        <input type="text" name="location" placeholder="Search destinations, cities, or attractions" id="location">
-        <button class="btn-search" type="submit">Search</button>
-    </div>
+  <form action="results.php" method="get" class="search-field">
+  <label>Where To?</label>
+  <div class="search-input-wrapper">
+      <input type="text" name="q" placeholder="Search destinations, cities, or attractions" id="location">
+      <button class="btn-search" type="submit">Search</button>
+  </div>
 </form>
+
         </div>
     </section>
     
-    <!-- Destinations Section -->
-    <section id="destinations" class="destinations">
+ <section id="destinations" class="destinations">
         <div class="container">
             <div class="section-header">
                 <h2>Where to next?</h2>
@@ -492,8 +632,8 @@ include 'header.php';
             </div>
             
             <div class="dest-grid">
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/maasaimara.jpg'); background-size: cover; background-position: center;">
+                <div class="dest-card" onclick="openModal('maasai-mara')">
+                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800');">
                         <div class="dest-info">
                             <h3>Maasai Mara</h3>
                             <p>Witness the Great Migration and incredible wildlife</p>
@@ -501,8 +641,8 @@ include 'header.php';
                     </div>
                 </div>
                 
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/diani.jpg'); background-size: cover; background-position: center;" >
+                <div class="dest-card" onclick="openModal('diani-beach')">
+                    <div class="dest-image" style="background-image: url('images/diani.jpg');">
                         <div class="dest-info">
                             <h3>Diani Beach</h3>
                             <p>White sands and turquoise waters of the Indian Ocean</p>
@@ -510,8 +650,8 @@ include 'header.php';
                     </div>
                 </div>
                 
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/mtkenya.jpg'); background-size: cover; background-position: center;">
+                <div class="dest-card" onclick="openModal('mount-kenya')">
+                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=800');">
                         <div class="dest-info">
                             <h3>Mount Kenya</h3>
                             <p>Africa's second-highest peak with stunning glaciers</p>
@@ -519,8 +659,8 @@ include 'header.php';
                     </div>
                 </div>
                 
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/nairobi.jpg'); background-size: cover; background-position: center;">
+                <div class="dest-card" onclick="openModal('nairobi')">
+                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=800');">
                         <div class="dest-info">
                             <h3>Nairobi</h3>
                             <p>Vibrant capital blending urban energy and wildlife</p>
@@ -528,8 +668,8 @@ include 'header.php';
                     </div>
                 </div>
                 
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/lakenakuru.jpg'); background-size: cover; background-position: center;">
+                <div class="dest-card" onclick="openModal('lake-nakuru')">
+                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800');">
                         <div class="dest-info">
                             <h3>Lake Nakuru</h3>
                             <p>Home to millions of pink flamingos</p>
@@ -537,8 +677,8 @@ include 'header.php';
                     </div>
                 </div>
                 
-                <div class="dest-card">
-                    <div class="dest-image" style="background-image: url('images/lamu1.jpg'); background-size: cover; background-position: center;">
+                <div class="dest-card" onclick="openModal('lamu-island')">
+                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800');">
                         <div class="dest-info">
                             <h3>Lamu Island</h3>
                             <p>Ancient Swahili culture meets pristine beaches</p>
@@ -546,52 +686,42 @@ include 'header.php';
                     </div>
                 </div>
             </div>
-            
-            <div class="view-all">
-                <a href="#destinations">View all destinations →</a>
-            </div>
         </div>
     </section>
-<!-- Guide CTA Section -->
- <section class="guide-cta">
-    <div class="guide-cta-container">
-        <h2>Your Free Kenya Travel Guide</h2>
-        <p>Discover the best destinations, hidden gems, and travel tips all in one guide.</p>
-        <button onclick="location.href='DestinationGuide.pdf'" class="guide-btn">Download Guide</button>
+
+    <!-- Modal -->
+    <div id="destinationModal" class="modal" onclick="closeModalOutside(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-header" id="modalHeader">
+                <h2 class="modal-title" id="modalTitle"></h2>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
     </div>
-</section>
+<!-- Destination Guide -->
+<section class="dest-guide" aria-labelledby="guide-title">
+  <div class="dest-guide__overlay"></div>
 
+  <div class="dest-guide__content">
+    <div class="dest-guide__text">
+      <h2 id="guide-title">Kenya Coastal Pocket Guide</h2>
+      <p class="lead">Everything you need for a perfect coastal escape — beaches, eats, transport tips, and local experiences packed into one handy guide.</p>
+      <div class="cta-row">
+        <a class="btn-download" href="DestinationGuide.pdf" download aria-label="Download Kenya Coastal Pocket Guide (PDF)">
+          <!-- inline download icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M5 20h14v-2H5v2zm7-18L5.33 9h3.67v6h6V9h3.67L12 2z"/>
+          </svg>
+          <span>Download Guide (PDF)</span>
+        </a>
 
-<!-- Categories Section -->
-    <section class="categories-section">
-  <div class="section-header">
-    <h2>Explore by Experience</h2>
-    <p>Choose your perfect Kenyan adventure</p>
-  </div>
-  
-  <div class="categories-grid">
-    <a href="beach_coast.php" class="category-card">
-      <h3>Beach & Coast</h3>
-      <p>White sand beaches, crystal waters, and coastal culture along the Indian Ocean</p>
-    </a>
+    </div>
+    </div>
 
-    <a href="wildlife.php" class="category-card">
-      <h3>Wildlife Safari</h3>
-      <p>Witness the Big Five and incredible wildlife migrations in world-class national parks</p>
-    </a>
-
-    <a href="mountains_hiking.php" class="category-card">
-      <h3>Mountains & Hiking</h3>
-      <p>Conquer peaks and explore lush highland landscapes from Mount Kenya to the Rift Valley</p>
-    </a>
-
-    <a href="culture_heritage.php" class="category-card">
-      <h3>Culture & Heritage</h3>
-      <p>Experience rich traditions, historical landmarks, and vibrant local communities</p>
-    </a>
+    <div class="dest-guide__image" aria-hidden="true"></div>
   </div>
 </section>
-
        
     <!-- Features Section -->
     <section class="features-section">
@@ -648,6 +778,161 @@ include 'header.php';
         document.getElementById('location').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchDestination();
+            }
+        });
+    </script>
+    
+    <script>
+        const destinationsData = {
+            'maasai-mara': {
+                title: 'Maasai Mara',
+                image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800',
+                description: 'The Maasai Mara National Reserve is one of Africa\'s greatest wildlife reserves. Known for the annual Great Migration, it offers unparalleled game viewing opportunities.',
+                whatToDo: [
+                    'Witness the Great Migration (July to October)',
+                    'Hot air balloon safaris at sunrise',
+                    'Game drives to spot the Big Five',
+                    'Visit traditional Maasai villages',
+                    'Bird watching with over 470 species',
+                    'Bush walks and nature trails'
+                ],
+                where: 'Located in southwestern Kenya, approximately 270km from Nairobi. Accessible by road (5-6 hours) or domestic flights to multiple airstrips.',
+                bestTime: 'July to October for the Great Migration, though wildlife viewing is excellent year-round. Dry season (June to October) offers the best game viewing.'
+            },
+            'diani-beach': {
+                title: 'Diani Beach',
+                image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',
+                description: 'Diani Beach is a pristine stretch of white sandy beach along the Indian Ocean coast, consistently ranked among Africa\'s best beaches.',
+                whatToDo: [
+                    'Snorkeling and diving in coral reefs',
+                    'Kite surfing and water sports',
+                    'Visit the Colobus Conservation Center',
+                    'Explore Shimba Hills National Reserve',
+                    'Dhow sailing at sunset',
+                    'Deep-sea fishing',
+                    'Relax at world-class beach resorts'
+                ],
+                where: 'Located 30km south of Mombasa on Kenya\'s south coast. Accessible via Moi International Airport in Mombasa or by road from Nairobi (8-9 hours).',
+                bestTime: 'December to March and July to October for dry weather and calm seas. Perfect beach weather year-round.'
+            },
+            'mount-kenya': {
+                title: 'Mount Kenya',
+                image: 'https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=800',
+                description: 'Mount Kenya is Africa\'s second-highest mountain and a UNESCO World Heritage Site, featuring stunning glaciers, alpine vegetation, and diverse ecosystems.',
+                whatToDo: [
+                    'Summit trekking (Point Lenana - 4,985m)',
+                    'Rock climbing and mountaineering',
+                    'Wildlife viewing in the national park',
+                    'Forest walks and bird watching',
+                    'Visit the mountain\'s unique alpine zones',
+                    'Photography of glaciers and peaks',
+                    'Cultural tours to local communities'
+                ],
+                where: 'Located in central Kenya, about 150km north of Nairobi. Multiple access points including Naro Moru, Sirimon, and Chogoria routes.',
+                bestTime: 'January to February and August to September for the clearest weather. Avoid April-May and November rainy seasons.'
+            },
+            'nairobi': {
+                title: 'Nairobi',
+                image: 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=800',
+                description: 'Kenya\'s vibrant capital city offers a unique blend of urban sophistication, cultural attractions, and remarkable wildlife experiences within city limits.',
+                whatToDo: [
+                    'Visit Nairobi National Park - wildlife with city skyline',
+                    'Giraffe Centre - feed Rothschild giraffes',
+                    'David Sheldrick Wildlife Trust - baby elephants',
+                    'Karen Blixen Museum',
+                    'Bomas of Kenya for cultural performances',
+                    'Nairobi National Museum',
+                    'Explore vibrant markets and restaurants',
+                    'Karura Forest for hiking and cycling'
+                ],
+                where: 'Kenya\'s capital city, served by Jomo Kenyatta International Airport. Central location makes it ideal as a starting point for safaris.',
+                bestTime: 'Year-round destination. June to September and December to March offer the most pleasant weather.'
+            },
+            'lake-nakuru': {
+                title: 'Lake Nakuru',
+                image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800',
+                description: 'Lake Nakuru National Park is famous for its massive flocks of flamingos that turn the lake\'s shores pink, along with excellent rhino viewing.',
+                whatToDo: [
+                    'Flamingo watching (seasonal, numbers vary)',
+                    'Black and white rhino spotting',
+                    'Game drives to see lions and leopards',
+                    'Bird watching - over 450 species',
+                    'Visit Baboon Cliff viewpoint',
+                    'Explore Makalia Falls',
+                    'Photography of wildlife and landscapes'
+                ],
+                where: 'Located in the Rift Valley, about 160km northwest of Nairobi. Easily accessible as a day trip or weekend getaway from Nairobi.',
+                bestTime: 'June to March for best flamingo viewing. Dry seasons (July-October and January-March) offer excellent wildlife viewing.'
+            },
+            'lamu-island': {
+                title: 'Lamu Island',
+                image: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800',
+                description: 'Lamu is a UNESCO World Heritage Site and Kenya\'s oldest living town, preserving centuries of Swahili culture in its narrow streets and ancient buildings.',
+                whatToDo: [
+                    'Explore Lamu Old Town\'s narrow streets',
+                    'Visit historic mosques and museums',
+                    'Traditional dhow sailing',
+                    'Relax on pristine Shela Beach',
+                    'Experience Swahili culture and cuisine',
+                    'Snorkeling and diving excursions',
+                    'Visit nearby Manda Island',
+                    'Attend the annual Lamu Cultural Festival'
+                ],
+                where: 'Located off Kenya\'s northern coast. Accessible by domestic flights to Manda Airport or boat from the mainland. No cars on the island - transportation by donkey or foot.',
+                bestTime: 'July to March for dry weather. Avoid April-May rainy season. Visit in November for the Lamu Cultural Festival.'
+            }
+        };
+
+        function openModal(destination) {
+            const data = destinationsData[destination];
+            const modal = document.getElementById('destinationModal');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalHeader.style.backgroundImage = `url('${data.image}')`;
+            modalTitle.textContent = data.title;
+
+            modalBody.innerHTML = `
+                <div class="modal-section">
+                    <h3>Overview</h3>
+                    <p>${data.description}</p>
+                </div>
+                <div class="modal-section">
+                    <h3>What to Do</h3>
+                    <ul>
+                        ${data.whatToDo.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="modal-section">
+                    <h3>How to Get There</h3>
+                    <p>${data.where}</p>
+                </div>
+                <div class="modal-section">
+                    <h3>Best Time to Visit</h3>
+                    <p>${data.bestTime}</p>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('destinationModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeModalOutside(event) {
+            if (event.target.id === 'destinationModal') {
+                closeModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
             }
         });
     </script>

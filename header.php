@@ -7,8 +7,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
 <style>
         /* Navigation */
         nav {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1rem 5%;
+           padding: 1rem 5%;
             position: relative;
             width: 100%;
             height: 90px;
@@ -98,7 +97,7 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
             display: none;
             position: absolute;
             background-color: #f9f9f9;
-            min-width: 160px;
+            min-width: 180px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
             border-radius: 6px;
@@ -133,11 +132,12 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
     <a href="#">Experiences ▾</a>
     <div class="dropdown-content">
         <a href="foodanddrink.php">Food & Drink</a>
-        <a href="adventures.php">Adventure</a>
-        <a href="beach_coast.php">Beach & Watersports</a>
-        <a href="culture.php">Culture</a>
-        <a href="wildlife.php">Wildlife</a>
-    </div>
+        <a href="beach_coast.php">Beach & Coast</a>
+        <a href="wildlife.php">Wildlife & Safari</a>
+        <a href="culture_heritage.php">Culture & Heritage</a>
+        <a href="mountains_hiking.php">Mountains & Hiking</a>
+
+        </div>
 </div>
 <a href="stories.php">Stories</a>
                 <a href="about.php">About</a>

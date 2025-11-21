@@ -301,18 +301,6 @@
             color: #0077b6;
         }
 
-        footer {
-            background: #023047;
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 50px;
-        }
-
-        footer p {
-            margin: 5px 0;
-        }
-
         @media (max-width: 768px) {
             header h1 {
                 font-size: 2.5em;
@@ -430,12 +418,6 @@
             <div id="modal-body"></div>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2025 Kenya Coastal Destinations | Explore the Beauty of East Africa</p>
-        <p>Discover Paradise | Experience Culture | Create Memories</p>
-    </footer>
-
     <script>
         const destinationDetails = {
             diani: {
