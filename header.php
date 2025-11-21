@@ -140,8 +140,6 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
         </div>
 </div>
 <a href="stories.php">Stories</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
 
                 <?php if ($isLoggedIn): ?>
                     <!-- Logged in: show name instead of Log In -->

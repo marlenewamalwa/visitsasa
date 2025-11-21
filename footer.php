@@ -2,8 +2,8 @@
 <style>
    /* Footer */
         footer {
-            background: #142b44;
-            color: white;
+            background: #ffffffff;
+            color: #08212eff;
             padding: 3rem 2rem 1rem;
         }
 
@@ -75,10 +75,10 @@
                 <div class="footer-section">
                     <h4>About</h4>
                     <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Newsletter</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="about.php">About Us</a></li>
+                        <li><a href="contact.php">Contact</a></li>
+                        <li><a href="terms.php">Terms of Service</a></li>
+                        <li><a href="privacypolicy.php">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>

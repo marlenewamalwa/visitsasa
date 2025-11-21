@@ -1,3 +1,4 @@
+<?php include 'header.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -19,7 +20,6 @@
 
 .wrap{max-width:1100px;margin:36px auto;padding:24px}
 
-header{display:flex;gap:16px;align-items:center;justify-content:space-between}
 
 h1{margin:0;font-size:1.6rem}
 
@@ -45,7 +45,7 @@ input[type="search"]{
   padding:6px 10px;
   border-radius:999px;
   background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.02);
+  border:2px solid rgba(47, 46, 46, 0.02);
   cursor:pointer;
   font-size:0.85rem;
 }
@@ -172,7 +172,7 @@ footer{margin-top:26px;color:#9aa4b2;font-size:0.9rem}
 <body>
   <div class="wrap">
     <header>
-      <div>
+      <div >
         <h1>Explore Kenya — Destinations by County</h1>
         <p class="lead">Filter by county, search for a place, and open a destination to see full attraction details.</p>
       </div>
