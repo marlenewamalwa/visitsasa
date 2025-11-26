@@ -17,7 +17,20 @@
             color: #1a4d2e;
             background: #e8f5e9;
         }
+        .back-btn {
+     /* Dark blue */
+  color: #0F445F;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
 
+.back-btn:hover {
+  background: #11989B;      /* Accent */
+}
         header {
             background: linear-gradient(rgba(27, 94, 32, 0.6), rgba(46, 125, 50, 0.7)), url('https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=1600&h=500&fit=crop');
             background-size: cover;
@@ -325,6 +338,7 @@
     </style>
 </head>
 <body>
+    <button class="back-btn" onclick="goBack()">← Back</button>
     <header>
         <h1>Kenya Mountains & Hiking</h1>
         <p>Conquer the Peaks of East Africa</p>
@@ -437,6 +451,9 @@
     </footer>
 
     <script>
+        function goBack() {
+            window.history.back();
+        }
         const destinationDetails = {
             'mount-kenya': {
                 title: 'Mount Kenya',

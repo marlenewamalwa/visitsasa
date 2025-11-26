@@ -17,7 +17,20 @@
             color: #2c3e50;
             background: #f0f8ff;
         }
+        .back-btn {
+     /* Dark blue */
+  color: #0F445F;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
 
+.back-btn:hover {
+  background: #11989B;      /* Accent */
+}
         header {
             background: linear-gradient(rgba(0, 119, 182, 0.7), rgba(0, 150, 199, 0.8)), url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&h=500&fit=crop');
             background-size: cover;
@@ -313,6 +326,7 @@
     </style>
 </head>
 <body>
+    <button class="back-btn" onclick="goBack()">← Back</button>
     <header>
         <h1>Kenya's Coastal Paradise</h1>
         <p>Discover the Magic of the Indian Ocean</p>
@@ -419,6 +433,9 @@
         </div>
     </div>
     <script>
+        function goBack() {
+            window.history.back();
+        }
         const destinationDetails = {
             diani: {
                 title: 'Diani Beach',

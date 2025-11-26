@@ -17,6 +17,21 @@
             color: #1a4d2e;
             background: #e8f5e9;
         }
+        .back-btn {
+     /* Dark blue */
+  color: #0F445F;
+  padding: 8px 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #11989B;      /* Accent */
+}
+
 
         header {
             background: linear-gradient(rgba(94, 27, 64, 0.6), rgba(46, 125, 50, 0.7)), url('images/lasagna.jpg');
@@ -441,6 +456,8 @@
     </style>
 </head>
 <body>
+    <button class="back-btn" onclick="goBack()">← Back</button>
+
 <header>
     <h1>Food & Drinks</h1>
     <p>Savour Kenyan Food</p>
@@ -508,6 +525,9 @@
     </div>
 
     <script>
+          function goBack() {
+        window.history.back();
+    }
         const restaurants = [
             {
                 id: 1,

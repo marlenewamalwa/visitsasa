@@ -1,4 +1,3 @@
-<?php include 'header.php'; ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,6 +16,20 @@
             background: #ffff;
             color: #0F445F;
         }
+.back-btn {
+ 
+  color: #0F445F;
+  padding: 10px 18px;
+  border: none;
+ font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-bottom: 12px;
+}
+
+.back-btn:hover {
+  background: #11989B;      /* Accent */
+}
 
 .wrap{max-width:1100px;margin:36px auto;padding:24px}
 
@@ -45,7 +58,7 @@ input[type="search"]{
   padding:6px 10px;
   border-radius:999px;
   background:rgba(255,255,255,0.04);
-  border:2px solid rgba(47, 46, 46, 0.02);
+  border:2px solid hsla(219, 75%, 37%, 0.02);
   cursor:pointer;
   font-size:0.85rem;
 }
@@ -170,9 +183,11 @@ footer{margin-top:26px;color:#9aa4b2;font-size:0.9rem}
   </style>
 </head>
 <body>
+  <?php include 'header.php'; ?>
   <div class="wrap">
     <header>
       <div >
+        <button class="back-btn" onclick="goBack()">← Back</button>
         <h1>Explore Kenya — Destinations by County</h1>
         <p class="lead">Filter by county, search for a place, and open a destination to see full attraction details.</p>
       </div>
@@ -183,7 +198,7 @@ footer{margin-top:26px;color:#9aa4b2;font-size:0.9rem}
       <select id="countySelect">
         <option value="all">All counties</option>
       </select>
-      <input type="search" id="search" placeholder="Search destinations or attractions..." />
+      <input type="search" id="search" placeholder="Search destinations orYUIL; attractions..." />
       <div style="margin-left:auto" class="chips" id="countyChips"></div>
     </div>
 
@@ -231,6 +246,10 @@ footer{margin-top:26px;color:#9aa4b2;font-size:0.9rem}
   </div>
 
   <script>
+    function goBack() {
+        window.history.back();
+    }
+    
     // --- Data: destinations array. Add more items here for other counties ---
     const counties = [
       "Nairobi","Mombasa","Kisumu","Nakuru","Narok","Kajiado","Kericho","Baringo","Kiambu","Kakamega",
@@ -242,31 +261,31 @@ footer{margin-top:26px;color:#9aa4b2;font-size:0.9rem}
 
     const destinations = [
       {
-        id:1, title: 'Nairobi National Park', county: 'Nairobi', img: 'https://images.unsplash.com/photo-1531915093573-0dfbc3b6c6b1?auto=format&fit=crop&w=1200&q=60',
+        id:1, title: 'Nairobi National Park', county: 'Nairobi', img: 'images/nrbnational.jpg',
         summary: 'A fenced wildlife park bordering Nairobi city — quick safari with lions, rhinos and giraffes against a skyline backdrop.',
         attractions: ['Big cats (lions)', 'Rhino sanctuary', 'Giraffes & zebras', 'Safari walks'],
         best: 'June - October (dry season)', getThere: 'Short drive from central Nairobi; or use domestic flights to Wilson Airport + transfer', contact: 'https://www.kws.go.ke', type: 'National park'
       },
       {
-        id:2, title: 'Diani Beach', county: 'Kwale', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=60',
+        id:2, title: 'Diani Beach', county: 'Kwale', img: 'images/diani.jpg',
         summary: 'White-sand beaches, coral reefs and water sports. A top seaside escape near Mombasa.',
         attractions: ['Coral reefs & snorkeling','Kite surfing','Colobus Conservation visits'],
         best: 'November - March & July - October', getThere: 'Fly to Ukunda or Mombasa then short transfer', contact: 'https://visitdiani.com', type: 'Beach & marine'
       },
       {
-        id:3, title: 'Maasai Mara National Reserve', county: 'Narok', img: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=60',
+        id:3, title: 'Maasai Mara National Reserve', county: 'Narok', img: 'images/maasaimara.jpg',
         summary: 'World-famous reserve for the Great Migration, abundant big-game sightings and classic safari camps.',
         attractions: ['Great Migration (Jul-Oct)','Big Five game drives','Hot air balloon safaris'],
         best: 'July - October', getThere: 'Drive from Nairobi (~5-6 hours) or short charter flights to Mara airstrips', contact: 'https://www.maasaimarareserve.org', type: 'Wildlife reserve'
       },
       {
-        id:4, title: 'Lake Nakuru National Park', county: 'Nakuru', img: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=60',
+        id:4, title: 'Lake Nakuru National Park', county: 'Nakuru', img: 'images/lakenakuru.jpg',
         summary: 'Famous for flamingos (when water and algae levels allow), rhinos and scenic views of the Rift Valley escarpment.',
         attractions: ['Flamingo viewing (seasonal)','Rhino tracking','Birdwatching'],
         best: 'January - March & July - October', getThere: 'Drive from Nairobi (~2.5-3 hours) or fly to Nakuru airport', contact: 'https://www.kws.go.ke', type: 'National park'
       },
       {
-        id:5, title: 'Kisumu & Lake Victoria', county: 'Kisumu', img: 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1400&q=60',
+        id:5, title: 'Kisumu & Lake Victoria', county: 'Kisumu', img: 'images/Lake-Victoria-beach.jpg',
         summary: 'Largest lake in Africa — fishing communities, birdlife, and sunsets over water.',
         attractions: ['Dunga Hill fishing village','Cultural museums','Birdwatching on islands'],
         best: 'June - September', getThere: 'Fly to Kisumu or drive from Nakuru/Nairobi', contact: 'https://visitkisumu.com', type: 'Lake & culture'

@@ -467,7 +467,7 @@ include 'header.php';
   .dest-guide__image{
     height: 240px;
     border-radius: 12px;
-    background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=600&fit=crop");
+    background-image: url("images/guide.png");
     background-size: cover;
     background-position: center;
     box-shadow: 0 10px 30px rgba(2,6,23,0.45);
@@ -705,8 +705,8 @@ include 'header.php';
 
   <div class="dest-guide__content">
     <div class="dest-guide__text">
-      <h2 id="guide-title">Kenya Coastal Pocket Guide</h2>
-      <p class="lead">Everything you need for a perfect coastal escape — beaches, eats, transport tips, and local experiences packed into one handy guide.</p>
+      <h2 id="guide-title">Unveiling Kenya's Coastal Gems:</h2>
+      <p class="lead">A Destination Guide by Visitsasa</p>
       <div class="cta-row">
         <a class="btn-download" href="DestinationGuide.pdf" download aria-label="Download Kenya Coastal Pocket Guide (PDF)">
           <!-- inline download icon -->
@@ -801,7 +801,7 @@ include 'header.php';
             },
             'diani-beach': {
                 title: 'Diani Beach',
-                image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800',
+                image: 'images/diani.jpg',
                 description: 'Diani Beach is a pristine stretch of white sandy beach along the Indian Ocean coast, consistently ranked among Africa\'s best beaches.',
                 whatToDo: [
                     'Snorkeling and diving in coral reefs',
@@ -866,7 +866,7 @@ include 'header.php';
             },
             'lamu-island': {
                 title: 'Lamu Island',
-                image: 'https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800',
+                image: 'images/lamu1.jpg',
                 description: 'Lamu is a UNESCO World Heritage Site and Kenya\'s oldest living town, preserving centuries of Swahili culture in its narrow streets and ancient buildings.',
                 whatToDo: [
                     'Explore Lamu Old Town\'s narrow streets',
