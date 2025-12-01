@@ -155,27 +155,27 @@
         }
 
         #masai-mara .card-image {
-            background-image: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&h=400&fit=crop');
+            background-image: url('images/maasaimara.webp');
         }
 
         #amboseli .card-image {
-            background-image: url('https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=600&h=400&fit=crop');
+            background-image: url('images/amboseli.webp');
         }
 
         #tsavo .card-image {
-            background-image: url('https://images.unsplash.com/photo-1551969014-7d2c4cddf0b6?w=600&h=400&fit=crop');
+            background-image: url('images/tsavo.webp');
         }
 
         #samburu .card-image {
-            background-image: url('https://images.unsplash.com/photo-1535338454770-7a7330e3b3d8?w=600&h=400&fit=crop');
+            background-image: url('images/samburur.webp');
         }
 
         #lake-nakuru .card-image {
-            background-image: url('https://images.unsplash.com/photo-1551958219-acbc608c6377?w=600&h=400&fit=crop');
+            background-image: url('images/Lake-Nakurusss.jpg');
         }
 
         #hell-gate .card-image {
-            background-image: url('https://images.unsplash.com/photo-1547970810-dc1eac37d174?w=600&h=400&fit=crop');
+            background-image: url('images/hellsgate.webp');
         }
 
         .card-content {

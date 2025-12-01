@@ -155,27 +155,27 @@
         }
 
         #mount-kenya .card-image {
-            background-image: url('https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=600&h=400&fit=crop');
+            background-image: url('images/mountkenya.webp');
         }
 
         #aberdares .card-image {
-            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop');
+            background-image: url('images/Aberdare.jpeg');
         }
 
         #mount-longonot .card-image {
-            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop');
+            background-image: url('images/longonot.webp');
         }
 
         #mount-elgon .card-image {
-            background-image: url('https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=600&h=400&fit=crop');
+            background-image: url('images/mtelgon.webp');
         }
 
         #kakamega .card-image {
-            background-image: url('https://images.unsplash.com/photo-1511497584788-876760111969?w=600&h=400&fit=crop');
+            background-image: url('images/kakamega.webp');
         }
 
         #karura .card-image {
-            background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop');
+            background-image: url('images/karura.webp');
         }
 
         .card-content {
@@ -215,11 +215,10 @@
 
         .btn {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 10px 20px;
             background: #2e7d32;
             color: white;
             text-decoration: none;
-            border-radius: 25px;
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;

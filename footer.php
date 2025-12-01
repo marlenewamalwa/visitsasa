@@ -53,11 +53,10 @@
                 <div class="footer-section">
                     <h4>Experiences</h4>
                     <ul>
-                        <li><a href="experiences.php">All Experiences</a></li>
-                        <li><a href="#">Wildlife Safari</a></li>
-                        <li><a href="#">Beach Holidays</a></li>
-                        <li><a href="#">Cultural Tours</a></li>
-                        <li><a href="#">Adventure Activities</a></li>
+                        <li><a href="wildlife.php">Wildlife Safari</a></li>
+                        <li><a href="beach_coast.php">Beach Holidays</a></li>
+                        <li><a href="culture_heritage.php">Cultural Tours</a></li>
+                        <li><a href="mountains_hiking.php">Adventure Activities</a></li>
                     </ul>
                 </div>
                 

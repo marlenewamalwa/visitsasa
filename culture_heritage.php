@@ -155,27 +155,27 @@
         }
 
         #lamu .card-image {
-            background-image: url('https://images.unsplash.com/photo-1609198092357-8e14f2c4b89c?w=600&h=400&fit=crop');
+            background-image: url('images/lamu1.jpg');
         }
 
         #gedi .card-image {
-            background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&h=400&fit=crop');
+            background-image: url('images/gedi.jpeg');
         }
 
-        #great-rift .card-image {
-            background-image: url('https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=600&h=400&fit=crop');
+        #laketurkana .card-image {
+            background-image: url('images/turkana.webp');
         }
 
         #fort-jesus .card-image {
-            background-image: url('https://images.unsplash.com/photo-1555881603-f4991e5b6e4f?w=600&h=400&fit=crop');
+            background-image: url('images/fort.jpeg');
         }
 
         #bomas .card-image {
-            background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&h=400&fit=crop');
+            background-image: url('images/bomas.jpeg');
         }
 
         #nairobi-museum .card-image {
-            background-image: url('https://images.unsplash.com/photo-1566127444979-b3d2b767e560?w=600&h=400&fit=crop');
+            background-image: url('images/museum.jpeg');
         }
 
         .card-content {
@@ -394,10 +394,10 @@
                 </div>
             </div>
 
-            <div id="great-rift" class="destination-card" onclick="openModal('great-rift')">
+            <div id="laketurkana" class="destination-card" onclick="openModal('laketurkana')">
                 <div class="card-image"></div>
                 <div class="card-content">
-                    <h3>Cradle of Humankind Sites</h3>
+                    <h3>Lake Turkana</h3>
                     <p>Lake Turkana region archaeological sites where some of the oldest human fossils have been discovered, revealing our evolutionary journey.</p>
                     <ul class="attractions">
                         <li>Ancient human fossil sites</li>
@@ -645,7 +645,7 @@
                     </ul>
                 `
             },
-            'great-rift': {
+            'laketurkana': {
                 title: 'Cradle of Humankind Sites',
                 content: `
                     <h2>Lake Turkana - The Cradle of Humankind</h2>
@@ -744,3 +744,42 @@
                     
                     <h3>Daily Performances:</h3>
                     <ul>
+                             `
+            }
+        };
+                     function openModal(destination) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            const details = destinationDetails[destination];
+            
+            modalBody.innerHTML = details.content;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'modal') {
+                const modal = document.getElementById('modal');
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

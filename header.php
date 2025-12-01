@@ -125,11 +125,11 @@ $userName   = $isLoggedIn && !empty($_SESSION['user']['name'])
                 <img src="images/logo.png" alt="VisitSasa Logo" style="height:70px;">
             </a>
             <div class="nav-links">
-                <a href="destinations.php">Destinations</a>
+                <a href="destinations.php">Where To Stay</a>
                 
                 <!-- Inside .nav-links div -->
 <div class="dropdown">
-    <a href="#">Experiences ▾</a>
+    <a href="#">What To Do ▾</a>
     <div class="dropdown-content">
         <a href="foodanddrink.php">Food & Drink</a>
         <a href="beach_coast.php">Beach & Coast</a>

@@ -467,7 +467,7 @@ include 'header.php';
   .dest-guide__image{
     height: 240px;
     border-radius: 12px;
-    background-image: url("images/guide.png");
+    background-image: url("images/coastmap.jpg");
     background-size: cover;
     background-position: center;
     box-shadow: 0 10px 30px rgba(2,6,23,0.45);
@@ -651,7 +651,7 @@ include 'header.php';
                 </div>
                 
                 <div class="dest-card" onclick="openModal('mount-kenya')">
-                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=800');">
+                    <div class="dest-image" style="background-image: url('images/mtkenya.jpg');">
                         <div class="dest-info">
                             <h3>Mount Kenya</h3>
                             <p>Africa's second-highest peak with stunning glaciers</p>
@@ -660,7 +660,7 @@ include 'header.php';
                 </div>
                 
                 <div class="dest-card" onclick="openModal('nairobi')">
-                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=800');">
+                    <div class="dest-image" style="background-image: url('images/nrb.jpeg');">
                         <div class="dest-info">
                             <h3>Nairobi</h3>
                             <p>Vibrant capital blending urban energy and wildlife</p>
@@ -669,7 +669,7 @@ include 'header.php';
                 </div>
                 
                 <div class="dest-card" onclick="openModal('lake-nakuru')">
-                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800');">
+                    <div class="dest-image" style="background-image: url('images/lakenakuru.jpg');">
                         <div class="dest-info">
                             <h3>Lake Nakuru</h3>
                             <p>Home to millions of pink flamingos</p>
@@ -678,7 +678,7 @@ include 'header.php';
                 </div>
                 
                 <div class="dest-card" onclick="openModal('lamu-island')">
-                    <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800');">
+                    <div class="dest-image" style="background-image: url('images/lamu2.jpg');">
                         <div class="dest-info">
                             <h3>Lamu Island</h3>
                             <p>Ancient Swahili culture meets pristine beaches</p>

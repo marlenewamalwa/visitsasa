@@ -533,6 +533,7 @@
                 id: 1,
                 name: "Carnivore Restaurant",
                 location: "Nairobi",
+                mapLink: "https://maps.app.goo.gl/LangataRd",
                 cuisine: ["BBQ", "Kenyan"],
                 price: "$$$",
                 image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800",

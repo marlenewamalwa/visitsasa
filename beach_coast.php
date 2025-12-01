@@ -155,27 +155,27 @@
         }
 
         #diani .card-image {
-            background-image: url('https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=600&h=400&fit=crop');
+            background-image: url('images/diani.jpg');
         }
 
         #mombasa .card-image {
-            background-image: url('https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&h=400&fit=crop');
+            background-image: url('images/mombasa.jpeg');
         }
 
         #malindi .card-image {
-            background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=400&fit=crop');
+            background-image: url('images/malindi.webp');
         }
 
         #watamu .card-image {
-            background-image: url('https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=600&h=400&fit=crop');
+            background-image: url('images/watamu.webp');
         }
 
         #lamu .card-image {
-            background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop');
+            background-image: url('images/lamu.webp');
         }
 
         #kilifi .card-image {
-            background-image: url('https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=600&h=400&fit=crop');
+            background-image: url('images/kilifi.webp');
         }
 
         .card-content {
