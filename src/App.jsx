@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import DestinationsPage from "./pages/DestinationsPage";
 import WildlifePage from "./pages/WildlifePage";
 import FoodCulturePage from "./pages/FoodCulturePage";
+import TravelTipsPage from "./pages/TravelTipsPage";
 
 export default function App() {
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/destinations" element={<DestinationsPage />} />
           <Route path="/wildlife" element={<WildlifePage />} />
           <Route path="/food-culture" element={<FoodCulturePage />} />
+          <Route path="/travel-tips" element={<TravelTipsPage />} />
           
         </Routes>
         <Footer />

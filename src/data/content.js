@@ -1,3 +1,13 @@
+import maraPhoto from "../assets/maasaimara.jpg";
+import dianiPhoto from "../assets/dianibeach.jpg";
+import amboseliPhoto from "../assets/amboseli.jpg";
+import lamuPhoto from "../assets/lamu.jpg";
+import mtkenyaPhoto from "../assets/mtkenya.jpg";
+import lakenakuruPhoto from "../assets/lakenakuru.jpg";
+
+
+
+
 export const DESTINATIONS = [
   {
     name: "Maasai Mara",
@@ -7,7 +17,7 @@ export const DESTINATIONS = [
     desc: "Witness the Great Migration and endless golden plains teeming with the Big Five.",
     best: "Jul – Oct",
     bg: "#1D4F5A",
-    img: "https://source.unsplash.com/600x400/?maasai-mara,kenya,safari",
+    img: maraPhoto,
   },
   {
     name: "Diani Beach",
@@ -17,7 +27,7 @@ export const DESTINATIONS = [
     desc: "Powder-white sands framed by swaying palms and warm turquoise Indian Ocean waters.",
     best: "Dec – Mar",
     bg: "#2A6B79",
-    img: "https://source.unsplash.com/600x400/?diani,kenya,beach",
+    img: dianiPhoto,
   },
   {
     name: "Amboseli",
@@ -27,7 +37,7 @@ export const DESTINATIONS = [
     desc: "Iconic views of Kilimanjaro towering over vast herds of free-roaming elephants.",
     best: "Jun – Oct",
     bg: "#163D47",
-    img: "https://source.unsplash.com/600x400/?amboseli,elephant,kilimanjaro",
+    img: amboseliPhoto,
   },
   {
     name: "Lamu Island",
@@ -37,7 +47,7 @@ export const DESTINATIONS = [
     desc: "A UNESCO World Heritage town of coral stone, dhow boats, and Swahili heritage.",
     best: "Nov – Mar",
     bg: "#1D4F5A",
-    img: "https://source.unsplash.com/600x400/?lamu,kenya,swahili",
+    img: lamuPhoto,
   },
   {
     name: "Mount Kenya",
@@ -47,7 +57,7 @@ export const DESTINATIONS = [
     desc: "Africa's second-highest peak offers trekking, glaciers, and breathtaking highland flora.",
     best: "Jan – Feb",
     bg: "#2A6B79",
-    img: "https://source.unsplash.com/600x400/?mount-kenya,hiking,africa",
+    img: mtkenyaPhoto,
   },
   {
     name: "Lake Nakuru",
@@ -57,12 +67,12 @@ export const DESTINATIONS = [
     desc: "A soda lake famous for its spectacular flamingo gatherings and rare white rhinos.",
     best: "Year-round",
     bg: "#163D47",
-    img: "https://source.unsplash.com/600x400/?lake-nakuru,flamingo,kenya",
+    img: lakenakuruPhoto,
   },
 ];
 
 export const WILDLIFE = [
-  { name: "Lion", fact: "Maasai Mara has one of Africa's highest lion densities", emoji: "🦁" },
+  { name: "Lion", fact: "Maasai Mara has one of Africa's highest lion densities" },
   { name: "Elephant", fact: "Amboseli's herds are among the most studied in the world", emoji: "🐘" },
   { name: "Leopard", fact: "Shy and nocturnal — Samburu offers rare sightings", emoji: "🐆" },
   { name: "Flamingo", fact: "Millions flock to Lakes Nakuru and Bogoria annually", emoji: "🦩" },
