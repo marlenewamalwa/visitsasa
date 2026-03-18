@@ -7,9 +7,11 @@ function Packages() {
   const [packages, setPackages] = useState([]);
   const [allLocations, setAllLocations] = useState([]);
   const [allDurations, setAllDurations] = useState([]);
+  const [allActivities, setAllActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterLocation, setFilterLocation] = useState("");
+  const [filterActivity, setFilterActivity] = useState("");
   const [filterDuration, setFilterDuration] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -17,20 +19,23 @@ function Packages() {
   const locationHook = useLocation();
   const navigate = useNavigate();
 
-  // On mount: read ?location= from URL and pre-fill the filter
+  // On mount / URL change: read ?location= and ?activity= from URL
   useEffect(() => {
     const params = new URLSearchParams(locationHook.search);
     const loc = params.get("location");
+    const act = params.get("activity");
     if (loc) setFilterLocation(loc);
+    if (act) setFilterActivity(act);
   }, [locationHook.search]);
 
-  // Fetch all packages once for dropdown options
+  // Fetch dropdown options once
   useEffect(() => {
     const fetchMeta = async () => {
-      const { data } = await supabase.from("packages").select("location, duration");
+      const { data } = await supabase.from("packages").select("location, duration, activity");
       if (data) {
         setAllLocations([...new Set(data.map(p => p.location).filter(Boolean))]);
         setAllDurations([...new Set(data.map(p => p.duration).filter(Boolean))]);
+        setAllActivities([...new Set(data.map(p => p.activity).filter(Boolean))]);
       }
     };
     fetchMeta();
@@ -44,6 +49,7 @@ function Packages() {
 
       if (search) query = query.ilike("title", `%${search}%`).or(`location.ilike.%${search}%`);
       if (filterLocation) query = query.eq("location", filterLocation);
+      if (filterActivity) query = query.eq("activity", filterActivity);
       if (filterDuration) query = query.eq("duration", filterDuration);
       if (minPrice) query = query.gte("price", Number(minPrice));
       if (maxPrice) query = query.lte("price", Number(maxPrice));
@@ -55,18 +61,39 @@ function Packages() {
     };
 
     fetchPackages();
-  }, [search, filterLocation, filterDuration, minPrice, maxPrice]);
+  }, [search, filterLocation, filterActivity, filterDuration, minPrice, maxPrice]);
 
-  const hasActiveFilters = search || filterLocation || filterDuration || minPrice || maxPrice;
+  const hasActiveFilters = search || filterLocation || filterActivity || filterDuration || minPrice || maxPrice;
 
   const handleReset = () => {
     setSearch("");
     setFilterLocation("");
+    setFilterActivity("");
     setFilterDuration("");
     setMinPrice("");
     setMaxPrice("");
-    navigate("/packages", { replace: true }); // clear URL param too
+    navigate("/packages", { replace: true });
   };
+
+  const removePill = (type) => {
+    const params = new URLSearchParams(locationHook.search);
+    if (type === "location") { setFilterLocation(""); params.delete("location"); }
+    if (type === "activity") { setFilterActivity(""); params.delete("activity"); }
+    navigate(`/packages${params.toString() ? "?" + params.toString() : ""}`, { replace: true });
+  };
+
+  // Dynamic page title / desc
+  const pageTitle = filterActivity
+    ? filterActivity
+    : filterLocation
+    ? filterLocation
+    : "All Packages";
+
+  const pageDesc = filterActivity
+    ? `Showing packages featuring ${filterActivity.toLowerCase()} experiences across Kenya.`
+    : filterLocation
+    ? `Showing travel packages available in ${filterLocation}.`
+    : "Browse our full collection of curated Kenya travel experiences.";
 
   return (
     <div style={styles.page}>
@@ -75,14 +102,8 @@ function Packages() {
       {/* Page Header */}
       <section style={styles.pageHeader}>
         <span style={styles.eyebrow}>Plan Your Trip</span>
-        <h1 style={styles.pageTitle}>
-          {filterLocation ? filterLocation : "All Packages"}
-        </h1>
-        <p style={styles.pageDesc}>
-          {filterLocation
-            ? `Showing travel packages available in ${filterLocation}.`
-            : "Browse our full collection of curated Kenya travel experiences."}
-        </p>
+        <h1 style={styles.pageTitle}>{pageTitle}</h1>
+        <p style={styles.pageDesc}>{pageDesc}</p>
       </section>
 
       <div style={styles.divider} />
@@ -107,6 +128,17 @@ function Packages() {
             <option value="">All Locations</option>
             {allLocations.map((loc, i) => (
               <option key={i} value={loc}>{loc}</option>
+            ))}
+          </select>
+          <select
+            value={filterActivity}
+            onChange={e => setFilterActivity(e.target.value)}
+            style={styles.input}
+            className="filter-input"
+          >
+            <option value="">All Activities</option>
+            {allActivities.map((act, i) => (
+              <option key={i} value={act}>{act}</option>
             ))}
           </select>
           <select
@@ -138,23 +170,26 @@ function Packages() {
           />
           {hasActiveFilters && (
             <button onClick={handleReset} style={styles.resetBtn} className="reset-btn">
-              Clear Filters
+              Clear All
             </button>
           )}
         </div>
 
-        {/* Active filter pill */}
-        {filterLocation && (
+        {/* Active filter pills */}
+        {(filterLocation || filterActivity) && (
           <div style={styles.activePills}>
-            <span style={styles.pill}>
-              {filterLocation}
-              <button
-                style={styles.pillRemove}
-                onClick={() => { setFilterLocation(""); navigate("/packages", { replace: true }); }}
-              >
-                &times;
-              </button>
-            </span>
+            {filterLocation && (
+              <span style={styles.pill}>
+                <span style={styles.pillType}>Location:</span> {filterLocation}
+                <button style={styles.pillRemove} onClick={() => removePill("location")}>&times;</button>
+              </span>
+            )}
+            {filterActivity && (
+              <span style={styles.pill}>
+                <span style={styles.pillType}>Activity:</span> {filterActivity}
+                <button style={styles.pillRemove} onClick={() => removePill("activity")}>&times;</button>
+              </span>
+            )}
           </div>
         )}
       </section>
@@ -176,7 +211,8 @@ function Packages() {
         ) : packages.length === 0 ? (
           <div style={styles.empty}>
             <p style={styles.emptyTitle}>No packages found</p>
-            <p style={styles.emptyDesc}>Try adjusting your filters or{" "}
+            <p style={styles.emptyDesc}>
+              Try adjusting your filters or{" "}
               <button onClick={handleReset} style={styles.inlineLink}>clear all filters</button>.
             </p>
           </div>
@@ -199,7 +235,6 @@ const styles = {
     backgroundColor: "#fff",
     minHeight: "100vh",
   },
-
   pageHeader: {
     maxWidth: 680,
     margin: "0 auto",
@@ -232,15 +267,12 @@ const styles = {
     lineHeight: 1.75,
     margin: 0,
   },
-
   divider: {
     width: 48,
     height: 1,
     backgroundColor: "#c8a96e",
-    margin: "0 auto 0",
+    margin: "0 auto",
   },
-
-  /* Filters */
   filterSection: {
     maxWidth: 1200,
     margin: "0 auto",
@@ -279,8 +311,6 @@ const styles = {
     transition: "background 0.2s, color 0.2s",
     whiteSpace: "nowrap",
   },
-
-  /* Active filter pills */
   activePills: {
     display: "flex",
     gap: 8,
@@ -300,6 +330,10 @@ const styles = {
     color: "#1a2f2a",
     fontWeight: 500,
   },
+  pillType: {
+    color: "#aaa",
+    fontWeight: 400,
+  },
   pillRemove: {
     background: "none",
     border: "none",
@@ -309,8 +343,6 @@ const styles = {
     padding: 0,
     lineHeight: 1,
   },
-
-  /* Results */
   resultsSection: {
     maxWidth: 1200,
     margin: "0 auto",
@@ -334,8 +366,6 @@ const styles = {
     backgroundColor: "#ece9e2",
     borderRadius: 2,
   },
-
-  /* Empty state */
   empty: {
     textAlign: "center",
     padding: "60px 24px",

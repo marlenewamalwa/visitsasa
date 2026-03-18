@@ -2,27 +2,30 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import PackageCard from "../components/PackageCard";
 import { Link } from "react-router-dom";
-import heroBg from "../assets/lakenakuru.jpg";
-import mara from "../assets/maasaimara.jpg";
+import heroBg from "../assets/amboseli.jpg";
+import coastal from "../assets/dianibeach2.jpg";
+import migration from "../assets/migration.jpg";
+import vasha from "../assets/vashatrees.jpg";
+import ctabanner from "../assets/transport.jpg";
 
 const DESTINATIONS = [
   {
     name: "Maasai Mara",
     tag: "Wildlife Safari",
     desc: "Witness the Great Migration across endless golden savannah.",
-    img: "https://placehold.co/600x400/2d4a3e/e8d5b0?text=Maasai+Mara",
+    img: migration,
   },
   {
     name: "Diani Beach",
     tag: "Coastal Escape",
     desc: "Pristine white sands and turquoise waters of the Indian Ocean.",
-    img: "https://placehold.co/600x400/1a3a4a/d0e8f0?text=Diani+Beach",
+    img: coastal,
   },
   {
     name: "Naivasha",
     tag: "Lake & Highlands",
     desc: "Flamingo-filled shores, Hell's Gate, and fresh highland air.",
-    img: "https://placehold.co/600x400/3a4a2a/d8e8c0?text=Naivasha",
+    img: vasha,
   },
 ];
 
@@ -83,7 +86,7 @@ function Home() {
             <Link to="/packages" style={styles.ctaPrimary} className="btn-primary">
               Browse Packages
             </Link>
-            <Link to="/about" style={styles.ctaSecondary} className="btn-secondary">
+            <Link to="/howitworks" style={styles.ctaSecondary} className="btn-secondary">
               How It Works
             </Link>
           </div>
@@ -148,7 +151,7 @@ function Home() {
                 <span style={styles.destTag}>{d.tag}</span>
                 <h3 style={styles.destName}>{d.name}</h3>
                 <p style={styles.destDesc}>{d.desc}</p>
-                <Link to="/packages" style={styles.destLink}>Explore &rarr;</Link>
+               <Link to={`/destinations?location=${encodeURIComponent(d.name)}`} style={styles.destLink}>Explore &rarr;</Link>
               </div>
             </div>
           ))}
@@ -167,9 +170,6 @@ function Home() {
               From the red dust of Tsavo to the coral reefs of Watamu, we've spent years
               building relationships with the people and places that make Kenya special.
             </p>
-            <Link to="/about" style={{ ...styles.outlineBtn, display: "inline-block", marginTop: 28 }} className="btn-outline">
-              Meet The Team
-            </Link>
           </div>
           <div style={styles.whyRight}>
             {WHY.map((w, i) => (
@@ -187,11 +187,7 @@ function Home() {
 
       {/* ── CTA BANNER ── */}
       <section style={styles.ctaBanner}>
-        <img
-          src="/lamu.jpg"
-          alt="CTA"
-          style={styles.ctaBannerBg}
-        />
+        <img src={ctabanner} alt="cta" style={styles.ctaBannerBg} />
         <div style={styles.ctaBannerOverlay} />
         <div style={styles.ctaBannerContent}>
           <h2 style={styles.ctaBannerTitle}>Ready to Start Your Journey?</h2>

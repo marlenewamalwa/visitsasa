@@ -8,6 +8,8 @@ import TravelTips from "./pages/TravelTips";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PackageDetails from "./pages/PackageDetails";
+import Activities from "./pages/Activities";
+import HowItWorks from "./pages/HowItWorks";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/destinations" element={<Destinations />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/activities" element={<Activities />} />
+        <Route path="/howitworks" element={<HowItWorks />} />
       </Routes>
       <Footer />
     </BrowserRouter>
