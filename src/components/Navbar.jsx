@@ -389,7 +389,7 @@ function Navbar() {
               )}
             </div>
 
-            <Link to="/contact" className="tk-cta">Plan a Trip</Link>
+            <Link to="/packages" className="tk-cta">Plan a Trip</Link>
           </div>
 
           {/* Hamburger */}
