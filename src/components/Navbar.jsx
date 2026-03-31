@@ -5,12 +5,11 @@ import logo from "../assets/visitsasa.jpg";
 const PRIMARY_LINKS = [
   { to: "/destinations", label: "Destinations" },
   { to: "/activities", label: "Activities" },
-  { to: "/packages", label: "Packages" },
 ];
 
 const MORE_LINKS = [
   { to: "/travel-tips", label: "Travel Tips" },
-  { to: "/how-it-works", label: "How It Works" },
+  { to: "/howitworks", label: "How It Works" },
   { to: "/about", label: "About Us" },
   { to: "/contact", label: "Contact" },
 ];
@@ -343,7 +342,7 @@ function Navbar() {
         <div className="tk-nav-inner">
 
           <Link to="/" className="tk-logo">
-            <img src={logo} alt="Visit Sasake" className="tk-logo-img" />
+            <img src={logo} alt="Visit Sasa" className="tk-logo-img" />
           </Link>
 
           {/* Desktop */}
@@ -419,7 +418,7 @@ function Navbar() {
                 <span className="tk-mobile-link-arrow">›</span>
               </Link>
             ))}
-            <Link to="/contact" className="tk-mobile-cta">Plan a Trip →</Link>
+            <Link to="/" className="tk-mobile-cta">Plan a Trip →</Link>
           </div>
         )}
       </nav>

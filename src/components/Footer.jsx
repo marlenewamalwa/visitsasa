@@ -9,7 +9,6 @@ const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/destinations", label: "Destinations" },
   { to: "/activities", label: "Activities" },
-  { to: "/packages", label: "Packages" },
   { to: "/travel-tips", label: "Travel Tips" },
   { to: "/about", label: "About Us" },
   { to: "/contact", label: "Contact" },
@@ -77,23 +76,6 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Destinations col */}
-        <div style={styles.col}>
-          <h4 style={styles.colTitle}>Top Destinations</h4>
-          <ul style={styles.colList}>
-            {DESTINATIONS.map(d => (
-              <li key={d}>
-                <Link
-                  to={`/packages?location=${d}`}
-                  style={styles.colLink}
-                  className="footer-link"
-                >
-                  {d}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
 
         {/* Newsletter / social col */}
         <div style={styles.col}>

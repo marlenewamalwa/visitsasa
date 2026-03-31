@@ -202,20 +202,7 @@ function TravelTips() {
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section style={styles.cta}>
-         <img src={ctaBg} alt="cta" style={styles.ctaBg} />
-        <div style={styles.ctaOverlay} />
-        <div style={styles.ctaContent}>
-          <h2 style={styles.ctaTitle}>Ready to Experience Kenya?</h2>
-          <p style={styles.ctaSub}>
-            Our team is on hand to answer any questions and help you plan the perfect trip.
-          </p>
-          <a href="/packages" style={styles.ctaBtn} className="cta-btn">
-            Browse Packages
-          </a>
-        </div>
-      </section>
+    
     </div>
   );
 }
@@ -296,7 +283,7 @@ const styles = {
     fontSize: 14,
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 600,
-    color: "#1a2f2a",
+    color: "#204E59",
   },
 
   /* Main layout */
@@ -345,7 +332,7 @@ const styles = {
     fontSize: 14,
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 600,
-    color: "#1a2f2a",
+    color: "#204E59",
   },
 
   /* Content pane */

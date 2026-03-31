@@ -177,7 +177,7 @@ const styles = {
     display: "block",
     fontSize: 36,
     fontWeight: 400,
-    color: "#1a2f2a",
+    color: "#204E59",
     letterSpacing: "-0.02em",
     lineHeight: 1.1,
   },
@@ -356,7 +356,7 @@ const styles = {
   },
   storyText: {
     padding: "72px 64px",
-    backgroundColor: "#1a2f2a",
+    backgroundColor: "#204E59",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
