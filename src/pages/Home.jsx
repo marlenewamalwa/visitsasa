@@ -1,67 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import TripWizard from "../components/TripWizard";
-import heroBg from "../assets/amboseli.jpg";
+import { supabase } from "../supabaseClient";
+import SearchBar from "../components/SearchBar";
 import coastal from "../assets/dianibeach2.jpg";
 import migration from "../assets/migration.jpg";
-import vasha from "../assets/vashatrees.jpg";
+import vasha from "../assets/amboseli.jpg";
 import ctabanner from "../assets/transport.jpg";
+import sunset from "../assets/sunset.jpg";
+import hike from "../assets/murima.jpg";
 
-const DESTINATIONS = [
+
+const HERO_SLIDES = [
   {
-    name: "Maasai Mara",
-    tag: "Wildlife Safari",
-    desc: "Witness the Great Migration across endless golden savannah.",
-    img: migration,
-    days: "3–5 days",
-  },
-  {
-    name: "Diani Beach",
-    tag: "Coastal Escape",
-    desc: "Pristine white sands and turquoise waters of the Indian Ocean.",
-    img: coastal,
-    days: "4–7 days",
-  },
-  {
-    name: "Naivasha",
-    tag: "Lake & Highlands",
-    desc: "Flamingo-filled shores, Hell's Gate, and fresh highland air.",
     img: vasha,
-    days: "2–3 days",
-  },
-];
-
-const HOW_IT_WORKS = [
-  {
-    num: "01",
-    title: "Tell Us Your Dream",
-    body: "Use our trip builder to pick your destinations, dates, activities, and accommodation style — all in a few simple steps.",
+    eyebrow: "YOUR TRIP.YOUR RULES",
+    title: "Build Your\nPerfect Kenya Adventure",
+    sub: "No fixed packages. No compromise.Choose your destinations, activities, and pace — we'll handle the rest.",
   },
   {
-    num: "02",
-    title: "We Craft Your Itinerary",
-    body: "Our local experts review your selections and hand-build a personalised itinerary within 24 hours.",
+    img: coastal,
+    eyebrow: "Coastal Escape",
+    title: "Where the\nOcean Glows",
+    sub: "Pristine white sands, coral reefs, and the warm turquoise waters of the Indian Ocean.",
   },
   {
-    num: "03",
-    title: "Travel Your Way",
-    body: "Confirm, pack, and go. We handle every detail on the ground so you can focus on the experience.",
+    img: migration,
+    eyebrow: "Lake & Highlands",
+    title: "Into the\nHighland Wild",
+    sub: "Flamingo shores, Hell's Gate gorges, and crisp highland air above the Rift Valley.",
   },
-];
-
-const EXPERIENCES = [
-  { icon: "🦁", label: "Game Drives" },
-  { icon: "🌊", label: "Ocean Excursions" },
-  { icon: "🥾", label: "Bush Walks" },
-  { icon: "🏕️", label: "Glamping" },
-  { icon: "🎭", label: "Cultural Visits" },
-  { icon: "🐦", label: "Bird Watching" },
-  { icon: "🚣", label: "Lake Safaris" },
-  { icon: "🌋", label: "Mountain Hikes" },
 ];
 
 function Home() {
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [destinations, setDestinations] = useState([]);
+  const [destLoading, setDestLoading] = useState(true);
+  const intervalRef = useRef(null);
+
+  const startInterval = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => changeSlide("next"), 6000);
+  };
+
+  useEffect(() => {
+    startInterval();
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const changeSlide = (dir) => {
+    if (animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setActiveSlide((prev) =>
+        dir === "next"
+          ? (prev + 1) % HERO_SLIDES.length
+          : (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
+      );
+      setAnimating(false);
+    }, 450);
+    startInterval();
+  };
+
+  const goToSlide = (i) => {
+    if (i === activeSlide || animating) return;
+    setAnimating(true);
+    setTimeout(() => { setActiveSlide(i); setAnimating(false); }, 450);
+    startInterval();
+  };
+
+  useEffect(() => {
+    const fetchDest = async () => {
+      const { data, error } = await supabase
+        .from("destinations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (!error && data) setDestinations(data);
+      setDestLoading(false);
+    };
+    fetchDest();
+  }, []);
+
+  const slide = HERO_SLIDES[activeSlide];
 
   return (
     <div style={styles.page}>
@@ -69,27 +92,41 @@ function Home() {
 
       {/* ── HERO ── */}
       <section style={styles.hero}>
-        <img src={heroBg} alt="Kenya landscape" style={styles.heroBg} />
+        {HERO_SLIDES.map((s, i) => (
+          <img
+            key={i}
+            src={s.img}
+            alt=""
+            style={{
+              ...styles.heroBg,
+              opacity: i === activeSlide ? 1 : 0,
+              transition: "opacity 1s ease",
+            }}
+          />
+        ))}
         <div style={styles.heroOverlay} />
-        <div style={styles.heroContent}>
-          <span style={styles.heroEyebrow}>Your Trip. Your Rules.</span>
+
+        <div
+          style={{
+            ...styles.heroContent,
+            opacity: animating ? 0 : 1,
+            transform: animating ? "translateY(14px)" : "translateY(0)",
+            transition: "opacity 0.45s ease, transform 0.45s ease",
+          }}
+        >
+          <span style={styles.heroEyebrow}>{slide.eyebrow}</span>
           <h1 style={styles.heroTitle}>
-            Build Your<br />Perfect Kenya<br />Adventure
+            {slide.title.split("\n").map((line, i) => (
+              <span key={i}>{line}<br /></span>
+            ))}
           </h1>
-          <p style={styles.heroSub}>
-            No fixed packages. No compromise.<br />
-            Choose your destinations, activities, and pace — we'll handle the rest.
-          </p>
+          <p style={styles.heroSub}>{slide.sub}</p>
           <div style={styles.heroActions}>
-            <button
-              onClick={() => setWizardOpen(true)}
-              style={styles.ctaPrimary}
-              className="btn-primary"
-            >
+            <button onClick={() => setWizardOpen(true)} style={styles.ctaPrimary} className="btn-primary">
               Start Building Your Trip
             </button>
-            <Link to="/howitworks" style={styles.ctaSecondary} className="btn-secondary">
-              How It Works
+            <Link to="/destinations" style={styles.ctaSecondary} className="btn-secondary">
+              Explore Kenya
             </Link>
           </div>
           <div style={styles.heroTrust}>
@@ -98,42 +135,74 @@ function Home() {
             <span style={styles.trustItem}>✓ Expert review within 24hrs</span>
           </div>
         </div>
-      </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section style={{ ...styles.section, borderBottom: "1px solid #ece9e2" }}>
-        <div style={styles.sectionHeader}>
-          <span style={styles.sectionTag}>Simple Process</span>
-          <h2 style={styles.sectionTitle}>How It Works</h2>
-          <p style={styles.sectionDesc}>
-            From dream to departure in three easy steps.
-          </p>
-        </div>
-        <div style={styles.howGrid}>
-          {HOW_IT_WORKS.map((step, i) => (
-            <div key={step.num} style={styles.howCard} className="how-card">
-              <span style={styles.howNum}>{step.num}</span>
-              {i < HOW_IT_WORKS.length - 1 && (
-                <span style={styles.howArrow} className="how-arrow">→</span>
-              )}
-              <h3 style={styles.howTitle}>{step.title}</h3>
-              <p style={styles.howBody}>{step.body}</p>
-            </div>
+        {/* Prev / Next */}
+        <button onClick={() => changeSlide("prev")} style={{ ...styles.arrowBtn, left: 24 }} className="arrow-btn">‹</button>
+        <button onClick={() => changeSlide("next")} style={{ ...styles.arrowBtn, right: 24 }} className="arrow-btn">›</button>
+
+        {/* Dots */}
+        <div style={styles.dots}>
+          {HERO_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goToSlide(i)}
+              style={{ ...styles.dot, ...(i === activeSlide ? styles.dotActive : {}) }}
+              aria-label={`Slide ${i + 1}`}
+            />
           ))}
         </div>
-        <div style={{ textAlign: "center", marginTop: 44 }}>
-          <button
-            onClick={() => setWizardOpen(true)}
-            style={styles.ctaPrimaryDark}
-            className="btn-primary-dark"
-          >
-            Start Planning Now
+
+        {/* Counter */}
+        <div style={styles.slideCounter}>
+          <span style={styles.slideCounterCurrent}>0{activeSlide + 1}</span>
+          <span style={styles.slideCounterSep}> / </span>
+          <span style={styles.slideCounterTotal}>0{HERO_SLIDES.length}</span>
+        </div>
+      </section>
+      
+
+      {/* ── EDITORIAL ── */}
+      <section style={styles.editorial}>
+        <div style={styles.editorialLeft}>
+          <span style={styles.sectionTag}>The Tamu Way</span>
+          <h2 style={styles.editorialTitle}>
+            Travel that<br />
+            <em style={styles.editorialItalic}>fits you</em>
+          </h2>
+          <p style={styles.editorialBody}>
+            We don't sell packages. We listen. Every trip is drawn from scratch — shaped
+            around the places you've dreamed of, the pace you prefer, and the experiences
+            only Kenya can offer. Our local fixers, guides, and partners have spent years
+            on the ground so your journey feels effortless.
+          </p>
+          <div style={styles.editorialStats}>
+            {[
+              { num: "500+", label: "Bespoke trips crafted" },
+              { num: "98%", label: "Guest satisfaction" },
+              { num: "12+", label: "Years in Kenya" },
+              { num: "24hr", label: "Itinerary turnaround" },
+            ].map((s) => (
+              <div key={s.label} style={styles.editorialStat}>
+                <span style={styles.editorialStatNum}>{s.num}</span>
+                <span style={styles.editorialStatLabel}>{s.label}</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setWizardOpen(true)} style={styles.ctaPrimaryDark} className="btn-primary-dark">
+            Build My Trip
           </button>
+        </div>
+        <div style={styles.editorialRight}>
+          <div style={styles.editorialImgStack}>
+            <img src={hike} alt="Safari" style={styles.editorialImgBack} />
+            <img src={sunset} alt="Coast" style={styles.editorialImgFront} />
+            <div style={styles.editorialImgAccent} />
+          </div>
         </div>
       </section>
 
       {/* ── DESTINATIONS ── */}
-      <section style={{ ...styles.section, backgroundColor: "#f7f4ef", maxWidth: "100%", padding: "80px 24px" }}>
+      <section style={styles.destSection}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={styles.sectionHeader}>
             <span style={styles.sectionTag}>Where To Go</span>
@@ -142,66 +211,44 @@ function Home() {
               Hand-pick your stops — mix and match to build a multi-destination trip.
             </p>
           </div>
-          <div style={styles.destGrid}>
-            {DESTINATIONS.map((d) => (
-              <div
-                key={d.name}
-                style={styles.destCard}
-                className="dest-card"
-                onClick={() => setWizardOpen(true)}
-              >
-                <div style={styles.destImgWrap}>
-                  <img src={d.img} alt={d.name} style={styles.destImg} />
-                  <span style={styles.destDaysBadge}>{d.days}</span>
-                </div>
-                <div style={styles.destInfo}>
-                  <span style={styles.destTag}>{d.tag}</span>
-                  <h3 style={styles.destName}>{d.name}</h3>
-                  <p style={styles.destDesc}>{d.desc}</p>
-                  <button style={styles.destCta} className="dest-cta-btn">
-                    Add to My Trip +
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── TRUST SECTION ── */}
-      <section style={{ ...styles.section, backgroundColor: "#204E59", maxWidth: "100%", padding: "72px 24px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={styles.trustGrid}>
-            <div style={styles.trustLeft}>
-              <span style={{ ...styles.sectionTag, color: "#c8a96e" }}>Why Plan With Us</span>
-              <h2 style={{ ...styles.sectionTitle, color: "#fff", textAlign: "left", marginBottom: 16 }}>
-                We Know Kenya<br />Like No One Else
-              </h2>
-              <p style={{ color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 400, fontFamily: "'Helvetica Neue', sans-serif", fontSize: 15 }}>
-                From the red dust of Tsavo to the coral reefs of Watamu, we've spent years
-                building relationships with the people and places that make Kenya extraordinary.
-              </p>
-              <button
-                onClick={() => setWizardOpen(true)}
-                style={{ ...styles.ctaPrimary, marginTop: 32 }}
-                className="btn-primary"
-              >
-                Build My Trip
-              </button>
+          {destLoading ? (
+            <div style={styles.destGrid}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={styles.shimmerCard} className="shimmer" />
+              ))}
             </div>
-            <div style={styles.trustRight}>
-              {[
-                { num: "500+", label: "Custom Trips Built" },
-                { num: "98%", label: "Guest Satisfaction" },
-                { num: "12+", label: "Years in Kenya" },
-                { num: "24hr", label: "Response Time" },
-              ].map((s) => (
-                <div key={s.label} style={styles.trustStat}>
-                  <span style={styles.trustStatNum}>{s.num}</span>
-                  <span style={styles.trustStatLabel}>{s.label}</span>
+          ) : destinations.length === 0 ? (
+            <p style={{ textAlign: "center", color: "#999", fontFamily: "'Helvetica Neue', sans-serif" }}>
+              No destinations found.
+            </p>
+          ) : (
+            <div style={styles.destGrid}>
+              {destinations.map((d) => (
+                <div key={d.id} style={styles.destCard} className="dest-card" onClick={() => setWizardOpen(true)}>
+                  <div style={styles.destImgWrap}>
+                    <img src={d.image_url} alt={d.name} style={styles.destImg} />
+                    {d.recommended_days && (
+                      <span style={styles.destDaysBadge}>{d.recommended_days}</span>
+                    )}
+                  </div>
+                  <div style={styles.destInfo}>
+                    {d.category && <span style={styles.destTag}>{d.category}</span>}
+                    <h3 style={styles.destName}>{d.name}</h3>
+                    <p style={styles.destDesc}>{d.description}</p>
+                    <button style={styles.destCta} className="dest-cta-btn">
+                      Add to My Trip +
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
+          )}
+
+          <div style={styles.destFooter}>
+            <Link to="/destinations" style={styles.seeAllBtn} className="see-all-btn">
+              See All Destinations →
+            </Link>
           </div>
         </div>
       </section>
@@ -212,28 +259,18 @@ function Home() {
         <div style={styles.ctaBannerOverlay} />
         <div style={styles.ctaBannerContent}>
           <h2 style={styles.ctaBannerTitle}>Your Kenya Story Starts Here</h2>
-          <p style={styles.ctaBannerSub}>
-            Tell us your dream — we'll build the perfect itinerary, just for you.
-          </p>
-          <button
-            onClick={() => setWizardOpen(true)}
-            style={styles.ctaPrimary}
-            className="btn-primary"
-          >
+          <p style={styles.ctaBannerSub}>Tell us your dream — we'll build the perfect itinerary, just for you.</p>
+          <button onClick={() => setWizardOpen(true)} style={styles.ctaPrimary} className="btn-primary">
             Start Building Your Trip
           </button>
         </div>
       </section>
 
-      {/* ── WIZARD MODAL ── */}
-      {wizardOpen && (
-        <TripWizard onClose={() => setWizardOpen(false)} />
-      )}
+      {wizardOpen && <TripWizard onClose={() => setWizardOpen(false)} />}
     </div>
   );
 }
 
-/* ── STYLES ── */
 const styles = {
   page: {
     fontFamily: "'Georgia', 'Times New Roman', serif",
@@ -243,7 +280,8 @@ const styles = {
 
   hero: {
     position: "relative",
-    minHeight: 700,
+    height: "100vh",
+    minHeight: 620,
     display: "flex",
     alignItems: "center",
     overflow: "hidden",
@@ -259,125 +297,220 @@ const styles = {
   heroOverlay: {
     position: "absolute",
     inset: 0,
-    background: "linear-gradient(135deg, rgba(10,25,18,0.75) 0%, rgba(10,25,18,0.5) 100%)",
+    background: "linear-gradient(110deg, rgba(8,20,14,0.78) 0%, rgba(8,20,14,0.4) 65%, rgba(8,20,14,0.15) 100%)",
   },
   heroContent: {
     position: "relative",
     zIndex: 2,
-    maxWidth: 760,
-    margin: "0 auto",
-    padding: "80px 24px",
-    textAlign: "center",
+    maxWidth: 680,
+    padding: "0 0 80px 72px",
   },
   heroEyebrow: {
     display: "inline-block",
-    letterSpacing: "0.18em",
+    letterSpacing: "0.22em",
     textTransform: "uppercase",
-    fontSize: 11,
+    fontSize: 10,
     color: "#c8a96e",
     fontFamily: "'Helvetica Neue', sans-serif",
     marginBottom: 20,
-    borderBottom: "1px solid #c8a96e",
+    borderBottom: "1px solid rgba(200,169,110,0.5)",
     paddingBottom: 6,
   },
   heroTitle: {
-    fontSize: "clamp(42px, 7vw, 80px)",
+    fontSize: "clamp(44px, 7vw, 84px)",
     fontWeight: 400,
     color: "#fff",
-    lineHeight: 1.08,
-    letterSpacing: "-0.02em",
+    lineHeight: 1.05,
+    letterSpacing: "-0.03em",
     margin: "0 0 24px",
   },
   heroSub: {
-    fontSize: 17,
-    color: "rgba(255,255,255,0.78)",
-    lineHeight: 1.7,
+    fontSize: 16,
+    color: "rgba(255,255,255,0.72)",
+    lineHeight: 1.75,
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 300,
     marginBottom: 40,
+    maxWidth: 440,
   },
   heroActions: {
     display: "flex",
     gap: 16,
-    justifyContent: "center",
     flexWrap: "wrap",
     marginBottom: 28,
   },
   heroTrust: {
     display: "flex",
     gap: 24,
-    justifyContent: "center",
     flexWrap: "wrap",
   },
   trustItem: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.65)",
+    fontSize: 11,
+    color: "rgba(255,255,255,0.55)",
     fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.04em",
+    letterSpacing: "0.05em",
   },
 
-  ctaPrimary: {
-    display: "inline-block",
-    padding: "14px 32px",
+  arrowBtn: {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 4,
+    background: "rgba(255,255,255,0.12)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    color: "#fff",
+    width: 50,
+    height: 50,
+    fontSize: 30,
+    cursor: "pointer",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "background 0.2s",
+    lineHeight: 1,
+  },
+
+  dots: {
+    position: "absolute",
+    bottom: 36,
+    left: "50%",
+    transform: "translateX(-50%)",
+    display: "flex",
+    gap: 10,
+    zIndex: 4,
+  },
+  dot: {
+    width: 28,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
+    transition: "background 0.3s, width 0.3s",
+  },
+  dotActive: {
+    width: 52,
     backgroundColor: "#c8a96e",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 600,
-    fontSize: 14,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    transition: "background 0.2s, transform 0.15s",
-    textDecoration: "none",
-  },
-  ctaPrimaryDark: {
-    display: "inline-block",
-    padding: "14px 32px",
-    backgroundColor: "#204E59",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 600,
-    fontSize: 14,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    transition: "background 0.2s, transform 0.15s",
-  },
-  ctaSecondary: {
-    display: "inline-block",
-    padding: "14px 32px",
-    backgroundColor: "transparent",
-    color: "#fff",
-    border: "1px solid rgba(255,255,255,0.5)",
-    textDecoration: "none",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 400,
-    fontSize: 14,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    transition: "border-color 0.2s, background 0.2s",
-  },
-  outlineBtn: {
-    display: "inline-block",
-    padding: "12px 28px",
-    border: "1px solid #204E59",
-    color: "#204E59",
-    backgroundColor: "transparent",
-    cursor: "pointer",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 600,
-    fontSize: 13,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    transition: "background 0.2s, color 0.2s",
   },
 
-  section: {
+  slideCounter: {
+    position: "absolute",
+    bottom: 28,
+    right: 72,
+    zIndex: 4,
+    display: "flex",
+    alignItems: "baseline",
+    gap: 2,
+    fontFamily: "'Helvetica Neue', sans-serif",
+  },
+  slideCounterCurrent: { fontSize: 22, color: "#fff", fontWeight: 300 },
+  slideCounterSep: { fontSize: 12, color: "rgba(255,255,255,0.35)" },
+  slideCounterTotal: { fontSize: 12, color: "rgba(255,255,255,0.35)" },
+
+  editorial: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    minHeight: 560,
+    overflow: "hidden",
+  },
+  editorialLeft: {
+    padding: "80px 64px",
+    backgroundColor: "#fff",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  editorialTitle: {
+    fontSize: "clamp(34px, 4vw, 52px)",
+    fontWeight: 400,
+    letterSpacing: "-0.03em",
+    lineHeight: 1.1,
+    margin: "12px 0 24px",
+    color: "#111",
+  },
+  editorialItalic: { fontStyle: "italic", color: "#c8a96e" },
+  editorialBody: {
+    fontSize: 15,
+    color: "#555",
+    fontFamily: "'Helvetica Neue', sans-serif",
+    fontWeight: 300,
+    lineHeight: 1.8,
+    marginBottom: 40,
+    maxWidth: 440,
+  },
+  editorialStats: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    borderTop: "1px solid #ece9e2",
+    marginBottom: 40,
+  },
+  editorialStat: {
+    padding: "20px 0",
+    borderBottom: "1px solid #ece9e2",
+    paddingRight: 24,
+  },
+  editorialStatNum: {
+    display: "block",
+    fontSize: 30,
+    fontWeight: 400,
+    color: "#204E59",
+    letterSpacing: "-0.02em",
+    lineHeight: 1.1,
+  },
+  editorialStatLabel: {
+    display: "block",
+    fontSize: 10,
+    fontFamily: "'Helvetica Neue', sans-serif",
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "#999",
+    marginTop: 4,
+  },
+  editorialRight: {
+    backgroundColor: "#f7f4ef",
+    position: "relative",
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  editorialImgStack: {
+    position: "relative",
+    width: "80%",
+    height: "75%",
+  },
+  editorialImgBack: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "78%",
+    height: "78%",
+    objectFit: "cover",
+  },
+  editorialImgFront: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: "68%",
+    height: "62%",
+    objectFit: "cover",
+    border: "5px solid #fff",
+    boxShadow: "0 12px 40px rgba(0,0,0,0.14)",
+  },
+  editorialImgAccent: {
+    position: "absolute",
+    top: "28%",
+    left: "58%",
+    width: 72,
+    height: 72,
+    border: "2px solid #c8a96e",
+    zIndex: 0,
+  },
+
+  destSection: {
+    backgroundColor: "#f7f4ef",
     padding: "80px 24px",
-    maxWidth: 1200,
-    margin: "0 auto",
   },
   sectionHeader: {
     textAlign: "center",
@@ -385,9 +518,9 @@ const styles = {
   },
   sectionTag: {
     display: "inline-block",
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.16em",
+    letterSpacing: "0.18em",
     textTransform: "uppercase",
     color: "#c8a96e",
     marginBottom: 12,
@@ -398,64 +531,22 @@ const styles = {
     letterSpacing: "-0.02em",
     margin: "0 0 14px",
     lineHeight: 1.15,
-    textAlign: "center",
   },
   sectionDesc: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#666",
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 300,
     lineHeight: 1.7,
-    maxWidth: 520,
+    maxWidth: 500,
     margin: "0 auto",
   },
-
-  howGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 0,
-    position: "relative",
-  },
-  howCard: {
-    padding: "36px 40px",
-    borderRight: "1px solid #ece9e2",
-    position: "relative",
-  },
-  howNum: {
-    display: "block",
-    fontSize: 13,
-    fontFamily: "'Helvetica Neue', sans-serif",
-    color: "#c8a96e",
-    letterSpacing: "0.1em",
-    marginBottom: 16,
-  },
-  howArrow: {
-    position: "absolute",
-    top: 36,
-    right: -14,
-    fontSize: 20,
-    color: "#c8a96e",
-    zIndex: 1,
-  },
-  howTitle: {
-    fontSize: 20,
-    fontWeight: 400,
-    margin: "0 0 12px",
-    letterSpacing: "-0.01em",
-  },
-  howBody: {
-    fontSize: 14,
-    color: "#666",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    lineHeight: 1.7,
-    margin: 0,
-  },
-
   destGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
     gap: 24,
   },
+  shimmerCard: { height: 400 },
   destCard: {
     backgroundColor: "#fff",
     overflow: "hidden",
@@ -463,12 +554,10 @@ const styles = {
     transition: "transform 0.25s, box-shadow 0.25s",
     cursor: "pointer",
   },
-  destImgWrap: {
-    position: "relative",
-  },
+  destImgWrap: { position: "relative" },
   destImg: {
     width: "100%",
-    height: 220,
+    height: 230,
     objectFit: "cover",
     display: "block",
   },
@@ -478,15 +567,13 @@ const styles = {
     right: 14,
     backgroundColor: "rgba(10,25,18,0.8)",
     color: "#fff",
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "'Helvetica Neue', sans-serif",
     letterSpacing: "0.08em",
     padding: "4px 10px",
     backdropFilter: "blur(4px)",
   },
-  destInfo: {
-    padding: "24px 24px 28px",
-  },
+  destInfo: { padding: "24px 24px 28px" },
   destTag: {
     fontSize: 10,
     fontFamily: "'Helvetica Neue', sans-serif",
@@ -510,7 +597,7 @@ const styles = {
     margin: "0 0 18px",
   },
   destCta: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 700,
     color: "#204E59",
@@ -522,75 +609,27 @@ const styles = {
     textTransform: "uppercase",
     transition: "background 0.2s, color 0.2s",
   },
-
-  expGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-    gap: 16,
-  },
-  expCard: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    padding: "28px 16px",
-    border: "1px solid #ece9e2",
-    cursor: "pointer",
-    transition: "border-color 0.2s, background 0.2s, transform 0.2s",
+  destFooter: {
     textAlign: "center",
+    marginTop: 52,
   },
-  expIcon: {
-    fontSize: 28,
-  },
-  expLabel: {
-    fontSize: 12,
+  seeAllBtn: {
+    display: "inline-block",
+    padding: "14px 40px",
+    border: "1px solid #204E59",
+    color: "#204E59",
     fontFamily: "'Helvetica Neue', sans-serif",
+    fontWeight: 600,
+    fontSize: 13,
     letterSpacing: "0.08em",
     textTransform: "uppercase",
-    color: "#444",
-    fontWeight: 600,
-  },
-
-  trustGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 80,
-    alignItems: "center",
-  },
-  trustLeft: {},
-  trustRight: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 2,
-  },
-  trustStat: {
-    padding: "36px 28px",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderLeft: "1px solid rgba(255,255,255,0.08)",
-    borderBottom: "1px solid rgba(255,255,255,0.08)",
-  },
-  trustStatNum: {
-    display: "block",
-    fontSize: 40,
-    fontWeight: 400,
-    color: "#c8a96e",
-    letterSpacing: "-0.02em",
-    lineHeight: 1.1,
-    marginBottom: 6,
-  },
-  trustStatLabel: {
-    display: "block",
-    fontSize: 11,
-    fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    color: "rgba(255,255,255,0.5)",
+    textDecoration: "none",
+    transition: "background 0.2s, color 0.2s",
   },
 
   ctaBanner: {
     position: "relative",
-    minHeight: 300,
+    minHeight: 320,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -606,7 +645,7 @@ const styles = {
   ctaBannerOverlay: {
     position: "absolute",
     inset: 0,
-    backgroundColor: "rgba(8, 22, 14, 0.72)",
+    backgroundColor: "rgba(8,22,14,0.72)",
   },
   ctaBannerContent: {
     position: "relative",
@@ -628,22 +667,76 @@ const styles = {
     fontWeight: 300,
     marginBottom: 32,
   },
+
+  ctaPrimary: {
+    display: "inline-block",
+    padding: "14px 32px",
+    backgroundColor: "#c8a96e",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "'Helvetica Neue', sans-serif",
+    fontWeight: 600,
+    fontSize: 13,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    transition: "background 0.2s, transform 0.15s",
+    textDecoration: "none",
+  },
+  ctaPrimaryDark: {
+    display: "inline-block",
+    padding: "14px 32px",
+    backgroundColor: "#204E59",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "'Helvetica Neue', sans-serif",
+    fontWeight: 600,
+    fontSize: 13,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    transition: "background 0.2s, transform 0.15s",
+  },
+  ctaSecondary: {
+    display: "inline-block",
+    padding: "14px 32px",
+    backgroundColor: "transparent",
+    color: "#fff",
+    border: "1px solid rgba(255,255,255,0.45)",
+    textDecoration: "none",
+    fontFamily: "'Helvetica Neue', sans-serif",
+    fontWeight: 400,
+    fontSize: 13,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    transition: "border-color 0.2s, background 0.2s",
+  },
 };
 
 const css = `
   .btn-primary:hover { background-color: #b8954f !important; transform: translateY(-1px); }
-  .btn-primary-dark:hover { background-color: #0f1f18 !important; transform: translateY(-1px); }
+  .btn-primary-dark:hover { background-color: #163640 !important; transform: translateY(-1px); }
   .btn-secondary:hover { border-color: #fff !important; background: rgba(255,255,255,0.08) !important; }
-  .btn-outline:hover { background: #204E59 !important; color: #fff !important; }
+  .arrow-btn:hover { background: rgba(255,255,255,0.24) !important; }
   .dest-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13) !important; }
   .dest-cta-btn:hover { background: #204E59 !important; color: #fff !important; }
-  .exp-card:hover { border-color: #c8a96e !important; background: #fdf9f3 !important; transform: translateY(-2px); }
-  @media (max-width: 900px) {
-    .how-grid { grid-template-columns: 1fr !important; }
-    .trust-grid { grid-template-columns: 1fr !important; }
+  .see-all-btn:hover { background: #204E59 !important; color: #fff !important; }
+  @keyframes shimmer {
+    0% { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg, #e8e4de 25%, #ede9e3 50%, #e8e4de 75%);
+    background-size: 1200px 100%;
+    animation: shimmer 1.6s infinite;
+  }
+  @media (max-width: 1024px) {
+    .editorial { grid-template-columns: 1fr !important; }
+    .editorial-right { display: none !important; }
   }
   @media (max-width: 768px) {
-    .how-card { border-right: none !important; border-bottom: 1px solid #ece9e2; }
+    .hero-content { padding: 0 24px 80px !important; }
+    .slide-counter { right: 24px !important; }
   }
 `;
 

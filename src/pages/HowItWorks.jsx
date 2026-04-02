@@ -403,7 +403,7 @@ const S = {
   /* Hero */
   hero: {
     position: "relative",
-    backgroundColor: "#0c1e14",
+    backgroundColor: "#1E4D56",
     overflow: "hidden",
     padding: "0",
   },

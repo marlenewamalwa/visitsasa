@@ -16,26 +16,25 @@ const CONTACT_DETAILS = [
   {
     icon: "✉",
     label: "Email",
-    value: "hello@safariyako.co.ke",
-    href: "mailto:hello@safariyako.co.ke",
+    value: "hello@visitsasa.co.ke",
+    href: "mailto:hello@visitsasa.com",
   },
   {
     icon: "📱",
     label: "WhatsApp",
-    value: "+254 700 000 000",
+    value: "+254 778 389 333",
     href: "https://wa.me/254700000000",
   },
   {
     icon: "📞",
     label: "Phone",
-    value: "+254 700 000 000",
+    value: "+254 778 389 333",
     href: "tel:+254700000000",
   },
   {
     icon: "📍",
     label: "Office",
-    value: "Karen, Nairobi, Kenya",
-    href: null,
+    value: "Nairobi, Kenya",
   },
 ];
 
@@ -376,7 +375,7 @@ const S = {
   /* Hero */
   hero: {
     position: "relative",
-    backgroundColor: "#0c1e14",
+    backgroundColor: "#1E4D56",
     overflow: "hidden",
     padding: "100px 24px 80px",
     textAlign: "center",
@@ -510,7 +509,7 @@ const S = {
     cursor: "pointer",
     fontSize: 13,
     fontFamily: "'Helvetica Neue', sans-serif",
-    color: "#204E59",
+    color: "#1E4D56",
     fontWeight: 600,
     textDecoration: "underline",
     textUnderlineOffset: 2,

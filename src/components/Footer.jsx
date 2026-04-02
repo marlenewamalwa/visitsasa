@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const WHATSAPP_NUMBER = "254712345678"; // Replace with your number — no + or spaces
+const WHATSAPP_NUMBER = "254778389333"; // Replace with your number — no + or spaces
 const WHATSAPP_MESSAGE = encodeURIComponent("Hi! I'd like to find out more about your Kenya travel packages.");
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
@@ -95,8 +95,10 @@ function Footer() {
 
           {/* Social links */}
           <div style={styles.socialRow}>
-            <a href="#" style={styles.socialLink} className="footer-link">Instagram</a>
-            <a href="#" style={styles.socialLink} className="footer-link">Facebook</a>
+            <a href="https://www.instagram.com/visitsasaofficial/" style={styles.socialLink} className="footer-link">Instagram</a>
+            <a href="https://www.tiktok.com/@visitsasaofficial?_r=1&_t=ZS-95CPc5EriS4" style={styles.socialLink} className="footer-link">Tiktok</a>
+            <a href="https://web.facebook.com/Visitsasa/?_rdc=1&_rdr#" style={styles.socialLink} className="footer-link">Facebook</a>
+            <a href="https://www.linkedin.com/company/visitsasa/" style={styles.socialLink} className="footer-link">LinkedIn</a>
             <a
               href={WHATSAPP_URL}
               target="_blank"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import TripWizard from "../components/TripWizard";
-import heroBg from "../assets/lamu.jpg";
+import heroBg from "../assets/stingray.jpg";
 
 /* ── SVG ICON COMPONENT ── */
 function Icon({ d, size = 20, stroke = "currentColor", strokeWidth = 1.5, style = {} }) {
@@ -69,11 +69,7 @@ const CATEGORY_META = {
 const IMAGES = {
   hero: heroBg,
   // Category card headers — replace each with a relevant photo
-  Wildlife:  "https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&q=75&fit=crop",
-  Water:     "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=800&q=75&fit=crop",
-  Culture:   "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&q=75&fit=crop",
-  Adventure: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=75&fit=crop",
-  Wellness:  "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=75&fit=crop",
+ 
 };
 
 function Activities() {
@@ -133,24 +129,6 @@ function Activities() {
             <span>Add Activities to My Trip</span>
             <Icon d={ICONS.arrowRight} size={14} stroke="#fff" strokeWidth={2} style={{ marginLeft: 10 }} />
           </button>
-        </div>
-
-        {/* Category pills */}
-        <div style={S.heroPills}>
-          {Object.entries(CATEGORY_META).map(([cat]) => (
-            <button
-              key={cat}
-              style={S.heroPill}
-              className="hero-pill"
-              onClick={() => {
-                setActiveCategory(cat);
-                document.getElementById("activities-main")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              <Icon d={ICONS[cat]} size={13} stroke="rgba(255,255,255,0.7)" strokeWidth={1.5} style={{ marginRight: 6 }} />
-              {cat}
-            </button>
-          ))}
         </div>
       </section>
 
