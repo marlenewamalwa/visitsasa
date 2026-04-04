@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import TripWizard from "./TripWizard";
 import { supabase } from "../supabaseClient";
-import logo from "../assets/visitsasa.jpg";
+import logo from "../assets/vsl.png";
 
 const NAV_LINKS = [
   { label: "Destinations", to: "/destinations" },
@@ -378,7 +378,7 @@ const S = {
     justifyContent: "space-between", gap: 20,
   },
   logo:    { display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 },
-  logoImg: { height: 70, width: "auto", display: "block" },
+  logoImg: { height: 100, width: "auto", display: "block" },
 
   desktopNav: { display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" },
   navLink: {
