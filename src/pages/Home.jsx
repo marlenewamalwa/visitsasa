@@ -37,12 +37,13 @@ export default function Home() {
   const [animating,        setAnimating]         = useState(false);
   const [destinations,     setDestinations]      = useState([]);
   const [destLoading,      setDestLoading]       = useState(true);
-  const [destinationsList, setDestinationsList]  = useState([]); // full list for wizard
+  const [destinationsList, setDestinationsList]  = useState([]);
   const [activities,       setActivities]        = useState([]);
   const [actsLoading,      setActsLoading]       = useState(true);
-  const intervalRef = useRef(null);
+  const intervalRef  = useRef(null);
+  const touchStartX  = useRef(null);
 
-  // ── Fetch destinations (3 for display + full list for wizard) ──
+  // ── Fetch destinations ──
   useEffect(() => {
     const fetchDest = async () => {
       const { data } = await supabase
@@ -50,8 +51,8 @@ export default function Home() {
         .select("*")
         .order("created_at", { ascending: false });
       if (data) {
-        setDestinationsList(data);             // full list → wizard
-        setDestinations(data.slice(0, 3));     // first 3 → homepage cards
+        setDestinationsList(data);
+        setDestinations(data.slice(0, 3));
       }
       setDestLoading(false);
     };
@@ -84,7 +85,9 @@ export default function Home() {
     setAnimating(true);
     setTimeout(() => {
       setActiveSlide((prev) =>
-        dir === "next" ? (prev + 1) % HERO_SLIDES.length : (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
+        dir === "next"
+          ? (prev + 1) % HERO_SLIDES.length
+          : (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length
       );
       setAnimating(false);
     }, 450);
@@ -96,6 +99,17 @@ export default function Home() {
     setAnimating(true);
     setTimeout(() => { setActiveSlide(i); setAnimating(false); }, 450);
     startInterval();
+  };
+
+  // ── Touch / swipe handlers for hero ──
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(delta) > 40) changeSlide(delta > 0 ? "next" : "prev");
+    touchStartX.current = null;
   };
 
   const openWizard = (dests = []) => {
@@ -116,23 +130,53 @@ export default function Home() {
       <style>{css}</style>
 
       {/* ── HERO ── */}
-      <section style={styles.hero}>
+      <section
+        style={styles.hero}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {HERO_SLIDES.map((s, i) => (
-          <img key={i} src={s.img} alt="" style={{ ...styles.heroBg, opacity: i === activeSlide ? 1 : 0, transition: "opacity 1s ease" }} />
+          <img
+            key={i}
+            src={s.img}
+            alt=""
+            style={{
+              ...styles.heroBg,
+              opacity: i === activeSlide ? 1 : 0,
+              transition: "opacity 1s ease",
+            }}
+          />
         ))}
         <div style={styles.heroOverlay} />
 
-        <div style={{ ...styles.heroContent, opacity: animating ? 0 : 1, transform: animating ? "translateY(14px)" : "translateY(0)", transition: "opacity 0.45s ease, transform 0.45s ease" }}>
+        <div
+          style={{
+            ...styles.heroContent,
+            opacity: animating ? 0 : 1,
+            transform: animating ? "translateY(14px)" : "translateY(0)",
+            transition: "opacity 0.45s ease, transform 0.45s ease",
+          }}
+        >
           <span style={styles.heroEyebrow}>{slide.eyebrow}</span>
           <h1 style={styles.heroTitle}>
-            {slide.title.split("\n").map((line, i) => <span key={i}>{line}<br /></span>)}
+            {slide.title.split("\n").map((line, i) => (
+              <span key={i}>{line}<br /></span>
+            ))}
           </h1>
           <p style={styles.heroSub}>{slide.sub}</p>
           <div style={styles.heroActions}>
-            <button onClick={() => openWizard()} style={styles.ctaPrimary} className="btn-primary">
+            <button
+              onClick={() => openWizard()}
+              style={styles.ctaPrimary}
+              className="btn-primary"
+            >
               Start Building Your Trip
             </button>
-            <Link to="/destinations" style={styles.ctaSecondary} className="btn-secondary">
+            <Link
+              to="/destinations"
+              style={styles.ctaSecondary}
+              className="btn-secondary"
+            >
               Explore Kenya
             </Link>
           </div>
@@ -143,16 +187,36 @@ export default function Home() {
           </div>
         </div>
 
-        <button onClick={() => changeSlide("prev")} style={{ ...styles.arrowBtn, left: 24 }} className="arrow-btn">‹</button>
-        <button onClick={() => changeSlide("next")} style={{ ...styles.arrowBtn, right: 24 }} className="arrow-btn">›</button>
+        {/* Arrow buttons — hidden on mobile via CSS */}
+        <button
+          onClick={() => changeSlide("prev")}
+          style={{ ...styles.arrowBtn, left: 24 }}
+          className="arrow-btn"
+          aria-label="Previous slide"
+        >
+          ‹
+        </button>
+        <button
+          onClick={() => changeSlide("next")}
+          style={{ ...styles.arrowBtn, right: 24 }}
+          className="arrow-btn"
+          aria-label="Next slide"
+        >
+          ›
+        </button>
 
         <div style={styles.dots}>
           {HERO_SLIDES.map((_, i) => (
-            <button key={i} onClick={() => goToSlide(i)} style={{ ...styles.dot, ...(i === activeSlide ? styles.dotActive : {}) }} aria-label={`Slide ${i + 1}`} />
+            <button
+              key={i}
+              onClick={() => goToSlide(i)}
+              style={{ ...styles.dot, ...(i === activeSlide ? styles.dotActive : {}) }}
+              aria-label={`Slide ${i + 1}`}
+            />
           ))}
         </div>
 
-        <div style={styles.slideCounter}>
+        <div style={styles.slideCounter} className="slide-counter">
           <span style={styles.slideCounterCurrent}>0{activeSlide + 1}</span>
           <span style={styles.slideCounterSep}> / </span>
           <span style={styles.slideCounterTotal}>0{HERO_SLIDES.length}</span>
@@ -160,7 +224,7 @@ export default function Home() {
       </section>
 
       {/* ── EDITORIAL ── */}
-      <section style={styles.editorial}>
+      <section style={styles.editorial} className="editorial">
         <div style={styles.editorialLeft}>
           <span style={styles.sectionTag}>The Tamu Way</span>
           <h2 style={styles.editorialTitle}>
@@ -186,14 +250,18 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <button onClick={() => openWizard()} style={styles.ctaPrimaryDark} className="btn-primary-dark">
+          <button
+            onClick={() => openWizard()}
+            style={styles.ctaPrimaryDark}
+            className="btn-primary-dark btn-full-mobile"
+          >
             Build My Trip
           </button>
         </div>
-        <div style={styles.editorialRight}>
+        <div style={styles.editorialRight} className="editorial-right">
           <div style={styles.editorialImgStack}>
-            <img src={hike}   alt="Hiking"  style={styles.editorialImgBack}  />
-            <img src={sunset} alt="Sunset"  style={styles.editorialImgFront} />
+            <img src={hike}   alt="Hiking" style={styles.editorialImgBack}  />
+            <img src={sunset} alt="Sunset" style={styles.editorialImgFront} />
             <div style={styles.editorialImgAccent} />
           </div>
         </div>
@@ -205,28 +273,31 @@ export default function Home() {
           <div style={styles.sectionHeader}>
             <span style={styles.sectionTag}>Where To Go</span>
             <h2 style={styles.sectionTitle}>Popular Destinations</h2>
-            <p style={styles.sectionDesc}>Hand-pick your stops — mix and match to build a multi-destination trip.</p>
+            <p style={styles.sectionDesc}>
+              Hand-pick your stops — mix and match to build a multi-destination trip.
+            </p>
           </div>
 
           {destLoading ? (
             <div style={styles.destGrid}>
-              {[1, 2, 3].map((i) => <div key={i} style={styles.shimmerCard} className="shimmer" />)}
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={styles.shimmerCard} className="shimmer" />
+              ))}
             </div>
           ) : destinations.length === 0 ? (
-            <p style={{ textAlign: "center", color: "#999", fontFamily: "'Helvetica Neue', sans-serif" }}>No destinations found.</p>
+            <p style={{ textAlign: "center", color: "#999", fontFamily: "'Helvetica Neue', sans-serif" }}>
+              No destinations found.
+            </p>
           ) : (
             <div style={styles.destGrid}>
               {destinations.map((d) => (
                 <div key={d.id} style={styles.destCard} className="dest-card">
-                  {/* Image */}
                   <div style={styles.destImgWrap}>
                     <img src={d.image_url} alt={d.name} style={styles.destImg} className="dest-img" />
                     <div style={styles.destImgOverlay} />
-                    {d.region && <span style={styles.destRegionBadge}>{d.region}</span>}
+                    {d.region    && <span style={styles.destRegionBadge}>{d.region}</span>}
                     {d.duration_days && <span style={styles.destDaysBadge}>{d.duration_days}</span>}
                   </div>
-
-                  {/* Info */}
                   <div style={styles.destInfo}>
                     {d.tag && <span style={styles.destTag}>{d.tag}</span>}
                     <h3 style={styles.destName}>{d.name}</h3>
@@ -266,7 +337,9 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={styles.sectionHeader}>
             <span style={{ ...styles.sectionTag, color: "#c8a96e" }}>Things To Do</span>
-            <h2 style={{ ...styles.sectionTitle, color: "#fff" }}>Experiences Worth<br />Travelling For</h2>
+            <h2 style={{ ...styles.sectionTitle, color: "#fff" }}>
+              Experiences Worth<br />Travelling For
+            </h2>
             <p style={{ ...styles.sectionDesc, color: "rgba(255,255,255,0.5)" }}>
               From dawn game drives to coral reef dives — Kenya delivers experiences that stay with you.
             </p>
@@ -274,13 +347,18 @@ export default function Home() {
 
           {actsLoading ? (
             <div style={styles.actsGrid}>
-              {[1,2,3,4].map((i) => <div key={i} style={styles.actShimmer} className="shimmer-dark" />)}
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} style={styles.actShimmer} className="shimmer-dark" />
+              ))}
             </div>
           ) : (
             <div style={styles.actsGrid}>
               {activities.map((a, i) => (
-                <div key={a.id} style={{ ...styles.actCard, animationDelay: `${i * 80}ms` }} className="act-card">
-                  {/* Image or fallback */}
+                <div
+                  key={a.id}
+                  style={{ ...styles.actCard, animationDelay: `${i * 80}ms` }}
+                  className="act-card"
+                >
                   <div style={styles.actImgWrap}>
                     {a.image_url
                       ? <img src={a.image_url} alt={a.name} style={styles.actImg} />
@@ -294,11 +372,12 @@ export default function Home() {
                       </span>
                     )}
                   </div>
-
                   <div style={styles.actBody}>
                     <h3 style={styles.actName}>{a.name}</h3>
                     {a.description && (
-                      <p style={styles.actDesc}>{a.description.slice(0, 80)}{a.description.length > 80 ? "…" : ""}</p>
+                      <p style={styles.actDesc}>
+                        {a.description.slice(0, 80)}{a.description.length > 80 ? "…" : ""}
+                      </p>
                     )}
                     <div style={styles.actMeta}>
                       {a.duration && <span style={styles.actMetaPill}>⏱ {a.duration}</span>}
@@ -310,7 +389,11 @@ export default function Home() {
           )}
 
           <div style={{ textAlign: "center", marginTop: 48 }}>
-            <Link to="/activities" style={{ ...styles.seeAllBtn, borderColor: "rgba(255,255,255,0.3)", color: "#fff" }} className="see-all-acts-btn">
+            <Link
+              to="/activities"
+              style={{ ...styles.seeAllBtn, borderColor: "rgba(255,255,255,0.3)", color: "#fff" }}
+              className="see-all-acts-btn"
+            >
               See All Activities →
             </Link>
           </div>
@@ -323,8 +406,14 @@ export default function Home() {
         <div style={styles.ctaBannerOverlay} />
         <div style={styles.ctaBannerContent}>
           <h2 style={styles.ctaBannerTitle}>Your Kenya Story Starts Here</h2>
-          <p style={styles.ctaBannerSub}>Tell us your dream — we'll build the perfect itinerary, just for you.</p>
-          <button onClick={() => openWizard()} style={styles.ctaPrimary} className="btn-primary">
+          <p style={styles.ctaBannerSub}>
+            Tell us your dream — we'll build the perfect itinerary, just for you.
+          </p>
+          <button
+            onClick={() => openWizard()}
+            style={styles.ctaPrimary}
+            className="btn-primary btn-full-mobile"
+          >
             Start Building Your Trip
           </button>
         </div>
@@ -345,21 +434,22 @@ const styles = {
   page: { fontFamily: "'Georgia', 'Times New Roman', serif", color: "#1a1a1a", backgroundColor: "#fff" },
 
   // HERO
-  hero: { position: "relative", height: "100vh", minHeight: 620, display: "flex", alignItems: "center", overflow: "hidden" },
+  // Use 100svh so mobile browser chrome doesn't cause overflow; fall back to 100vh
+  hero: { position: "relative", height: "100svh", minHeight: 600, display: "flex", alignItems: "center", overflow: "hidden" },
   heroBg: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" },
-  heroOverlay: { position: "absolute", inset: 0, background: "linear-gradient(110deg, rgba(8,20,14,0.78) 0%, rgba(8,20,14,0.4) 65%, rgba(8,20,14,0.15) 100%)" },
-  heroContent: { position: "relative", zIndex: 2, maxWidth: 680, width: "100%", padding: "0 24px 80px", margin: "0 auto", textAlign: "center" },
+  heroOverlay: { position: "absolute", inset: 0, background: "linear-gradient(110deg, rgba(8,20,14,0.82) 0%, rgba(8,20,14,0.5) 65%, rgba(8,20,14,0.2) 100%)" },
+  heroContent: { position: "relative", zIndex: 2, maxWidth: 680, width: "100%", padding: "0 20px 72px", margin: "0 auto", textAlign: "center" },
   heroEyebrow: { display: "inline-block", letterSpacing: "0.22em", textTransform: "uppercase", fontSize: 10, color: "#c8a96e", fontFamily: "'Helvetica Neue', sans-serif", marginBottom: 20, borderBottom: "1px solid rgba(200,169,110,0.5)", paddingBottom: 6 },
-  heroTitle: { fontSize: "clamp(44px, 7vw, 84px)", fontWeight: 400, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 24px" },
-  heroSub: { fontSize: 16, color: "rgba(255,255,255,0.72)", lineHeight: 1.75, fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, marginBottom: 40, maxWidth: 440, margin: "0 auto 40px" },
-  heroActions: { display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 28, justifyContent: "center" },
-  heroTrust: { display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "center" },
+  heroTitle: { fontSize: "clamp(36px, 7vw, 84px)", fontWeight: 400, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", margin: "0 0 20px" },
+  heroSub: { fontSize: 15, color: "rgba(255,255,255,0.72)", lineHeight: 1.75, fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, marginBottom: 36, maxWidth: 440, margin: "0 auto 36px" },
+  heroActions: { display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24, justifyContent: "center" },
+  heroTrust: { display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" },
   trustItem: { fontSize: 11, color: "rgba(255,255,255,0.55)", fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.05em" },
-  arrowBtn: { position: "absolute", top: "50%", transform: "translateY(-50%)", zIndex: 4, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", width: 50, height: 50, fontSize: 30, cursor: "pointer", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s", lineHeight: 1 },
-  dots: { position: "absolute", bottom: 36, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 4 },
-  dot: { width: 28, height: 2, backgroundColor: "rgba(255,255,255,0.3)", border: "none", cursor: "pointer", padding: 0, transition: "background 0.3s, width 0.3s" },
+  arrowBtn: { position: "absolute", top: "50%", transform: "translateY(-50%)", zIndex: 4, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.25)", color: "#fff", width: 52, height: 52, fontSize: 30, cursor: "pointer", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s", lineHeight: 1 },
+  dots: { position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 4 },
+  dot: { width: 28, height: 3, backgroundColor: "rgba(255,255,255,0.3)", border: "none", cursor: "pointer", padding: 0, transition: "background 0.3s, width 0.3s" },
   dotActive: { width: 52, backgroundColor: "#c8a96e" },
-  slideCounter: { position: "absolute", bottom: 28, right: 72, zIndex: 4, display: "flex", alignItems: "baseline", gap: 2, fontFamily: "'Helvetica Neue', sans-serif" },
+  slideCounter: { position: "absolute", bottom: 22, right: 72, zIndex: 4, display: "flex", alignItems: "baseline", gap: 2, fontFamily: "'Helvetica Neue', sans-serif" },
   slideCounterCurrent: { fontSize: 22, color: "#fff", fontWeight: 300 },
   slideCounterSep:     { fontSize: 12, color: "rgba(255,255,255,0.35)" },
   slideCounterTotal:   { fontSize: 12, color: "rgba(255,255,255,0.35)" },
@@ -367,7 +457,7 @@ const styles = {
   // EDITORIAL
   editorial: { display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: 560, overflow: "hidden" },
   editorialLeft: { padding: "80px 64px", backgroundColor: "#fff", display: "flex", flexDirection: "column", justifyContent: "center" },
-  editorialTitle: { fontSize: "clamp(34px, 4vw, 52px)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1.1, margin: "12px 0 24px", color: "#111" },
+  editorialTitle: { fontSize: "clamp(30px, 4vw, 52px)", fontWeight: 400, letterSpacing: "-0.03em", lineHeight: 1.1, margin: "12px 0 24px", color: "#111" },
   editorialItalic: { fontStyle: "italic", color: "#c8a96e" },
   editorialBody: { fontSize: 15, color: "#555", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, lineHeight: 1.8, marginBottom: 40, maxWidth: 440 },
   editorialStats: { display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "1px solid #ece9e2", marginBottom: 40 },
@@ -384,23 +474,23 @@ const styles = {
   destSection: { backgroundColor: "#f7f4ef", padding: "80px 24px" },
   sectionHeader: { textAlign: "center", marginBottom: 52 },
   sectionTag: { display: "inline-block", fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.18em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 12 },
-  sectionTitle: { fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, letterSpacing: "-0.02em", margin: "0 0 14px", lineHeight: 1.15 },
+  sectionTitle: { fontSize: "clamp(26px, 4vw, 44px)", fontWeight: 400, letterSpacing: "-0.02em", margin: "0 0 14px", lineHeight: 1.15 },
   sectionDesc: { fontSize: 15, color: "#666", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, lineHeight: 1.7, maxWidth: 500, margin: "0 auto" },
-  destGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 },
+  destGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 },
   shimmerCard: { height: 420 },
   destCard: { backgroundColor: "#fff", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", transition: "transform 0.25s, box-shadow 0.25s" },
   destImgWrap: { position: "relative", overflow: "hidden" },
-  destImg: { width: "100%", height: 230, objectFit: "cover", display: "block", transition: "transform 0.5s ease" },
+  destImg: { width: "100%", height: 220, objectFit: "cover", display: "block", transition: "transform 0.5s ease" },
   destImgOverlay: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 60%)", pointerEvents: "none" },
   destRegionBadge: { position: "absolute", top: 14, left: 14, backgroundColor: "#c8a96e", color: "#fff", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", padding: "4px 10px" },
   destDaysBadge: { position: "absolute", top: 14, right: 14, backgroundColor: "rgba(0,0,0,0.65)", color: "#fff", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.08em", padding: "4px 10px", backdropFilter: "blur(4px)" },
-  destInfo: { padding: "20px 22px 22px" },
+  destInfo: { padding: "18px 20px 20px" },
   destTag: { fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", color: "#c8a96e", display: "block", marginBottom: 8 },
   destName: { fontSize: 21, fontWeight: 400, margin: "0 0 10px", letterSpacing: "-0.01em" },
   destDesc: { fontSize: 13, color: "#666", fontFamily: "'Helvetica Neue', sans-serif", lineHeight: 1.65, margin: "0 0 18px" },
   destActions: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 },
   destLearnBtn: { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#aaa", textDecoration: "none", letterSpacing: "0.04em", transition: "color 0.15s" },
-  destCta: { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, color: "#204E59", background: "none", border: "1px solid #204E59", padding: "8px 16px", cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase", transition: "background 0.2s, color 0.2s" },
+  destCta: { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, color: "#204E59", background: "none", border: "1px solid #204E59", padding: "10px 16px", cursor: "pointer", letterSpacing: "0.06em", textTransform: "uppercase", transition: "background 0.2s, color 0.2s" },
   destFooter: { textAlign: "center", marginTop: 52 },
   seeAllBtn: { display: "inline-block", padding: "14px 40px", border: "1px solid #204E59", color: "#204E59", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none", transition: "background 0.2s, color 0.2s" },
 
@@ -425,17 +515,18 @@ const styles = {
   ctaBanner: { position: "relative", minHeight: 320, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" },
   ctaBannerBg: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" },
   ctaBannerOverlay: { position: "absolute", inset: 0, backgroundColor: "rgba(8,22,14,0.72)" },
-  ctaBannerContent: { position: "relative", zIndex: 2, textAlign: "center", padding: "60px 24px" },
-  ctaBannerTitle: { fontSize: "clamp(26px, 4vw, 46px)", fontWeight: 400, color: "#fff", margin: "0 0 14px", letterSpacing: "-0.02em" },
-  ctaBannerSub: { fontSize: 16, color: "rgba(255,255,255,0.72)", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, marginBottom: 32 },
+  ctaBannerContent: { position: "relative", zIndex: 2, textAlign: "center", padding: "60px 24px", width: "100%" },
+  ctaBannerTitle: { fontSize: "clamp(24px, 4vw, 46px)", fontWeight: 400, color: "#fff", margin: "0 0 14px", letterSpacing: "-0.02em" },
+  ctaBannerSub: { fontSize: 15, color: "rgba(255,255,255,0.72)", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, marginBottom: 32 },
 
   // BUTTONS
-  ctaPrimary: { display: "inline-block", padding: "14px 32px", backgroundColor: "#c8a96e", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s, transform 0.15s", textDecoration: "none" },
-  ctaPrimaryDark: { display: "inline-block", padding: "14px 32px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s, transform 0.15s" },
-  ctaSecondary: { display: "inline-block", padding: "14px 32px", backgroundColor: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.45)", textDecoration: "none", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 400, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "border-color 0.2s, background 0.2s" },
+  ctaPrimary: { display: "inline-block", padding: "15px 32px", backgroundColor: "#c8a96e", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s, transform 0.15s", textDecoration: "none" },
+  ctaPrimaryDark: { display: "inline-block", padding: "15px 32px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s, transform 0.15s" },
+  ctaSecondary: { display: "inline-block", padding: "15px 32px", backgroundColor: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.45)", textDecoration: "none", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 400, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "border-color 0.2s, background 0.2s" },
 };
 
 const css = `
+  /* ── Hover states (desktop only) ── */
   .btn-primary:hover      { background-color: #b8954f !important; transform: translateY(-1px); }
   .btn-primary-dark:hover { background-color: #163640 !important; transform: translateY(-1px); }
   .btn-secondary:hover    { border-color: #fff !important; background: rgba(255,255,255,0.08) !important; }
@@ -448,7 +539,12 @@ const css = `
   .see-all-acts-btn:hover { background: rgba(255,255,255,0.1) !important; }
   .act-card               { animation: fadeUp 0.45s ease forwards; }
   .act-card:hover img     { transform: scale(1.06); }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
   @keyframes shimmer {
     0%   { background-position: -600px 0; }
     100% { background-position:  600px 0; }
@@ -463,11 +559,74 @@ const css = `
     background-size: 1200px 100%;
     animation: shimmer 1.6s infinite;
   }
+
+  /* ── Tablet (≤1024px) ── */
   @media (max-width: 1024px) {
-    .editorial { grid-template-columns: 1fr !important; }
-    .editorial-right { display: none !important; }
+    .editorial                { grid-template-columns: 1fr !important; }
+    .editorial-right          { display: none !important; }
   }
-  @media (max-width: 768px) {
-    .slide-counter { right: 24px !important; }
+
+  /* ── Mobile (≤640px) ── */
+  @media (max-width: 640px) {
+    /* Hero */
+    .arrow-btn                { display: none !important; }
+    .slide-counter            { right: 16px !important; bottom: 16px !important; }
+
+    /* Hero buttons — stack vertically, full width */
+    .hero-actions             { flex-direction: column !important; align-items: stretch !important; }
+    .btn-primary,
+    .btn-secondary            { text-align: center; }
+
+    /* Full-width button utility used in editorial & CTA */
+    .btn-full-mobile          { width: 100% !important; text-align: center; box-sizing: border-box; }
+
+    /* Editorial padding reduced */
+    .editorial-left           { padding: 48px 20px !important; }
+
+    /* Sections — tighter vertical padding */
+    .dest-section             { padding: 52px 16px !important; }
+    .acts-section             { padding: 52px 16px !important; }
+    .cta-banner-content       { padding: 48px 20px !important; }
+
+    /* Section headers */
+    .section-header           { margin-bottom: 32px !important; }
+
+    /* Dest grid — force single column below 400px */
+    .dest-grid                { grid-template-columns: 1fr !important; gap: 16px !important; }
+
+    /* Activities grid — 1 column on narrow phones */
+    .acts-grid                { grid-template-columns: 1fr !important; gap: 2px !important; }
+
+    /* Destination card image — slightly shorter on mobile */
+    .dest-img                 { height: 200px !important; }
+
+    /* Activity card image */
+    .act-img,
+    .act-img-fallback         { height: 240px !important; }
+
+    /* Larger tap targets for destination CTA */
+    .dest-cta-btn             { padding: 12px 18px !important; }
+
+    /* See-all buttons full width on mobile */
+    .see-all-btn,
+    .see-all-acts-btn         { display: block !important; text-align: center; padding: 16px 24px !important; }
+
+    /* Trust bar — smaller gap on narrow screens */
+    .hero-trust               { gap: 10px !important; }
+
+    /* Dots — slightly bigger tap area */
+    .dots button              { min-height: 20px; }
+
+    /* Disable hover lift on touch — avoids stuck state */
+    .dest-card:hover          { transform: none !important; box-shadow: 0 2px 16px rgba(0,0,0,0.07) !important; }
+    .btn-primary:hover,
+    .btn-primary-dark:hover   { transform: none !important; }
+  }
+
+  /* ── Very small phones (≤380px) ── */
+  @media (max-width: 380px) {
+    .hero-trust span          { font-size: 10px !important; }
+    .editorial-stats          { grid-template-columns: 1fr 1fr !important; }
+    .dest-name                { font-size: 18px !important; }
   }
 `;
