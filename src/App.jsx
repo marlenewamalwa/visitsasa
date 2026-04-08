@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import { AuthProvider } from "./context/AuthContext";
 import SearchResults from "./pages/SearchResults";
+import AuthCallback from './pages/AuthCallback'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/activities" element={<Activities />} />
           <Route path="/howitworks" element={<HowItWorks />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/profile" element={     
             <ProtectedRoute>
               <Profile />
