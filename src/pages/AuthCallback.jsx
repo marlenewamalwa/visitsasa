@@ -6,12 +6,16 @@ export default function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    supabase.auth.exchangeCodeForSession().then(({ error }) => {
-         console.log('data:', data)
-    console.log('error:', error)
-      navigate(error ? '/login' : '/profile', { replace: true })
-    })
-  }, [])
+  supabase.auth.exchangeCodeForSession().then(({ error }) => {
+    if (error) {
+      navigate('/login', { replace: true })
+    } else {
+      setTimeout(() => {
+        navigate('/profile', { replace: true })
+      }, 500)
+    }
+  })
+}, [])
 
   return <p>Signing you in...</p>
 }
