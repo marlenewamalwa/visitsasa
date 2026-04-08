@@ -52,7 +52,8 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
   const [submitted,        setSubmitted]        = useState(false);
   const [submitting,       setSubmitting]       = useState(false);
   const [error,            setError]            = useState("");
-  const [showAuthGate,     setShowAuthGate]     = useState(!user);
+  // Auth gate now starts as false — it only shows at the end if the user isn't signed in
+  const [showAuthGate,     setShowAuthGate]     = useState(false);
   const [destinationsList, setDestinationsList] = useState([]);
   const [destLoading,      setDestLoading]      = useState(true);
 
@@ -75,6 +76,8 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
 
   useEffect(() => {
     if (user) {
+      // If the user just signed in while the auth gate was showing, close it
+      setShowAuthGate(false);
       setForm((f) => ({
         ...f,
         name:  f.name  || profile?.full_name || user?.user_metadata?.full_name || "",
@@ -110,6 +113,12 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
   };
 
   const handleSubmit = async () => {
+    // If the user hasn't signed in yet, show the auth gate before submitting
+    if (!user) {
+      setShowAuthGate(true);
+      return;
+    }
+
     setSubmitting(true);
     setError("");
     try {
@@ -157,55 +166,6 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
       ? Math.max(0, Math.round((new Date(form.end_date) - new Date(form.start_date)) / 86400000))
       : null;
 
-  // ── AUTH GATE ──────────────────────────────────────────────────────────────
-  if (showAuthGate) {
-    return (
-      <div style={S.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
-        <div style={{ ...S.modal, maxWidth: 460 }}>
-          <style>{wizardCss}</style>
-          <div style={S.header}>
-            <div>
-              <p style={S.headerEyebrow}>Access Required</p>
-              <h2 style={S.headerTitle}>Sign In to Build Your Trip</h2>
-            </div>
-            <button style={S.closeBtn} onClick={onClose} className="close-btn">✕</button>
-          </div>
-          <div style={{ padding: "40px 32px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 24 }}>
-            <span style={{ fontSize: 52 }}>🔐</span>
-            <div>
-              <h3 style={{ fontSize: 20, fontWeight: 400, margin: "0 0 10px", fontFamily: "'Georgia', serif" }}>
-                Sign in to get started
-              </h3>
-              <p style={{ fontSize: 14, color: "#888", fontFamily: "'Helvetica Neue', sans-serif", lineHeight: 1.75, margin: 0, maxWidth: 320 }}>
-                You need a free account to build and submit a trip. This lets you
-                track your trip status, save destinations, and manage everything
-                from your profile.
-              </p>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 300 }}>
-              <Link
-                to="/login"
-                style={{ ...S.nextBtn, display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px" }}
-                className="wizard-btn-primary"
-                onClick={onClose}
-              >
-                Sign In →
-              </Link>
-              <Link
-                to="/signup"
-                style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px", border: "1px solid #1a2f2a", color: "#1a2f2a", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" }}
-                className="wizard-btn-outline"
-                onClick={onClose}
-              >
-                Create Free Account →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // ── MAIN WIZARD ────────────────────────────────────────────────────────────
   return (
     <div style={S.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -219,7 +179,7 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
             <h2 style={S.headerTitle}>{submitted ? "Trip Submitted!" : STEPS[step]}</h2>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {!submitted && (
+            {!submitted && user && (
               <span style={S.authBadge}>
                 ✓ {profile?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Signed in"}
               </span>
@@ -507,6 +467,60 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
           </div>
         )}
       </div>
+
+      {/* ── AUTH GATE OVERLAY — shown at the end if the user isn't signed in ── */}
+      {showAuthGate && (
+        <div
+          style={{
+            position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.55)",
+            zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "16px", backdropFilter: "blur(4px)",
+          }}
+          onClick={(e) => e.target === e.currentTarget && setShowAuthGate(false)}
+        >
+          <div style={{ ...S.modal, maxWidth: 460 }}>
+            <div style={S.header}>
+              <div>
+                <p style={S.headerEyebrow}>One Last Step</p>
+                <h2 style={S.headerTitle}>Sign In to Submit Your Trip</h2>
+              </div>
+              <button style={S.closeBtn} onClick={() => setShowAuthGate(false)} className="close-btn">✕</button>
+            </div>
+            <div style={{ padding: "40px 32px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 24 }}>
+              <span style={{ fontSize: 52 }}>🔐</span>
+              <div>
+                <h3 style={{ fontSize: 20, fontWeight: 400, margin: "0 0 10px", fontFamily: "'Georgia', serif" }}>
+                  Almost there — sign in to continue
+                </h3>
+                <p style={{ fontSize: 14, color: "#888", fontFamily: "'Helvetica Neue', sans-serif", lineHeight: 1.75, margin: 0, maxWidth: 320 }}>
+                  A free account lets you track your trip status, save destinations,
+                  and manage everything from your profile. Your trip details are saved.
+                </p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 300 }}>
+                <Link
+                  to="/login"
+                  state={{ returnTo: "wizard" }}
+                  style={{ ...S.nextBtn, display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px" }}
+                  className="wizard-btn-primary"
+                  onClick={onClose}
+                >
+                  Sign In →
+                </Link>
+                <Link
+                  to="/signup"
+                  state={{ returnTo: "wizard" }}
+                  style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px", border: "1px solid #1a2f2a", color: "#1a2f2a", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" }}
+                  className="wizard-btn-outline"
+                  onClick={onClose}
+                >
+                  Create Free Account →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
