@@ -7,6 +7,8 @@ export default function AuthCallback() {
 
   useEffect(() => {
     supabase.auth.exchangeCodeForSession().then(({ error }) => {
+         console.log('data:', data)
+    console.log('error:', error)
       navigate(error ? '/login' : '/profile', { replace: true })
     })
   }, [])
