@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ctaBg from "../assets/nairobi1.jpg";
+import heroBg from "../assets/nairobi2.jpg";
 import culture from "../assets/culture.jpg";
 import planning from "../assets/planning.jpg";
 import money from "../assets/money.jpg";
@@ -140,21 +140,24 @@ function TravelTips() {
     <div style={styles.page}>
       <style>{css}</style>
 
-      {/* Page Header */}
-      <section style={styles.pageHeader}>
-        <span style={styles.eyebrow}>Before You Go</span>
-        <h1 style={styles.pageTitle}>Kenya Travel Guide</h1>
-        <p style={styles.pageDesc}>
-          Everything you need to know to travel Kenya safely, respectfully, and
-          unforgettably — from your first vaccine to your last safari sunrise.
-        </p>
+      {/* ── HERO ── */}
+      <section style={styles.hero} className="tips-hero">
+        <img src={heroBg} alt="Kenya travel" style={styles.heroBgImg} />
+        <div style={styles.heroOverlay} />
+        <div style={styles.heroContent}>
+          <span style={styles.eyebrow}>Before You Go</span>
+          <h1 style={styles.heroTitle}>Kenya Travel Guide</h1>
+          <p style={styles.heroDesc}>
+            Everything you need to know to travel Kenya safely, respectfully, and
+            unforgettably — from your first vaccine to your last safari sunrise.
+          </p>
+        </div>
       </section>
-      <div style={styles.divider} />
 
       {/* Quick Facts Bar */}
-      <section style={styles.factsBar}>
+      <section style={styles.factsBar} className="facts-bar">
         {QUICK_FACTS.map(f => (
-          <div key={f.label} style={styles.factItem}>
+          <div key={f.label} style={styles.factItem} className="fact-item">
             <span style={styles.factLabel}>{f.label}</span>
             <span style={styles.factValue}>{f.value}</span>
           </div>
@@ -162,9 +165,9 @@ function TravelTips() {
       </section>
 
       {/* Category Tabs + Tips */}
-      <section style={styles.main}>
+      <section style={styles.main} className="main-grid">
         {/* Sidebar */}
-        <nav style={styles.sidebar}>
+        <nav style={styles.sidebar} className="tips-sidebar">
           {CATEGORIES.map((cat, i) => (
             <button
               key={cat.label}
@@ -182,13 +185,13 @@ function TravelTips() {
         </nav>
 
         {/* Content */}
-        <div style={styles.content}>
+        <div style={styles.content} className="tips-content">
           <img
             src={CATEGORIES[active].img}
             alt={CATEGORIES[active].label}
             style={styles.catImg}
           />
-          <div style={styles.tipsGrid}>
+          <div style={styles.tipsGrid} className="tips-grid">
             {CATEGORIES[active].tips.map((tip, i) => (
               <div key={i} style={styles.tipCard} className="tip-card">
                 <span style={styles.tipNum}>0{i + 1}</span>
@@ -201,8 +204,6 @@ function TravelTips() {
           </div>
         </div>
       </section>
-
-    
     </div>
   );
 }
@@ -215,11 +216,35 @@ const styles = {
     minHeight: "100vh",
   },
 
-  pageHeader: {
+  /* Hero */
+  hero: {
+    position: "relative",
+    minHeight: 460,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  heroBgImg: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  heroOverlay: {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: "rgba(8,22,14,0.65)",
+  },
+  heroContent: {
+    position: "relative",
+    zIndex: 2,
     maxWidth: 680,
-    margin: "0 auto",
-    padding: "72px 24px 40px",
+    padding: "80px 24px",
     textAlign: "center",
+    width: "100%",
+    margin: "0 auto",
   },
   eyebrow: {
     display: "inline-block",
@@ -229,29 +254,24 @@ const styles = {
     textTransform: "uppercase",
     color: "#c8a96e",
     marginBottom: 16,
-    borderBottom: "1px solid #c8a96e",
+    borderBottom: "1px solid rgba(200,169,110,0.5)",
     paddingBottom: 6,
   },
-  pageTitle: {
+  heroTitle: {
     fontSize: "clamp(34px, 5vw, 58px)",
     fontWeight: 400,
     letterSpacing: "-0.02em",
     lineHeight: 1.1,
     margin: "0 0 20px",
+    color: "#fff",
   },
-  pageDesc: {
+  heroDesc: {
     fontSize: 16,
-    color: "#666",
+    color: "rgba(255,255,255,0.72)",
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 300,
     lineHeight: 1.75,
     margin: 0,
-  },
-  divider: {
-    width: 48,
-    height: 1,
-    backgroundColor: "#c8a96e",
-    margin: "0 auto",
   },
 
   /* Quick Facts */
@@ -261,7 +281,6 @@ const styles = {
     justifyContent: "center",
     borderTop: "1px solid #ece9e2",
     borderBottom: "1px solid #ece9e2",
-    margin: "40px 0 0",
   },
   factItem: {
     padding: "24px 36px",
@@ -381,70 +400,39 @@ const styles = {
     lineHeight: 1.7,
     margin: 0,
   },
-
-  /* CTA */
-  cta: {
-    position: "relative",
-    minHeight: 260,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  ctaBg: {
-    position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  ctaOverlay: {
-    position: "absolute",
-    inset: 0,
-    backgroundColor: "rgba(8,22,14,0.68)",
-  },
-  ctaContent: {
-    position: "relative",
-    zIndex: 2,
-    textAlign: "center",
-    padding: "60px 24px",
-  },
-  ctaTitle: {
-    fontSize: "clamp(24px, 4vw, 40px)",
-    fontWeight: 400,
-    color: "#fff",
-    margin: "0 0 12px",
-    letterSpacing: "-0.02em",
-  },
-  ctaSub: {
-    fontSize: 15,
-    color: "rgba(255,255,255,0.72)",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 300,
-    marginBottom: 28,
-  },
-  ctaBtn: {
-    display: "inline-block",
-    padding: "13px 32px",
-    backgroundColor: "#c8a96e",
-    color: "#fff",
-    textDecoration: "none",
-    fontFamily: "'Helvetica Neue', sans-serif",
-    fontWeight: 600,
-    fontSize: 13,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    transition: "background 0.2s",
-  },
 };
 
 const css = `
   .tab-btn:hover { background-color: #f7f4ef; }
   .tip-card:hover { border-color: #c8a96e !important; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-  .cta-btn:hover { background-color: #b8954f !important; }
-  @media (max-width: 768px) {
-    .main-grid { grid-template-columns: 1fr !important; }
+
+  @media (max-width: 900px) {
+    .main-grid {
+      grid-template-columns: 1fr !important;
+      padding: 40px 24px 60px !important;
+    }
+    .tips-sidebar {
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      border-right: none !important;
+      border-bottom: 1px solid #ece9e2 !important;
+      padding-right: 0 !important;
+      padding-bottom: 20px !important;
+      gap: 8px !important;
+    }
+    .tab-btn { padding: 10px 14px !important; }
+    .tips-content { padding-left: 0 !important; padding-top: 32px; }
+    .tips-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 640px) {
+    .tips-hero { min-height: 360px !important; }
     .tips-grid { grid-template-columns: 1fr !important; }
+    .facts-bar { gap: 0; }
+    .fact-item { flex: 1 1 45% !important; padding: 18px 16px !important; }
+    .main-grid { padding: 32px 16px 48px !important; }
+  }
+  @media (max-width: 420px) {
+    .fact-item { flex: 1 1 100% !important; border-right: none !important; border-bottom: 1px solid #ece9e2; }
   }
 `;
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import TripWizard from "../components/TripWizard";
+import contactHeroBg from "../assets/nairobi2.jpg";
 
 const ENQUIRY_TYPES = [
   "Planning a new trip",
@@ -90,8 +91,9 @@ function Contact() {
       <style>{css}</style>
 
       {/* ── HERO ── */}
-      <section style={S.hero}>
-        <div style={S.heroBg} />
+      <section style={S.hero} className="contact-hero">
+        <img src={contactHeroBg} alt="Nairobi Kenya" style={S.heroBgImg} />
+        <div style={S.heroOverlay} />
         <div style={S.heroContent}>
           <span style={S.eyebrow}>Get In Touch</span>
           <h1 style={S.heroTitle}>
@@ -106,10 +108,10 @@ function Contact() {
       </section>
 
       {/* ── MAIN SPLIT ── */}
-      <div style={S.split}>
+      <div style={S.split} className="contact-split">
 
         {/* ── LEFT — Form ── */}
-        <div style={S.formSide}>
+        <div style={S.formSide} className="form-side">
           {submitted ? (
             <div style={S.successBox}>
               <span style={S.successEmoji}>🌿</span>
@@ -145,7 +147,7 @@ function Contact() {
 
               <div style={S.formBody}>
                 {/* Name + Email */}
-                <div style={S.row}>
+                <div style={S.row} className="form-row">
                   <Field label="Full Name *">
                     <input
                       type="text"
@@ -169,7 +171,7 @@ function Contact() {
                 </div>
 
                 {/* Phone + Enquiry type */}
-                <div style={S.row}>
+                <div style={S.row} className="form-row">
                   <Field label="Phone / WhatsApp">
                     <input
                       type="tel"
@@ -242,8 +244,8 @@ function Contact() {
         </div>
 
         {/* ── RIGHT — Details panel ── */}
-        <div style={S.detailSide}>
-          <div style={S.detailInner}>
+        <div style={S.detailSide} className="detail-side">
+          <div style={S.detailInner} className="detail-inner">
 
             {/* Contact methods */}
             <div style={S.detailSection}>
@@ -375,24 +377,31 @@ const S = {
   /* Hero */
   hero: {
     position: "relative",
-    backgroundColor: "#1E4D56",
+    minHeight: 420,
+    display: "flex",
+    alignItems: "center",
     overflow: "hidden",
     padding: "100px 24px 80px",
     textAlign: "center",
   },
-  heroBg: {
+  heroBgImg: {
     position: "absolute",
     inset: 0,
-    backgroundImage: `
-      radial-gradient(ellipse at 30% 70%, rgba(200,169,110,0.1) 0%, transparent 55%),
-      radial-gradient(ellipse at 70% 30%, rgba(26,47,42,0.7) 0%, transparent 60%)
-    `,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  heroOverlay: {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: "rgba(8,22,14,0.68)",
   },
   heroContent: {
     position: "relative",
     zIndex: 2,
     maxWidth: 640,
     margin: "0 auto",
+    width: "100%",
   },
   eyebrow: {
     display: "inline-block",
@@ -402,7 +411,7 @@ const S = {
     textTransform: "uppercase",
     color: "#c8a96e",
     marginBottom: 20,
-    borderBottom: "1px solid rgba(200,169,110,0.35)",
+    borderBottom: "1px solid rgba(200,169,110,0.5)",
     paddingBottom: 6,
   },
   heroTitle: {
@@ -419,7 +428,7 @@ const S = {
   },
   heroSub: {
     fontSize: 16,
-    color: "rgba(255,255,255,0.62)",
+    color: "rgba(255,255,255,0.7)",
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 300,
     lineHeight: 1.8,
@@ -430,7 +439,7 @@ const S = {
   split: {
     display: "grid",
     gridTemplateColumns: "1.1fr 0.9fr",
-    minHeight: "calc(100vh - 260px)",
+    minHeight: "calc(100vh - 420px)",
   },
 
   /* Form side */
@@ -777,16 +786,19 @@ const css = `
   .link-muted:hover { color: #666 !important; }
 
   @media (max-width: 1024px) {
-    .split { grid-template-columns: 1fr !important; }
-    .detail-inner { position: static !important; max-height: none !important; }
-    .form-side { padding: 48px 32px !important; border-right: none !important; border-bottom: 1px solid #ece9e2; }
-    .detail-side { background: #faf9f7; }
+    .contact-split { grid-template-columns: 1fr !important; }
+    .detail-inner { position: static !important; max-height: none !important; padding: 48px 32px !important; }
+    .form-side { border-right: none !important; border-bottom: 1px solid #ece9e2; }
   }
-  @media (max-width: 640px) {
-    .form-side { padding: 40px 20px !important; }
-    .detail-inner { padding: 40px 20px !important; }
-    .row { grid-template-columns: 1fr !important; }
-    .hero { padding: 72px 20px 60px !important; }
+  @media (max-width: 768px) {
+    .form-side { padding: 48px 24px !important; }
+    .form-row { grid-template-columns: 1fr !important; }
+    .contact-hero { padding: 72px 20px 60px !important; min-height: 320px !important; }
+  }
+  @media (max-width: 480px) {
+    .form-side { padding: 36px 16px !important; }
+    .detail-inner { padding: 36px 16px !important; }
+    .contact-hero { padding: 60px 16px 48px !important; }
   }
 `;
 

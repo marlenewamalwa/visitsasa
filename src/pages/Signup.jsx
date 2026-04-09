@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import signupBg from "../assets/nairobi3.jpg";
 
 export default function Signup() {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
@@ -34,11 +35,12 @@ export default function Signup() {
   };
 
   return (
-    <div style={S.page}>
+    <div style={S.page} className="signup-page">
       <style>{css}</style>
 
       {/* Left panel */}
-      <div style={S.leftPanel}>
+      <div style={S.leftPanel} className="auth-left-panel">
+        <img src={signupBg} alt="Kenya landscape" style={S.leftBgImg} />
         <div style={S.leftOverlay} />
         <div style={S.leftContent}>
           <span style={S.leftMark}>✦</span>
@@ -64,12 +66,12 @@ export default function Signup() {
       </div>
 
       {/* Right panel */}
-      <div style={S.rightPanel}>
+      <div style={S.rightPanel} className="auth-right-panel">
         <div style={S.formWrap}>
 
           <Link to="/" style={S.logoLink}>
             <span style={S.logoMark}>✦</span>
-            <span style={S.logoName}>Safari Yako</span>
+            <span style={S.logoName}>VisitSasa</span>
           </Link>
 
           {success ? (
@@ -143,7 +145,7 @@ export default function Signup() {
                   />
                 </div>
 
-                <div style={S.row}>
+                <div style={S.row} className="signup-row">
                   <div style={S.fieldGroup}>
                     <label style={S.label}>Password</label>
                     <input
@@ -172,7 +174,6 @@ export default function Signup() {
                   </div>
                 </div>
 
-                {/* Password strength indicator */}
                 {password.length > 0 && (
                   <PasswordStrength password={password} />
                 )}
@@ -263,16 +264,22 @@ const S = {
   },
   leftPanel: {
     position: "relative",
-    background: "linear-gradient(160deg, #0a2e1e 0%, #1a4a30 50%, #0c1e14 100%)",
     overflow: "hidden",
     display: "flex",
     alignItems: "center",
     padding: "60px 56px",
   },
+  leftBgImg: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
   leftOverlay: {
     position: "absolute",
     inset: 0,
-    backgroundImage: `radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.12) 0%, transparent 60%)`,
+    background: "linear-gradient(160deg, rgba(10,46,30,0.9) 0%, rgba(26,74,48,0.84) 50%, rgba(12,30,20,0.94) 100%)",
   },
   leftContent: { position: "relative", zIndex: 2, maxWidth: 400 },
   leftMark: { display: "block", fontSize: 32, color: "#c8a96e", marginBottom: 40 },
@@ -413,10 +420,14 @@ const css = `
   .submit-btn:hover, .submit-btn-link:hover { background-color: #c8a96e !important; transform: translateY(-1px); }
   .btn-spinner { animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
   @media (max-width: 768px) {
-    .page { grid-template-columns: 1fr !important; }
-    .left-panel { display: none !important; }
-    .right-panel { padding: 40px 20px !important; }
-    .row { grid-template-columns: 1fr !important; }
+    .signup-page { grid-template-columns: 1fr !important; }
+    .auth-left-panel { display: none !important; }
+    .auth-right-panel { padding: 40px 24px !important; align-items: flex-start !important; padding-top: 56px !important; }
+    .signup-row { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 480px) {
+    .auth-right-panel { padding: 36px 16px !important; }
   }
 `;

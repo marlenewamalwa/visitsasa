@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import loginBg from "../assets/leopard.jpg";
 
 export default function Login() {
   const { signInWithEmail, signInWithGoogle } = useAuth();
@@ -31,15 +32,15 @@ export default function Login() {
     setGoogleLoading(true);
     const { error: err } = await signInWithGoogle();
     if (err) { setError(err.message); setGoogleLoading(false); }
-    // On success Supabase redirects automatically
   };
 
   return (
-    <div style={S.page}>
+    <div style={S.page} className="login-page">
       <style>{css}</style>
 
-      {/* Left panel — decorative */}
-      <div style={S.leftPanel}>
+      {/* Left panel — decorative with image */}
+      <div style={S.leftPanel} className="auth-left-panel">
+        <img src={loginBg} alt="Kenya wildlife" style={S.leftBgImg} />
         <div style={S.leftOverlay} />
         <div style={S.leftContent}>
           <span style={S.leftMark}>✦</span>
@@ -52,13 +53,13 @@ export default function Login() {
       </div>
 
       {/* Right panel — form */}
-      <div style={S.rightPanel}>
+      <div style={S.rightPanel} className="auth-right-panel">
         <div style={S.formWrap}>
 
           {/* Logo */}
           <Link to="/" style={S.logoLink}>
             <span style={S.logoMark}>✦</span>
-            <span style={S.logoName}>Safari Yako</span>
+            <span style={S.logoName}>VisitSasa</span>
           </Link>
 
           <div style={S.formHeader}>
@@ -172,7 +173,6 @@ function friendlyError(msg) {
   return msg;
 }
 
-/* ── STYLES ── */
 const S = {
   page: {
     display: "grid",
@@ -183,17 +183,22 @@ const S = {
 
   leftPanel: {
     position: "relative",
-    background: "linear-gradient(160deg, #0a2e1e 0%, #1a4a30 50%, #0c1e14 100%)",
     overflow: "hidden",
     display: "flex",
     alignItems: "center",
     padding: "60px 56px",
   },
+  leftBgImg: {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
   leftOverlay: {
     position: "absolute",
     inset: 0,
-    backgroundImage: `radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 50%)`,
+    background: "linear-gradient(160deg, rgba(10,46,30,0.88) 0%, rgba(26,74,48,0.82) 50%, rgba(12,30,20,0.92) 100%)",
   },
   leftContent: {
     position: "relative",
@@ -416,7 +421,10 @@ const css = `
 
   @media (max-width: 768px) {
     .login-page { grid-template-columns: 1fr !important; }
-    .left-panel { display: none !important; }
-    .right-panel { padding: 40px 24px !important; }
+    .auth-left-panel { display: none !important; }
+    .auth-right-panel { padding: 40px 24px !important; align-items: flex-start !important; padding-top: 56px !important; }
+  }
+  @media (max-width: 480px) {
+    .auth-right-panel { padding: 40px 16px !important; }
   }
 `;

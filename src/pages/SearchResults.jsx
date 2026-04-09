@@ -5,7 +5,7 @@ import SearchBar from "../components/SearchBar";
 
 const STATIC_PAGES = [
   { id: "p1", type: "page", name: "How It Works",  description: "Learn how our trip planning process works.", path: "/howitworks" },
-  { id: "p2", type: "page", name: "About Us",       description: "The story behind Safari Yako.",             path: "/about"      },
+  { id: "p2", type: "page", name: "About Us",       description: "The story behind VisitSasa.",             path: "/about"      },
   { id: "p3", type: "page", name: "Contact Us",     description: "Get in touch with our team.",               path: "/contact"    },
   { id: "p4", type: "page", name: "Travel Tips",    description: "Tips and guides for travelling Kenya.",      path: "/travel-tips"},
 ];

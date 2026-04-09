@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import TripWizard from "../components/TripWizard";
+import heroBg from "../assets/nairobi1.jpg";
 
 /* ── DATA ── */
 const STEPS = [
@@ -136,7 +137,6 @@ function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0);
   const stepRefs = useRef([]);
 
-  // Highlight the step closest to viewport center on scroll
   useEffect(() => {
     const onScroll = () => {
       const mid = window.innerHeight / 2;
@@ -159,10 +159,11 @@ function HowItWorks() {
       <style>{css}</style>
 
       {/* ── HERO ── */}
-      <section style={S.hero}>
-        <div style={S.heroNoise} />
-        <div style={S.heroContent}>
-          <div style={S.heroInner}>
+      <section style={S.hero} className="hiw-hero">
+        <img src={heroBg} alt="Kenya landscape" style={S.heroBgImg} />
+        <div style={S.heroOverlay} />
+        <div style={S.heroContent} className="hero-content">
+          <div style={S.heroInner} className="hero-inner">
             <span style={S.eyebrow}>The Process</span>
             <h1 style={S.heroTitle}>
               Your Dream Trip,<br />
@@ -173,17 +174,17 @@ function HowItWorks() {
               that go nowhere. Just a simple, transparent process that puts
               you in control from the very first click.
             </p>
-            <div style={S.heroMeta}>
+            <div style={S.heroMeta} className="hero-meta">
               <div style={S.heroMetaItem}>
                 <span style={S.heroMetaNum}>5 min</span>
                 <span style={S.heroMetaLabel}>to build your trip</span>
               </div>
-              <div style={S.heroMetaDivider} />
+              <div style={S.heroMetaDivider} className="hero-meta-divider" />
               <div style={S.heroMetaItem}>
                 <span style={S.heroMetaNum}>24 hr</span>
                 <span style={S.heroMetaLabel}>to receive your itinerary</span>
               </div>
-              <div style={S.heroMetaDivider} />
+              <div style={S.heroMetaDivider} className="hero-meta-divider" />
               <div style={S.heroMetaItem}>
                 <span style={S.heroMetaNum}>0 cost</span>
                 <span style={S.heroMetaLabel}>to plan and enquire</span>
@@ -194,8 +195,8 @@ function HowItWorks() {
             </button>
           </div>
           {/* Vertical step preview */}
-          <div style={S.heroStepList}>
-            {STEPS.map((s, i) => (
+          <div style={S.heroStepList} className="hero-step-list">
+            {STEPS.map((s) => (
               <div key={s.num} style={S.heroStepItem}>
                 <span style={{ ...S.heroStepNum, color: s.accent }}>{s.num}</span>
                 <span style={S.heroStepTitle}>{s.title}</span>
@@ -206,9 +207,9 @@ function HowItWorks() {
       </section>
 
       {/* ── STEPS — sticky sidebar layout ── */}
-      <section style={S.stepsSection}>
+      <section style={S.stepsSection} className="steps-section">
         {/* Sticky progress sidebar */}
-        <div style={S.sidebar}>
+        <div style={S.sidebar} className="sidebar">
           <div style={S.sidebarInner}>
             <p style={S.sidebarLabel}>Your journey</p>
             {STEPS.map((s, i) => (
@@ -224,11 +225,11 @@ function HowItWorks() {
                 <div style={S.sidebarText}>
                   <span style={{
                     ...S.sidebarNum,
-                    color: activeStep === i ? s.accent : "#ccc",
+                    color: activeStep === i ? s.accent : "#bbb",
                   }}>{s.num}</span>
                   <span style={{
-                    ...S.sidebarName,
-                    color: activeStep === i ? "#1a1a1a" : "#bbb",
+                    ...S.sidebarStepTitle,
+                    color: activeStep === i ? "#1a1a1a" : "#999",
                     fontWeight: activeStep === i ? 600 : 400,
                   }}>{s.title}</span>
                 </div>
@@ -237,117 +238,94 @@ function HowItWorks() {
           </div>
         </div>
 
-        {/* Main step content */}
-        <div style={S.stepsMain}>
-          {STEPS.map((step, i) => (
+        {/* Step blocks */}
+        <div style={S.stepsContent}>
+          {STEPS.map((s, i) => (
             <div
-              key={step.num}
+              key={s.num}
               ref={(el) => (stepRefs.current[i] = el)}
-              style={{
-                ...S.stepBlock,
-                borderTopColor: step.accent,
-              }}
+              style={S.stepBlock}
               className="step-block"
             >
-              {/* Step header */}
               <div style={S.stepHeader}>
-                <div style={S.stepHeaderLeft}>
-                  <span style={{ ...S.stepPhase, color: step.accent }}>
-                    {step.phase}
-                  </span>
-                  <span style={{ ...S.stepNumLarge, color: step.accent }}>
-                    {step.num}
-                  </span>
+                <div style={S.stepMeta}>
+                  <span style={{ ...S.stepNum, color: s.accent }}>{s.num}</span>
+                  <span style={S.stepPhase}>{s.phase}</span>
+                  <span style={{ ...S.stepTimeframe, borderColor: s.accent, color: s.accent }}>{s.timeframe}</span>
                 </div>
-                <div style={S.stepHeaderRight}>
-                  <span style={S.stepTimeframe}>{step.timeframe}</span>
-                </div>
+                <h2 style={S.stepTitle}>{s.title}</h2>
+                <p style={S.stepSubtitle}>{s.subtitle}</p>
               </div>
-
-              <h2 style={S.stepTitle}>{step.title}</h2>
-              <p style={S.stepSubtitle}>{step.subtitle}</p>
-              <p style={S.stepDesc}>{step.desc}</p>
-
-              {/* Detail list */}
-              <div style={S.detailList}>
-                {step.details.map((d, di) => (
-                  <div key={di} style={S.detailItem}>
-                    <span style={{ ...S.detailBullet, color: step.accent }}>→</span>
-                    <span style={S.detailText}>{d}</span>
-                  </div>
+              <p style={S.stepDesc}>{s.desc}</p>
+              <ul style={S.stepDetails}>
+                {s.details.map((d) => (
+                  <li key={d} style={S.stepDetailItem}>
+                    <span style={{ ...S.stepDetailBullet, color: s.accent }}>—</span>
+                    <span style={S.stepDetailText}>{d}</span>
+                  </li>
                 ))}
-              </div>
-
-              {/* CTA on last step */}
-              {i === STEPS.length - 1 && (
-                <button
-                  style={{ ...S.stepCta, backgroundColor: step.accent }}
-                  className="btn-step"
-                  onClick={() => setWizardOpen(true)}
-                >
-                  Start My Trip Builder
-                </button>
-              )}
+              </ul>
+              <button
+                style={{ ...S.stepBtn, backgroundColor: s.accent }}
+                className="btn-step"
+                onClick={() => setWizardOpen(true)}
+              >
+                {i === 0 ? "Start Here →" : "Learn More →"}
+              </button>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── TRUST PILLARS ── */}
+      {/* ── TRUST ── */}
       <section style={S.trustSection}>
-        <div style={S.trustInner}>
-          <div style={S.trustHeader}>
-            <span style={S.sectionTag}>Our Promises</span>
-            <h2 style={S.trustTitle}>What You Can Always Count On</h2>
-          </div>
-          <div style={S.trustGrid}>
-            {TRUST.map((t) => (
-              <div key={t.title} style={S.trustCard} className="trust-card">
-                <span style={S.trustIcon}>{t.icon}</span>
-                <h3 style={S.trustCardTitle}>{t.title}</h3>
-                <p style={S.trustCardBody}>{t.body}</p>
-              </div>
-            ))}
-          </div>
+        <div style={S.trustHeader}>
+          <span style={S.sectionTag}>Why Choose Us</span>
+          <h2 style={S.trustTitle}>Travel With Someone Who Cares</h2>
+        </div>
+        <div style={S.trustGrid} className="trust-grid">
+          {TRUST.map((t) => (
+            <div key={t.title} style={S.trustCard} className="trust-card">
+              <span style={S.trustIcon}>{t.icon}</span>
+              <h3 style={S.trustCardTitle}>{t.title}</h3>
+              <p style={S.trustCardBody}>{t.body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ── FAQ ── */}
       <section style={S.faqSection}>
-        <div style={S.faqInner}>
-          <div style={S.faqLeft}>
-            <span style={S.sectionTag}>Questions</span>
-            <h2 style={S.faqTitle}>
-              Everything You<br />Need to Know
-            </h2>
+        <div style={S.faqInner} className="faq-inner">
+          <div style={S.faqLeft} className="faq-left">
+            <span style={S.sectionTag}>Common Questions</span>
+            <h2 style={S.faqTitle}>Everything You Need to Know</h2>
             <p style={S.faqDesc}>
-              Still unsure about something? Drop us a message and a
-              specialist will come back to you within a few hours.
+              Can't find what you're looking for? Our team is happy to answer any question — no obligation.
             </p>
             <Link to="/contact" style={S.faqContactLink} className="link-underline">
-              Contact us directly →
+              Ask us directly →
             </Link>
           </div>
           <div style={S.faqRight}>
-            {FAQS.map((faq, i) => (
+            {FAQS.map((f, i) => (
               <div
                 key={i}
                 style={{
                   ...S.faqItem,
-                  borderBottomColor: openFaq === i ? "#c8a96e" : "#ece9e2",
+                  borderColor: openFaq === i ? "#c8a96e" : "#ece9e2",
                 }}
-                className="faq-item"
               >
                 <button
                   style={S.faqQuestion}
                   className="faq-btn"
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 >
-                  <span style={S.faqQText}>{faq.q}</span>
+                  <span style={S.faqQText} className="faq-q-text">{f.q}</span>
                   <span style={{
                     ...S.faqToggle,
                     transform: openFaq === i ? "rotate(45deg)" : "rotate(0deg)",
-                    color: openFaq === i ? "#c8a96e" : "#999",
+                    color: openFaq === i ? "#c8a96e" : "#aaa",
                   }}>+</span>
                 </button>
                 <div style={{
@@ -356,7 +334,7 @@ function HowItWorks() {
                   opacity: openFaq === i ? 1 : 0,
                   paddingBottom: openFaq === i ? 20 : 0,
                 }}>
-                  <p style={S.faqAnswerText}>{faq.a}</p>
+                  <p style={S.faqAnswerText}>{f.a}</p>
                 </div>
               </div>
             ))}
@@ -366,22 +344,19 @@ function HowItWorks() {
 
       {/* ── FINAL CTA ── */}
       <section style={S.finalCta}>
+        <div style={S.finalCtaBg} />
         <div style={S.finalCtaInner}>
-          <span style={{ ...S.eyebrow, color: "#c8a96e", marginBottom: 20, display: "block" }}>
-            Ready?
-          </span>
-          <h2 style={S.finalCtaTitle}>
-            Five minutes from now,<br />your Kenya trip could be in motion.
-          </h2>
+          <span style={{ ...S.sectionTag, color: "#c8a96e" }}>Ready to Begin?</span>
+          <h2 style={S.finalCtaTitle}>Your Kenya Adventure<br />Starts Here</h2>
           <p style={S.finalCtaDesc}>
-            Free to plan. No commitment. Expert advice within 24 hours.
+            It takes five minutes to build your trip. Our specialists take care of everything else.
           </p>
-          <div style={S.finalCtaActions}>
+          <div style={S.finalCtaActions} className="final-cta-actions">
             <button style={S.finalCtaBtn} className="btn-gold" onClick={() => setWizardOpen(true)}>
-              Build My Trip Now
+              Build My Trip — Free
             </button>
-            <Link to="/destinations" style={S.finalCtaSecondary} className="link-ghost">
-              Browse Destinations First
+            <Link to="/contact" style={S.finalCtaSecondary} className="link-ghost">
+              Talk to a specialist first
             </Link>
           </div>
         </div>
@@ -392,38 +367,43 @@ function HowItWorks() {
   );
 }
 
-/* ── STYLES ── */
 const S = {
   page: {
     fontFamily: "'Georgia', 'Times New Roman', serif",
     color: "#1a1a1a",
     backgroundColor: "#fff",
+    minHeight: "100vh",
   },
 
   /* Hero */
   hero: {
     position: "relative",
-    backgroundColor: "#1E4D56",
+    minHeight: 560,
+    display: "flex",
+    alignItems: "center",
     overflow: "hidden",
-    padding: "0",
   },
-  heroNoise: {
+  heroBgImg: {
     position: "absolute",
     inset: 0,
-    backgroundImage: `
-      radial-gradient(ellipse at 0% 100%, rgba(200,169,110,0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 100% 0%, rgba(26,47,42,0.6) 0%, transparent 60%),
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")
-    `,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  heroOverlay: {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: "rgba(6,18,10,0.72)",
   },
   heroContent: {
     position: "relative",
     zIndex: 2,
+    width: "100%",
     maxWidth: 1200,
     margin: "0 auto",
-    padding: "100px 24px 90px",
+    padding: "80px 24px",
     display: "grid",
-    gridTemplateColumns: "1fr auto",
+    gridTemplateColumns: "1fr 320px",
     gap: 80,
     alignItems: "center",
   },
@@ -432,69 +412,62 @@ const S = {
     display: "inline-block",
     fontSize: 11,
     fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.2em",
+    letterSpacing: "0.18em",
     textTransform: "uppercase",
     color: "#c8a96e",
     marginBottom: 20,
-    borderBottom: "1px solid rgba(200,169,110,0.35)",
+    borderBottom: "1px solid rgba(200,169,110,0.5)",
     paddingBottom: 6,
   },
   heroTitle: {
-    fontSize: "clamp(40px, 6vw, 76px)",
+    fontSize: "clamp(36px, 5vw, 64px)",
     fontWeight: 400,
     color: "#fff",
-    lineHeight: 1.06,
+    lineHeight: 1.08,
     letterSpacing: "-0.025em",
-    margin: "0 0 22px",
+    margin: "0 0 20px",
   },
   heroItalic: {
     fontStyle: "italic",
     color: "#c8a96e",
-    fontWeight: 400,
   },
   heroSub: {
     fontSize: 16,
-    color: "rgba(255,255,255,0.62)",
+    color: "rgba(255,255,255,0.65)",
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 300,
     lineHeight: 1.8,
-    maxWidth: 520,
-    marginBottom: 40,
+    marginBottom: 36,
   },
   heroMeta: {
     display: "flex",
     alignItems: "center",
-    gap: 0,
-    marginBottom: 40,
-    borderTop: "1px solid rgba(255,255,255,0.1)",
-    borderBottom: "1px solid rgba(255,255,255,0.1)",
-    padding: "20px 0",
+    gap: 32,
+    marginBottom: 36,
   },
   heroMetaItem: {
     display: "flex",
     flexDirection: "column",
     gap: 4,
-    paddingRight: 32,
   },
   heroMetaNum: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 400,
-    color: "#c8a96e",
+    color: "#fff",
     letterSpacing: "-0.02em",
     lineHeight: 1,
   },
   heroMetaLabel: {
     fontSize: 11,
     fontFamily: "'Helvetica Neue', sans-serif",
-    color: "rgba(255,255,255,0.4)",
+    color: "rgba(255,255,255,0.45)",
     letterSpacing: "0.08em",
     textTransform: "uppercase",
   },
   heroMetaDivider: {
     width: 1,
     height: 36,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    marginRight: 32,
+    backgroundColor: "rgba(255,255,255,0.15)",
   },
   heroCta: {
     padding: "14px 32px",
@@ -505,23 +478,23 @@ const S = {
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 600,
     fontSize: 13,
-    letterSpacing: "0.08em",
+    letterSpacing: "0.1em",
     textTransform: "uppercase",
     transition: "background 0.2s, transform 0.15s",
   },
 
-  /* Hero step list (right column) */
+  /* Hero step list */
   heroStepList: {
     display: "flex",
     flexDirection: "column",
     gap: 0,
     borderLeft: "1px solid rgba(255,255,255,0.1)",
-    paddingLeft: 40,
+    paddingLeft: 32,
   },
   heroStepItem: {
     display: "flex",
+    gap: 16,
     alignItems: "center",
-    gap: 14,
     padding: "14px 0",
     borderBottom: "1px solid rgba(255,255,255,0.07)",
   },
@@ -529,77 +502,70 @@ const S = {
     fontSize: 11,
     fontFamily: "'Helvetica Neue', sans-serif",
     letterSpacing: "0.1em",
-    minWidth: 28,
-    fontWeight: 600,
+    minWidth: 24,
   },
   heroStepTitle: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.55)",
+    fontSize: 13,
     fontFamily: "'Helvetica Neue', sans-serif",
-    whiteSpace: "nowrap",
+    color: "rgba(255,255,255,0.55)",
   },
 
   /* Steps section */
   stepsSection: {
+    display: "grid",
+    gridTemplateColumns: "220px 1fr",
     maxWidth: 1200,
     margin: "0 auto",
     padding: "80px 24px",
-    display: "grid",
-    gridTemplateColumns: "220px 1fr",
-    gap: 80,
-    alignItems: "start",
+    gap: 0,
   },
-
-  /* Sidebar */
   sidebar: {
-    position: "sticky",
-    top: 80,
+    position: "relative",
   },
   sidebarInner: {
-    paddingTop: 8,
+    position: "sticky",
+    top: 80,
+    paddingRight: 40,
+    borderRight: "1px solid #ece9e2",
   },
   sidebarLabel: {
     fontSize: 10,
     fontFamily: "'Helvetica Neue', sans-serif",
     letterSpacing: "0.16em",
     textTransform: "uppercase",
-    color: "#ccc",
-    marginBottom: 20,
-    margin: "0 0 20px 32px",
+    color: "#c8a96e",
+    marginBottom: 24,
+    margin: "0 0 24px",
   },
   sidebarItem: {
     display: "flex",
+    gap: 14,
     alignItems: "flex-start",
-    gap: 0,
   },
   sidebarDotWrap: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    width: 24,
-    flexShrink: 0,
+    marginTop: 4,
   },
   sidebarDot: {
     width: 10,
     height: 10,
     borderRadius: "50%",
-    border: "2px solid",
+    border: "1.5px solid",
+    transition: "background 0.3s, border-color 0.3s",
     flexShrink: 0,
-    transition: "all 0.3s ease",
-    marginTop: 4,
   },
   sidebarLine: {
     width: 1,
-    flex: 1,
-    minHeight: 44,
+    height: 52,
     backgroundColor: "#ece9e2",
   },
   sidebarText: {
     display: "flex",
     flexDirection: "column",
     gap: 2,
-    paddingLeft: 12,
-    paddingBottom: 24,
+    paddingBottom: 40,
   },
   sidebarNum: {
     fontSize: 10,
@@ -607,131 +573,117 @@ const S = {
     letterSpacing: "0.1em",
     transition: "color 0.3s",
   },
-  sidebarName: {
+  sidebarStepTitle: {
     fontSize: 13,
     fontFamily: "'Helvetica Neue', sans-serif",
+    transition: "color 0.3s, font-weight 0.3s",
     lineHeight: 1.3,
-    transition: "all 0.3s",
   },
 
   /* Step blocks */
-  stepsMain: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 0,
+  stepsContent: {
+    paddingLeft: 60,
   },
   stepBlock: {
-    borderTop: "3px solid",
-    paddingTop: 48,
     paddingBottom: 72,
-    position: "relative",
+    borderBottom: "1px solid #ece9e2",
+    marginBottom: 72,
   },
   stepHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  stepHeaderLeft: {
+  stepMeta: {
     display: "flex",
-    alignItems: "baseline",
+    alignItems: "center",
     gap: 16,
+    marginBottom: 16,
+    flexWrap: "wrap",
   },
-  stepPhase: {
-    fontSize: 11,
-    fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.2em",
-    textTransform: "uppercase",
-    fontWeight: 700,
-  },
-  stepNumLarge: {
-    fontSize: 56,
-    fontWeight: 400,
-    lineHeight: 1,
-    letterSpacing: "-0.04em",
-    opacity: 0.2,
-  },
-  stepHeaderRight: {},
-  stepTimeframe: {
-    display: "inline-block",
-    fontSize: 11,
+  stepNum: {
+    fontSize: 13,
     fontFamily: "'Helvetica Neue', sans-serif",
     letterSpacing: "0.1em",
+    fontWeight: 600,
+  },
+  stepPhase: {
+    fontSize: 10,
+    fontFamily: "'Helvetica Neue', sans-serif",
+    letterSpacing: "0.16em",
     textTransform: "uppercase",
-    color: "#aaa",
-    backgroundColor: "#f7f4ef",
-    padding: "6px 14px",
-    border: "1px solid #ece9e2",
+    color: "#bbb",
+  },
+  stepTimeframe: {
+    fontSize: 10,
+    fontFamily: "'Helvetica Neue', sans-serif",
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    border: "1px solid",
+    padding: "3px 10px",
   },
   stepTitle: {
-    fontSize: "clamp(28px, 4vw, 44px)",
+    fontSize: "clamp(26px, 3vw, 38px)",
     fontWeight: 400,
-    margin: "0 0 6px",
+    margin: "0 0 8px",
     letterSpacing: "-0.02em",
-    lineHeight: 1.1,
+    lineHeight: 1.15,
   },
   stepSubtitle: {
     fontSize: 14,
+    color: "#888",
     fontFamily: "'Helvetica Neue', sans-serif",
-    color: "#aaa",
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    margin: "0 0 20px",
+    margin: 0,
+    fontStyle: "italic",
   },
   stepDesc: {
-    fontSize: 16,
-    color: "#444",
+    fontSize: 15,
+    color: "#555",
     fontFamily: "'Helvetica Neue', sans-serif",
     lineHeight: 1.8,
-    maxWidth: 620,
-    margin: "0 0 32px",
-    fontWeight: 300,
+    margin: "0 0 28px",
+    maxWidth: 640,
   },
-  detailList: {
+  stepDetails: {
+    listStyle: "none",
+    padding: 0,
+    margin: "0 0 32px",
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-    marginBottom: 32,
+    gap: 10,
   },
-  detailItem: {
+  stepDetailItem: {
     display: "flex",
     gap: 14,
     alignItems: "flex-start",
-  },
-  detailBullet: {
     fontSize: 14,
     fontFamily: "'Helvetica Neue', sans-serif",
+    color: "#444",
+    lineHeight: 1.5,
+  },
+  stepDetailBullet: {
     flexShrink: 0,
-    marginTop: 2,
-    fontWeight: 700,
-  },
-  detailText: {
-    fontSize: 14,
     fontFamily: "'Helvetica Neue', sans-serif",
-    color: "#555",
-    lineHeight: 1.6,
+    marginTop: 1,
   },
-  stepCta: {
-    padding: "13px 28px",
+  stepDetailText: {},
+  stepBtn: {
+    padding: "11px 24px",
     color: "#fff",
     border: "none",
     cursor: "pointer",
     fontFamily: "'Helvetica Neue', sans-serif",
     fontWeight: 600,
-    fontSize: 13,
-    letterSpacing: "0.08em",
+    fontSize: 12,
+    letterSpacing: "0.1em",
     textTransform: "uppercase",
     transition: "opacity 0.2s, transform 0.15s",
-    marginTop: 8,
   },
 
   /* Trust section */
   trustSection: {
     backgroundColor: "#f7f4ef",
-    borderTop: "1px solid #ece9e2",
-    borderBottom: "1px solid #ece9e2",
+    padding: "80px 24px",
   },
-  trustInner: {
+  trustContent: {
     maxWidth: 1200,
     margin: "0 auto",
     padding: "72px 24px",
@@ -739,6 +691,8 @@ const S = {
   trustHeader: {
     textAlign: "center",
     marginBottom: 52,
+    maxWidth: 1200,
+    margin: "0 auto 52px",
   },
   sectionTag: {
     display: "inline-block",
@@ -760,6 +714,8 @@ const S = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
     gap: 2,
+    maxWidth: 1200,
+    margin: "0 auto",
   },
   trustCard: {
     backgroundColor: "#fff",
@@ -874,6 +830,11 @@ const S = {
     position: "relative",
     overflow: "hidden",
   },
+  finalCtaBg: {
+    position: "absolute",
+    inset: 0,
+    backgroundImage: "radial-gradient(ellipse at 70% 50%, rgba(200,169,110,0.08) 0%, transparent 60%)",
+  },
   finalCtaInner: {
     maxWidth: 760,
     margin: "0 auto",
@@ -937,23 +898,26 @@ const css = `
   .link-underline:hover { color: #c8a96e !important; border-bottom-color: #c8a96e !important; }
   .link-ghost:hover { color: rgba(255,255,255,0.8) !important; border-bottom-color: rgba(255,255,255,0.5) !important; }
   .faq-btn:hover .faq-q-text { color: #c8a96e; }
-  .step-block:last-child { border-bottom: none; }
+  .step-block:last-child { border-bottom: none; margin-bottom: 0; }
 
   @media (max-width: 1024px) {
-    .steps-section { grid-template-columns: 1fr !important; }
-    .sidebar { display: none; }
-    .hero-content { grid-template-columns: 1fr !important; }
-    .hero-step-list { display: none; }
+    .steps-section { grid-template-columns: 1fr !important; padding: 60px 24px !important; }
+    .sidebar { display: none !important; }
+    .hero-content { grid-template-columns: 1fr !important; gap: 0 !important; }
+    .hero-step-list { display: none !important; }
   }
   @media (max-width: 768px) {
-    .faq-inner { grid-template-columns: 1fr !important; }
+    .faq-inner { grid-template-columns: 1fr !important; gap: 40px !important; }
     .faq-left { position: static !important; }
-    .hero-meta { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .hero-meta-divider { display: none; }
+    .hero-meta { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+    .hero-meta-divider { display: none !important; }
+    .hiw-hero { min-height: 480px !important; }
+    .hero-inner { padding: 0 !important; }
   }
   @media (max-width: 640px) {
     .trust-grid { grid-template-columns: 1fr !important; }
-    .final-cta-actions { flex-direction: column; }
+    .final-cta-actions { flex-direction: column !important; }
+    .steps-section { padding: 48px 16px !important; }
   }
 `;
 

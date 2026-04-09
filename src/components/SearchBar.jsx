@@ -5,7 +5,7 @@ import { supabase } from "../supabaseClient";
 // ── helpers ──────────────────────────────────────────────────────────────────
 const STATIC_PAGES = [
   { id: "p1", type: "page", name: "How It Works",  desc: "Learn how our trip planning process works.", path: "/howitworks" },
-  { id: "p2", type: "page", name: "About Us",       desc: "The story behind Safari Yako.",             path: "/about"      },
+  { id: "p2", type: "page", name: "About Us",       desc: "The story behind 204E59.",             path: "/about"      },
   { id: "p3", type: "page", name: "Contact Us",     desc: "Get in touch with our team.",               path: "/contact"    },
 ];
 
