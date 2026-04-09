@@ -90,7 +90,7 @@ export default function Navbar() {
     if (!q.trim()) { setSearchResults([]); setSearchLoading(false); return; }
     setSearchLoading(true);
     const [destRes, actRes, tipRes] = await Promise.all([
-      supabase.from("destinations").select("id, name, description").ilike("name", `%${q}%`).limit(3),
+      supabase.from("destinations").select("id, name, description, image_url").ilike("name", `%${q}%`).limit(3),
       supabase.from("activities").select("id, name, description").ilike("name", `%${q}%`).limit(3),
       supabase.from("travel_tips").select("id, title, excerpt").ilike("title", `%${q}%`).limit(2),
     ]);
@@ -140,7 +140,7 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link to="/" style={S.logo}>
-            <img src={logo} alt="Safari Yako" style={S.logoImg} className="nav-logo-img" />
+            <img src={logo} alt="Safari Yako" style={S.logoImg} />
           </Link>
 
           {/* DESKTOP NAV */}
@@ -219,6 +219,7 @@ export default function Navbar() {
                             onMouseLeave={() => setActiveIdx(-1)}
                             onClick={() => { navigate(item.path); setSearchOpen(false); setSearchQuery(""); }}
                           >
+                            {item.image_url && <img src={item.image_url} alt="" style={S.searchThumb} />}
                             <div style={S.searchResultText}>
                               <p style={S.searchResultName}>{highlight(item.displayName, searchQuery)}</p>
                               {item.displayDesc && <p style={S.searchResultDesc}>{item.displayDesc.slice(0, 70)}{item.displayDesc.length > 70 ? "…" : ""}</p>}
@@ -279,20 +280,17 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* HAMBURGER — always visible on mobile */}
-          <button style={S.hamburger} className="hamburger" onClick={() => setMenuOpen((v) => !v)} aria-label="Open menu">
-            <span style={{ ...S.hamburgerBar, transform: menuOpen ? "translateY(6.5px) rotate(45deg)" : "none" }} />
+          {/* HAMBURGER */}
+          <button style={S.hamburger} className="hamburger" onClick={() => setMenuOpen((v) => !v)}>
+            <span style={{ ...S.hamburgerBar, transform: menuOpen ? "translateY(7px) rotate(45deg)" : "none" }} />
             <span style={{ ...S.hamburgerBar, opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ ...S.hamburgerBar, transform: menuOpen ? "translateY(-6.5px) rotate(-45deg)" : "none" }} />
+            <span style={{ ...S.hamburgerBar, transform: menuOpen ? "translateY(-7px) rotate(-45deg)" : "none" }} />
           </button>
         </div>
       </header>
 
       {/* OVERLAY */}
-      <div
-        style={{ ...S.drawerOverlay, opacity: menuOpen ? 1 : 0, pointerEvents: menuOpen ? "all" : "none" }}
-        onClick={() => setMenuOpen(false)}
-      />
+      <div style={{ ...S.drawerOverlay, opacity: menuOpen ? 1 : 0, pointerEvents: menuOpen ? "all" : "none" }} onClick={() => setMenuOpen(false)} />
 
       {/* MOBILE DRAWER */}
       <div ref={drawerRef} style={{ ...S.drawer, transform: menuOpen ? "translateX(0)" : "translateX(100%)" }}>
@@ -310,23 +308,13 @@ export default function Navbar() {
           <input
             placeholder="Search…"
             style={S.drawerSearchInput}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && e.target.value.trim()) {
-                setMenuOpen(false);
-                navigate(`/search?q=${encodeURIComponent(e.target.value.trim())}`);
-              }
-            }}
+            onKeyDown={(e) => { if (e.key === "Enter" && e.target.value.trim()) { setMenuOpen(false); navigate(`/search?q=${encodeURIComponent(e.target.value.trim())}`); } }}
           />
         </div>
 
         {user && (
           <Link to="/profile" style={S.drawerUserStrip} className="drawer-user-strip" onClick={() => setMenuOpen(false)}>
-            <div>
-              {avatarUrl
-                ? <img src={avatarUrl} alt={displayName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
-                : <div style={{ ...S.avatarInitials, width: 32, height: 32, fontSize: 12 }}>{initials}</div>
-              }
-            </div>
+            <div>{avatarUrl ? <img src={avatarUrl} alt={displayName} style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} /> : <div style={{ ...S.avatarInitials, width: 32, height: 32, fontSize: 12 }}>{initials}</div>}</div>
             <div>
               <p style={S.drawerUserName}>{displayName}</p>
               <p style={S.drawerUserLabel}>View profile →</p>
@@ -382,26 +370,19 @@ const S = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
     backgroundColor: "#1E4D56",
     boxShadow: "0 1px 0 rgba(255,255,255,0.06)",
-    overflow: "hidden",
+    
   },
   inner: {
-    maxWidth: 1200, margin: "0 auto",
-    padding: "0 16px",
-    height: 64,
-    display: "flex", alignItems: "center",
-    justifyContent: "space-between", gap: 12,
-    // Prevent inner content from ever overflowing the viewport
-    width: "100%",
-    boxSizing: "border-box",
-    overflow: "hidden",
+    maxWidth: 1200, margin: "0 auto", padding: "0 24px",
+    height: 72, display: "flex", alignItems: "center",
+    justifyContent: "space-between", gap: 20,
   },
   logo:    { display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 },
-  // ── FIX: logo constrained to navbar height so it never overflows ──
-  logoImg: { height: 76, width: "auto", display: "block", objectFit: "contain" },
+  logoImg: { height: 65, width: "auto", display: "block" },
 
   desktopNav: { display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" },
   navLink: {
-    position: "relative", padding: "8px 14px", fontSize: 13,
+    position: "relative", padding: "8px 14px", fontSize: 13, 
     fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.04em",
     textDecoration: "none", transition: "color 0.2s", background: "none", border: "none", cursor: "pointer",
   },
@@ -409,9 +390,9 @@ const S = {
     position: "absolute", bottom: 2, left: "50%", transform: "translateX(-50%)",
     width: 4, height: 4, borderRadius: "50%", backgroundColor: "#c8a96e",
   },
-  moreWrap:    { position: "relative" },
-  moreBtn:     { display: "flex", alignItems: "center", gap: 5 },
-  moreChevron: { fontSize: 11, color: "rgba(255,255,255,0.5)", display: "inline-block", transition: "transform 0.2s ease", marginTop: 1 },
+  moreWrap:      { position: "relative" },
+  moreBtn:       { display: "flex", alignItems: "center", gap: 5 },
+  moreChevron:   { fontSize: 11, color: "rgba(255,255,255,0.5)", display: "inline-block", transition: "transform 0.2s ease", marginTop: 1 },
   moreDropdown: {
     position: "absolute", top: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)",
     backgroundColor: "#fff", border: "1px solid #ece9e2",
@@ -424,6 +405,7 @@ const S = {
     borderBottom: "1px solid #f5f2ee", transition: "background 0.15s, color 0.15s",
   },
 
+  // Search
   searchArea:   { position: "relative", display: "flex", alignItems: "center" },
   searchToggle: { background: "none", border: "none", cursor: "pointer", padding: 8, display: "flex", alignItems: "center", justifyContent: "center" },
   searchBox: {
@@ -445,13 +427,14 @@ const S = {
     boxShadow: "0 12px 40px rgba(0,0,0,0.14)", zIndex: 300,
     maxHeight: 400, overflowY: "auto", minWidth: 320,
   },
-  searchResult:     { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", cursor: "pointer", borderBottom: "1px solid #faf8f5", transition: "background 0.12s" },
+  searchResult: { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", cursor: "pointer", borderBottom: "1px solid #faf8f5", transition: "background 0.12s" },
+  searchThumb:  { width: 38, height: 30, objectFit: "cover", flexShrink: 0 },
   searchResultText: { flex: 1, minWidth: 0 },
   searchResultName: { fontSize: 13, fontFamily: "'Georgia', serif", margin: "0 0 2px", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
   searchResultDesc: { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", color: "#aaa", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
   searchResultTag:  { fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.1em", textTransform: "uppercase", color: "#bbb", flexShrink: 0 },
-  searchEmpty:      { padding: "20px 16px", fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", textAlign: "center" },
-  searchSeeAll:     { display: "block", width: "100%", padding: "12px 14px", border: "none", borderTop: "1px solid #ece9e2", cursor: "pointer", fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#666", textAlign: "left", transition: "background 0.12s" },
+  searchEmpty:  { padding: "20px 16px", fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", textAlign: "center" },
+  searchSeeAll: { display: "block", width: "100%", padding: "12px 14px", border: "none", borderTop: "1px solid #ece9e2", cursor: "pointer", fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#666", textAlign: "left", transition: "background 0.12s" },
 
   desktopActions: { display: "flex", alignItems: "center", gap: 12, flexShrink: 0 },
   loginLink:      { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.7)", textDecoration: "none", letterSpacing: "0.04em", padding: "8px 4px", transition: "color 0.2s" },
@@ -468,15 +451,14 @@ const S = {
   dropdownDivider:  { height: 1, backgroundColor: "#f0ede7" },
   dropdownSignOut:  { display: "block", width: "100%", padding: "11px 16px", background: "none", border: "none", cursor: "pointer", textAlign: "left", fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", transition: "color 0.15s, background 0.15s" },
 
-  // ── FIX: hamburger is flex by default, hidden on desktop via CSS ──
-  hamburger:    { display: "flex", flexDirection: "column", gap: 5, padding: "8px 4px", background: "none", border: "none", cursor: "pointer", flexShrink: 0 },
+  hamburger:    { display: "none", flexDirection: "column", gap: 5, padding: "8px 4px", background: "none", border: "none", cursor: "pointer", flexShrink: 0 },
   hamburgerBar: { display: "block", width: 22, height: 1.5, backgroundColor: "#fff", transition: "transform 0.3s, opacity 0.3s", transformOrigin: "center" },
 
   drawerOverlay: { position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 150, transition: "opacity 0.3s ease", backdropFilter: "blur(3px)" },
-  drawer:        { position: "fixed", top: 0, right: 0, bottom: 0, width: "min(300px, 88%)", backgroundColor: "#0c1e14", zIndex: 200, transition: "transform 0.38s cubic-bezier(0.4,0,0.2,1)", display: "flex", flexDirection: "column", overflowY: "auto" },
+  drawer:        { position: "fixed", top: 0, right: 0, bottom: 0, width: "min(280px, 88vw)", backgroundColor: "#0c1e14", zIndex: 200, transition: "transform 0.38s cubic-bezier(0.4,0,0.2,1)", display: "flex", flexDirection: "column", overflowY: "auto" },
   drawerHeader:  { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 },
-  drawerLogo:    { height: 36, width: "auto", objectFit: "contain" },
-  drawerClose:   { background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 18, cursor: "pointer", padding: "4px 8px", lineHeight: 1, transition: "color 0.2s" },
+  drawerLogo:    { height: 32, width: "auto" },
+  drawerClose:   { background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 16, cursor: "pointer", padding: "4px 6px", lineHeight: 1, transition: "color 0.2s" },
   drawerSearch:  { display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", backgroundColor: "rgba(255,255,255,0.04)" },
   drawerSearchInput: { flex: 1, background: "none", border: "none", outline: "none", color: "#fff", fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", padding: "4px 0" },
   drawerUserStrip: { display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", backgroundColor: "rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.07)", textDecoration: "none", transition: "background 0.18s" },
@@ -516,19 +498,11 @@ const css = `
   @keyframes slideInRight   { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } }
   @keyframes fadeDown       { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
   @keyframes spin           { to { transform: rotate(360deg); } }
-
-  /* Desktop: hide hamburger, show desktop nav + actions */
-  @media (min-width: 861px) {
-    .hamburger       { display: none !important; }
-  }
-  /* Mobile: hide desktop nav/actions/search, show hamburger */
   @media (max-width: 860px) {
     .desktop-nav     { display: none !important; }
     .desktop-actions { display: none !important; }
     .search-area     { display: none !important; }
     .hamburger       { display: flex !important; }
-    .nav-logo-img    { height: 34px !important; }
   }
-
-  body { padding-top: 64px; }
+  body { padding-top: 72px; }
 `;

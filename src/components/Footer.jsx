@@ -55,11 +55,7 @@ function Footer() {
             A Nairobi-based travel company connecting curious travellers
             with Kenya's most extraordinary landscapes, cultures, and wildlife.
           </p>
-          <div style={styles.contactItems}>
-            <span style={styles.contactItem}>visitsasake@gmail.co.ke</span>
-            <span style={styles.contactItem}>+254 700 000 000</span>
-            <span style={styles.contactItem}>Nairobi, Kenya</span>
-          </div>
+      
         </div>
 
         {/* Pages col */}

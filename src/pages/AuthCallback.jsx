@@ -6,22 +6,33 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Listen for auth state change first, before checking session
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        subscription.unsubscribe();
+        navigate("/profile", { replace: true });
+      }
+      // Don't handle SIGNED_OUT here — it fires on initial load with no session
+    });
+
+    // Also check if session already exists (handles page refresh cases)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
+        subscription.unsubscribe();
         navigate("/profile", { replace: true });
-      } else {
-        // Session not ready yet, listen for it
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-          if (event === "SIGNED_IN" && session) {
-            subscription.unsubscribe();
-            navigate("/profile", { replace: true });
-          } else if (event === "SIGNED_OUT" || !session) {
-            subscription.unsubscribe();
-            navigate("/login", { replace: true });
-          }
-        });
       }
     });
+
+    // Safety fallback — if nothing happens in 8 seconds, go to login
+    const fallback = setTimeout(() => {
+      subscription.unsubscribe();
+      navigate("/login", { replace: true });
+    }, 8000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (

@@ -484,7 +484,7 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
               <button style={S.closeBtn} onClick={() => setShowAuthGate(false)} className="close-btn">✕</button>
             </div>
             <div style={{ padding: "40px 32px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 24 }}>
-              <span style={{ fontSize: 52 }}>🔐</span>
+              
               <div>
                 <h3 style={{ fontSize: 20, fontWeight: 400, margin: "0 0 10px", fontFamily: "'Georgia', serif" }}>
                   Almost there — sign in to continue
