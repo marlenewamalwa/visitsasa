@@ -397,7 +397,7 @@ const S = {
   },
   logo:    { display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 },
   // ── FIX: logo constrained to navbar height so it never overflows ──
-  logoImg: { height: 44, width: "auto", display: "block", objectFit: "contain" },
+  logoImg: { height: 76, width: "auto", display: "block", objectFit: "contain" },
 
   desktopNav: { display: "flex", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" },
   navLink: {
@@ -473,7 +473,7 @@ const S = {
   hamburgerBar: { display: "block", width: 22, height: 1.5, backgroundColor: "#fff", transition: "transform 0.3s, opacity 0.3s", transformOrigin: "center" },
 
   drawerOverlay: { position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 150, transition: "opacity 0.3s ease", backdropFilter: "blur(3px)" },
-  drawer:        { position: "fixed", top: 0, right: 0, bottom: 0, width: "min(300px, 88vw)", backgroundColor: "#0c1e14", zIndex: 200, transition: "transform 0.38s cubic-bezier(0.4,0,0.2,1)", display: "flex", flexDirection: "column", overflowY: "auto" },
+  drawer:        { position: "fixed", top: 0, right: 0, bottom: 0, width: "min(300px, 88%)", backgroundColor: "#0c1e14", zIndex: 200, transition: "transform 0.38s cubic-bezier(0.4,0,0.2,1)", display: "flex", flexDirection: "column", overflowY: "auto" },
   drawerHeader:  { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 },
   drawerLogo:    { height: 36, width: "auto", objectFit: "contain" },
   drawerClose:   { background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 18, cursor: "pointer", padding: "4px 8px", lineHeight: 1, transition: "color 0.2s" },
