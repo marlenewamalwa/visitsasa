@@ -248,25 +248,22 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
                         style={{
                           ...S.destCard,
                           ...(selected ? S.destCardSelected : {}),
-                          backgroundImage: d.image_url ? `url(${d.image_url})` : "none",
-                          backgroundColor: d.image_url ? "#1a2f2a" : "#f7f4ef",
+                          backgroundColor: selected ? "#fdf9f2" : "#f7f4ef",
+                          justifyContent: "space-between",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                          padding: "14px 14px 12px",
                         }}
                         className={selected ? "dest-card-selected" : "dest-card-btn"}
                         onClick={() => toggle("destinations", d.name)}
                       >
-                        {/* Dark overlay */}
-                        <div style={{
-                          ...S.destCardOverlay,
-                          opacity: selected ? 0.45 : 0.55,
-                        }} />
-                        {/* Selected ring */}
-                        {selected && <div style={S.destCardRing} />}
                         {/* Check */}
-                        {selected && <span style={S.destCardCheck}>✓</span>}
+                        {selected && <span style={{ ...S.destCardCheck, position: "static", backgroundColor: "transparent", color: "#c8a96e", width: "auto", height: "auto", borderRadius: 0, alignSelf: "flex-end" }}>✓</span>}
+                        {!selected && <span style={{ height: 24 }} />}
                         {/* Text */}
-                        <div style={S.destCardText}>
-                          <span style={S.destCardName}>{d.name}</span>
-                          <span style={S.destCardTag}>{d.tag || d.region}</span>
+                        <div style={{ ...S.destCardText, padding: 0 }}>
+                          <span style={{ ...S.destCardName, color: "#1a1a1a" }}>{d.name}</span>
+                          <span style={{ ...S.destCardTag, color: "#888" }}>{d.tag || d.region}</span>
                         </div>
                       </button>
                     );
@@ -577,23 +574,16 @@ const S = {
   destGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 10 },
   destShimmer: { height: 120, borderRadius: 0 },
   destCard: {
-    position: "relative", height: 120, border: "2px solid transparent",
-    backgroundSize: "cover", backgroundPosition: "center",
+    position: "relative", height: 100, border: "2px solid transparent",
     cursor: "pointer", padding: 0, overflow: "hidden",
     transition: "border-color 0.2s, transform 0.2s",
     display: "flex", alignItems: "flex-end",
   },
   destCardSelected: { borderColor: "#c8a96e", transform: "scale(1.02)" },
-  destCardOverlay: {
-    position: "absolute", inset: 0,
-    background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%)",
-    transition: "opacity 0.2s",
-  },
-  destCardRing: { position: "absolute", inset: 0, border: "2px solid #c8a96e", pointerEvents: "none" },
-  destCardCheck: { position: "absolute", top: 10, right: 12, fontSize: 14, color: "#c8a96e", fontWeight: 700, zIndex: 2, backgroundColor: "rgba(0,0,0,0.4)", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" },
-  destCardText: { position: "relative", zIndex: 1, padding: "10px 12px", width: "100%" },
-  destCardName: { display: "block", fontSize: 14, fontFamily: "'Georgia', serif", color: "#fff", fontWeight: 400, lineHeight: 1.2, marginBottom: 3 },
-  destCardTag:  { display: "block", fontSize: 9,  fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.7)", letterSpacing: "0.1em", textTransform: "uppercase" },
+  destCardCheck: { fontSize: 14, color: "#c8a96e", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" },
+  destCardText: { padding: 0, width: "100%" },
+  destCardName: { display: "block", fontSize: 14, fontFamily: "'Georgia', serif", color: "#1a1a1a", fontWeight: 400, lineHeight: 1.2, marginBottom: 3 },
+  destCardTag:  { display: "block", fontSize: 9,  fontFamily: "'Helvetica Neue', sans-serif", color: "#888", letterSpacing: "0.1em", textTransform: "uppercase" },
 
   selectionCount: { marginTop: 14, fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#c8a96e", fontWeight: 600, letterSpacing: "0.04em" },
 

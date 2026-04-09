@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import TripWizard from "../components/TripWizard";
+import destinationsHero from "../assets/watamu.jpg";
 
 const REGION_ORDER = ["Mara", "Coast", "Rift Valley", "Northern", "Central", "Western", "Nairobi"];
 
@@ -57,7 +58,7 @@ export default function Destinations() {
       <style>{css}</style>
 
       {/* ── HERO ── */}
-      <section style={S.hero} ref={heroRef}>
+      <section style={{ ...S.hero, backgroundImage: `url(${destinationsHero})` }} ref={heroRef}>
         <div style={S.heroOverlay} />
         <div style={S.heroContent}>
           <span style={S.eyebrow}>Explore Kenya</span>
@@ -285,11 +286,11 @@ const S = {
   // Hero
   hero: {
     position: "relative", height: 440, display: "flex", alignItems: "center",
-    backgroundColor: "#0c1e14", overflow: "hidden",
+    backgroundColor: "#0c1e14", backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden",
   },
   heroOverlay: {
     position: "absolute", inset: 0,
-    background: "radial-gradient(ellipse at 30% 50%, rgba(200,169,110,0.12) 0%, transparent 70%), linear-gradient(135deg, #0c1e14 0%, #1a3528 100%)",
+    background: "radial-gradient(ellipse at 30% 50%, rgba(200,169,110,0.12) 0%, transparent 70%), linear-gradient(135deg, rgba(12,30,20,0.82) 0%, rgba(26,53,40,0.75) 100%)",
   },
   heroContent: { position: "relative", zIndex: 2, maxWidth: 1200, margin: "0 auto", padding: "0 72px", width: "100%" },
   eyebrow: {

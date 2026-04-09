@@ -140,7 +140,7 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link to="/" style={S.logo}>
-            <img src={logo} alt="Safari Yako" style={S.logoImg} />
+            <img src={logo} alt="Safari Yako" style={S.logoImg} className="nav-logo-img" />
           </Link>
 
           {/* DESKTOP NAV */}
@@ -382,14 +382,18 @@ const S = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
     backgroundColor: "#1E4D56",
     boxShadow: "0 1px 0 rgba(255,255,255,0.06)",
+    overflow: "hidden",
   },
   inner: {
     maxWidth: 1200, margin: "0 auto",
-    // ── FIX: reduced horizontal padding on mobile via CSS below ──
-    padding: "0 24px",
-    height: 64,                          // ← slightly tighter than 72 so logo fits
+    padding: "0 16px",
+    height: 64,
     display: "flex", alignItems: "center",
-    justifyContent: "space-between", gap: 16,
+    justifyContent: "space-between", gap: 12,
+    // Prevent inner content from ever overflowing the viewport
+    width: "100%",
+    boxSizing: "border-box",
+    overflow: "hidden",
   },
   logo:    { display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 },
   // ── FIX: logo constrained to navbar height so it never overflows ──
@@ -523,6 +527,7 @@ const css = `
     .desktop-actions { display: none !important; }
     .search-area     { display: none !important; }
     .hamburger       { display: flex !important; }
+    .nav-logo-img    { height: 34px !important; }
   }
 
   body { padding-top: 64px; }

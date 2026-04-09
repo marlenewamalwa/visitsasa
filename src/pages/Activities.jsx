@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import TripWizard from "../components/TripWizard";
+import acthero from "../assets/girlsnorkeling.jpg";
 
 const DIFFICULTY_COLOR = {
   Easy:     { color: "#2e7d32", bg: "#e8f5e9" },
@@ -75,7 +76,7 @@ export default function Activities() {
       <style>{css}</style>
 
       {/* ── HERO ── */}
-      <section style={S.hero}>
+      <section style={{ ...S.hero, backgroundImage: `url(${acthero})` }}>
         <div style={S.heroOverlay} />
         <div style={S.heroContent}>
           <span style={S.eyebrow}>Things To Do</span>
@@ -263,8 +264,8 @@ export default function Activities() {
 const S = {
   page: { fontFamily: "'Georgia', serif", color: "#1a1a1a", backgroundColor: "#fff", minHeight: "100vh" },
 
-  hero: { position: "relative", height: 420, display: "flex", alignItems: "center", backgroundColor: "#0c1e14", overflow: "hidden" },
-  heroOverlay: { position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 40%, rgba(200,169,110,0.1) 0%, transparent 65%), linear-gradient(135deg, #0c1e14 0%, #1a3528 100%)" },
+  hero: { position: "relative", height: 420, display: "flex", alignItems: "center", backgroundColor: "#0c1e14", backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden" },
+  heroOverlay: { position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 40%, rgba(200,169,110,0.1) 0%, transparent 65%), linear-gradient(135deg, rgba(12,30,20,0.82) 0%, rgba(26,53,40,0.75) 100%)" },
   heroContent: { position: "relative", zIndex: 2, maxWidth: 1200, margin: "0 auto", padding: "0 72px", width: "100%" },
   eyebrow: { display: "inline-block", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#c8a96e", fontFamily: "'Helvetica Neue', sans-serif", marginBottom: 20, borderBottom: "1px solid rgba(200,169,110,0.4)", paddingBottom: 6 },
   heroTitle: { fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 400, color: "#fff", lineHeight: 1.08, letterSpacing: "-0.03em", margin: "0 0 18px" },
