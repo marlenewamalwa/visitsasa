@@ -15,7 +15,7 @@ const STATUS_META = {
 const TABS = ["My Trips", "Saved Destinations", "Saved Activities", "Account Settings"];
 
 export default function Profile() {
-  const { user, profile, signOut, updateProfile } = useAuth();
+  const { user, profile, loading: authLoading, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [activeTab,       setActiveTab]       = useState(0);
@@ -39,10 +39,12 @@ export default function Profile() {
   const initials    = displayName ? displayName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2) : "?";
   const avatarUrl   = user?.user_metadata?.avatar_url;
 
-  useEffect(() => {
-    if (!user) { navigate("/login"); return; }
-    setSettingsForm({ full_name: profile?.full_name || "", phone: profile?.phone || "" });
-  }, [user, profile, navigate]);
+
+useEffect(() => {
+  if (authLoading) return;
+  if (!user) { navigate("/login"); return; }
+  setSettingsForm({ full_name: profile?.full_name || "", phone: profile?.phone || "" });
+}, [user, profile, authLoading, navigate]);
 
   const fetchTrips = useCallback(async () => {
     if (!user) return;
@@ -115,7 +117,7 @@ export default function Profile() {
   const formatDate = (d) => new Date(d).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" });
   const nights = (s, e) => Math.max(0, Math.round((new Date(e) - new Date(s)) / 86400000));
 
-  if (!user) return null;
+  if (authLoading || !user) return null;
 
   return (
     <div style={S.page}>
