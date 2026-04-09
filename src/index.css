@@ -3,11 +3,17 @@
   margin: 0;
   padding: 0;
 }
+html, body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  
-
+padding-top: 72px;
 
 }
 
