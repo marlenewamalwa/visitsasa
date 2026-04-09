@@ -367,7 +367,7 @@ export default function Navbar() {
 
 const S = {
   header: {
-    position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+    position: "", top: 0, left: 0, right: 0, zIndex: 100,
     backgroundColor: "#1E4D56",
     boxShadow: "0 1px 0 rgba(255,255,255,0.06)",
     
@@ -504,5 +504,5 @@ const css = `
     .search-area     { display: none !important; }
     .hamburger       { display: flex !important; }
   }
-  body { padding-top: 72px; }
+  
 `;
