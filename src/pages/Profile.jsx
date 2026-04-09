@@ -449,7 +449,7 @@ export default function Profile() {
               <h2 style={{ ...S.settingsSectionTitle, color: "#c62828" }}>Danger Zone</h2>
               <p style={{ fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", marginBottom: 20, lineHeight: 1.7 }}>
                 Signing out will end your current session. To permanently delete your account, contact us at{" "}
-                <a href="mailto:hello@safariyako.co.ke" style={{ color: "#c8a96e" }}>hello@safariyako.co.ke</a>.
+                <a href="mailto:hello@VisitSasa.co.ke" style={{ color: "#c8a96e" }}>hello@VisitSasa.co.ke</a>.
               </p>
               <button style={S.signOutDangerBtn} className="sign-out-danger-btn" onClick={handleSignOut}>
                 Sign Out

@@ -20,7 +20,7 @@ const STATIC_PAGES = [
   { id: "p1", type: "page", displayName: "How It Works", displayDesc: "Learn how our trip planning works.",    path: "/howitworks"  },
   { id: "p2", type: "page", displayName: "Travel Tips",  displayDesc: "Tips and guides for travelling Kenya.", path: "/travel-tips" },
   { id: "p3", type: "page", displayName: "Contact Us",   displayDesc: "Get in touch with our team.",           path: "/contact"     },
-  { id: "p4", type: "page", displayName: "About Us",     displayDesc: "The story behind Safari Yako.",         path: "/about"       },
+  { id: "p4", type: "page", displayName: "About Us",     displayDesc: "The story behind VisitSasa.",         path: "/about"       },
 ];
 
 const TYPE_LABEL = { destination: "Destination", activity: "Activity", tip: "Travel Tip", page: "Page" };
@@ -140,7 +140,7 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link to="/" style={S.logo}>
-            <img src={logo} alt="Safari Yako" style={S.logoImg} />
+            <img src={logo} alt="VisitSasa" style={S.logoImg} />
           </Link>
 
           {/* DESKTOP NAV */}
@@ -295,7 +295,7 @@ export default function Navbar() {
       {/* MOBILE DRAWER */}
       <div ref={drawerRef} style={{ ...S.drawer, transform: menuOpen ? "translateX(0)" : "translateX(100%)" }}>
         <div style={S.drawerHeader}>
-          <img src={logo} alt="Safari Yako" style={S.drawerLogo} />
+          <img src={logo} alt="VisitSasa" style={S.drawerLogo} />
           <button style={S.drawerClose} className="drawer-close" onClick={() => setMenuOpen(false)}>✕</button>
         </div>
 
@@ -356,7 +356,7 @@ export default function Navbar() {
               <Link to="/signup" style={S.drawerFooterLink} className="drawer-footer-link" onClick={() => setMenuOpen(false)}>Create Account</Link>
             </>
           )}
-          <a href="mailto:hello@safariyako.co.ke" style={S.drawerFooterLink} className="drawer-footer-link">hello@safariyako.co.ke</a>
+          <a href="mailto:hello@VisitSasa.co.ke" style={S.drawerFooterLink} className="drawer-footer-link">hello@VisitSasa.co.ke</a>
         </div>
       </div>
 

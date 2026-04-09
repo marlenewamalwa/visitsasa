@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const WHATSAPP_NUMBER = "254778389333"; // Replace with your number — no + or spaces
+const WHATSAPP_NUMBER = "254778389333";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hi! I'd like to find out more about your Kenya travel packages.");
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
@@ -45,8 +45,8 @@ function Footer() {
         </div>
       </div>
 
-      {/* Main grid */}
-      <div style={styles.main}>
+      {/* Main grid — className added so media queries work */}
+      <div style={styles.main} className="footer-main">
 
         {/* Brand col */}
         <div style={styles.brandCol}>
@@ -55,7 +55,6 @@ function Footer() {
             A Nairobi-based travel company connecting curious travellers
             with Kenya's most extraordinary landscapes, cultures, and wildlife.
           </p>
-      
         </div>
 
         {/* Pages col */}
@@ -71,7 +70,6 @@ function Footer() {
             ))}
           </ul>
         </div>
-
 
         {/* Newsletter / social col */}
         <div style={styles.col}>
@@ -89,8 +87,8 @@ function Footer() {
             <button style={styles.emailBtn} className="footer-email-btn">→</button>
           </div>
 
-          {/* Social links */}
-          <div style={styles.socialRow}>
+          {/* Social links — className added so wrap media query works */}
+          <div style={styles.socialRow} className="footer-social">
             <a href="https://www.instagram.com/visitsasaofficial/" style={styles.socialLink} className="footer-link">Instagram</a>
             <a href="https://www.tiktok.com/@visitsasaofficial?_r=1&_t=ZS-95CPc5EriS4" style={styles.socialLink} className="footer-link">Tiktok</a>
             <a href="https://web.facebook.com/Visitsasa/?_rdc=1&_rdr#" style={styles.socialLink} className="footer-link">Facebook</a>
@@ -171,7 +169,7 @@ const styles = {
     margin: "0 auto",
     padding: "56px 24px 48px",
     display: "grid",
-    gridTemplateColumns: "2fr 1fr 1fr 1.5fr",
+    gridTemplateColumns: "2fr 1fr 1.5fr",
     gap: 48,
   },
 
@@ -190,16 +188,6 @@ const styles = {
     lineHeight: 1.75,
     margin: "0 0 22px",
     maxWidth: 280,
-  },
-  contactItems: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 6,
-  },
-  contactItem: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.45)",
-    letterSpacing: "0.02em",
   },
 
   col: {},
@@ -248,6 +236,7 @@ const styles = {
     fontSize: 13,
     outline: "none",
     borderRadius: 0,
+    minWidth: 0,
   },
   emailBtn: {
     padding: "9px 16px",
@@ -263,6 +252,7 @@ const styles = {
 
   socialRow: {
     display: "flex",
+    flexWrap: "wrap",
     gap: 18,
   },
   socialLink: {
@@ -318,6 +308,7 @@ const css = `
   }
   @media (max-width: 560px) {
     .footer-main { grid-template-columns: 1fr !important; }
+    .footer-social { flex-wrap: wrap !important; gap: 12px !important; }
   }
 `;
 

@@ -13,8 +13,7 @@ html, body {
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-padding-top: 72px;
-
+ max-width: 100%;
 }
 
 /* HERO */
