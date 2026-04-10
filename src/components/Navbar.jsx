@@ -83,8 +83,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, [menuOpen, userMenuOpen, moreOpen, searchOpen]);
 
-  const handleSignOut = async () => { setUserMenuOpen(false); await signOut(); navigate("/"); };
-
+  const handleSignOut = async () => { await signOut(); navigate("/"); };
   // ── Search ────────────────────────────────────────────────────────────────
   const doSearch = useCallback(async (q) => {
     if (!q.trim()) { setSearchResults([]); setSearchLoading(false); return; }

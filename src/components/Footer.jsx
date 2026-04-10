@@ -6,13 +6,9 @@ const WHATSAPP_MESSAGE = encodeURIComponent("Hi! I'd like to find out more about
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
 const NAV_LINKS = [
-  { to: "/", label: "Home" },
-  { to: "/destinations", label: "Destinations" },
-  { to: "/activities", label: "Activities" },
-  { to: "/travel-tips", label: "Travel Tips" },
   { to: "/about", label: "About Us" },
-  { to: "/contact", label: "Contact" },
-  { to: "/howitworks", label: "How It Works" },
+  { to: "/privacy", label: "Privacy Policy" },
+  { to: "/terms", label: "Terms of Service" },
 ];
 
 const DESTINATIONS = [

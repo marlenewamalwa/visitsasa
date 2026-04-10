@@ -10,22 +10,23 @@ export function AuthProvider({ children }) {
 
   // Fetch extended profile from public.profiles
   const fetchProfile = async (userId) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    setProfile(data || null);
-  };
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+  setProfile(data || null);
+  setLoading(false);  // ← add this line
+};
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      if (u) fetchProfile(u.id);
-      setLoading(false);
-    });
+   supabase.auth.getSession().then(({ data: { session } }) => {
+  const u = session?.user ?? null;
+  setUser(u);
+  if (u) fetchProfile(u.id); // fetchProfile will call setLoading(false) when done
+  else setLoading(false);     // no user, resolve immediately
+});
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

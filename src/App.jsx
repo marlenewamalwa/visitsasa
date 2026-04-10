@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import SearchResults from "./pages/SearchResults";
 import AuthCallback from './pages/AuthCallback'
+import Privacypolicy from './pages/Privacypolicy'
+import TermsofService from './pages/Termsofservice'
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
           <Route path="/howitworks" element={<HowItWorks />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/privacy" element={<Privacypolicy />} />
+          <Route path="/terms"   element={<TermsofService />} />
           <Route path="/profile" element={     
             <ProtectedRoute>
               <Profile />
