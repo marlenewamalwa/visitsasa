@@ -17,8 +17,8 @@ const CONTACT_DETAILS = [
   {
     icon: "✉",
     label: "Email",
-    value: "hello@visitsasa.co.ke",
-    href: "mailto:hello@visitsasa.com",
+    value: "info@visitsasa.com",
+    href: "mailto:info@visitsasa.com",
   },
   {
     icon: "📱",

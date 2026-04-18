@@ -266,7 +266,7 @@ export default function Navbar() {
                       </div>
                       <Link to="/profile" style={S.dropdownItem} className="dropdown-item" onClick={() => setUserMenuOpen(false)}>My Profile</Link>
                       <div style={S.dropdownDivider} />
-                      <button style={S.dropdownSignOut} className="dropdown-sign-out" onClick={handleSignOut}>Sign Out</button>
+                  
                     </div>
                   )}
                 </div>
@@ -355,7 +355,7 @@ export default function Navbar() {
               <Link to="/signup" style={S.drawerFooterLink} className="drawer-footer-link" onClick={() => setMenuOpen(false)}>Create Account</Link>
             </>
           )}
-          <a href="mailto:hello@VisitSasa.co.ke" style={S.drawerFooterLink} className="drawer-footer-link">hello@VisitSasa.co.ke</a>
+          <a href="mailto:info@VisitSasa.com" style={S.drawerFooterLink} className="drawer-footer-link">info@VisitSasa.com</a>
         </div>
       </div>
 

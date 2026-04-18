@@ -26,25 +26,53 @@ export default function Profile() {
   const [expandedTrip,    setExpandedTrip]    = useState(null);
   const [wizardOpen,      setWizardOpen]      = useState(false);
   const [wizardDests,     setWizardDests]     = useState([]);
+  const [wizardActs,      setWizardActs]      = useState([]);
 
   // Account settings form
-  const [settingsForm,  setSettingsForm]  = useState({ full_name: "", phone: "" });
-  const [saving,        setSaving]        = useState(false);
-  const [saveMsg,       setSaveMsg]       = useState("");
-  const [pwForm,        setPwForm]        = useState({ password: "", confirm: "" });
-  const [pwMsg,         setPwMsg]         = useState("");
-  const [pwSaving,      setPwSaving]      = useState(false);
+  const [settingsForm, setSettingsForm] = useState({ full_name: "", phone: "" });
+  const [saving,       setSaving]       = useState(false);
+  const [saveMsg,      setSaveMsg]      = useState("");
+  const [pwForm,       setPwForm]       = useState({ password: "", confirm: "" });
+  const [pwMsg,        setPwMsg]        = useState("");
+  const [pwSaving,     setPwSaving]     = useState(false);
 
   const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "";
   const initials    = displayName ? displayName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2) : "?";
   const avatarUrl   = user?.user_metadata?.avatar_url;
 
+  // Auth guard + settings init
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) { navigate("/login"); return; }
+    setSettingsForm({ full_name: profile?.full_name || "", phone: profile?.phone || "" });
+  }, [user, profile, authLoading, navigate]);
 
-useEffect(() => {
-  if (authLoading) return;
-  if (!user) { navigate("/login"); return; }
-  setSettingsForm({ full_name: profile?.full_name || "", phone: profile?.phone || "" });
-}, [user, profile, authLoading, navigate]);
+  // Pending trip from localStorage (logged-out wizard flow)
+  useEffect(() => {
+    if (!user || authLoading) return;
+    const pending = localStorage.getItem("pendingTrip");
+    if (!pending) return;
+    let trip;
+    try { trip = JSON.parse(pending); } catch { localStorage.removeItem("pendingTrip"); return; }
+    localStorage.removeItem("pendingTrip");
+    const payload = {
+      ...trip,
+      name:    trip.name  || profile?.full_name || user?.user_metadata?.full_name || "",
+      email:   trip.email || user.email,
+      phone:   trip.phone || profile?.phone || "",
+      status:  "pending",
+      user_id: user.id,
+    };
+    supabase.from("custom_trips").insert([payload]).select().single()
+      .then(({ data, error }) => {
+        if (!error && data) {
+          fetchTrips();
+          supabase.functions.invoke("send-trip-confirmation", {
+            body: { ...payload, trip_id: data.id },
+          }).catch((e) => console.warn("Email trigger failed:", e));
+        }
+      });
+  }, [user, authLoading]);
 
   const fetchTrips = useCallback(async () => {
     if (!user) return;
@@ -79,9 +107,28 @@ useEffect(() => {
     setLoading((l) => ({ ...l, acts: false }));
   }, [user]);
 
-  useEffect(() => { fetchTrips(); }, [fetchTrips]);
-  useEffect(() => { if (activeTab === 1) fetchSavedDests(); }, [activeTab, fetchSavedDests]);
-  useEffect(() => { if (activeTab === 2) fetchSavedActivities(); }, [activeTab, fetchSavedActivities]);
+  // Fetch everything on mount — needed so the banner has data on both tabs
+  useEffect(() => { fetchTrips(); },           [fetchTrips]);
+  useEffect(() => { fetchSavedDests(); },      [fetchSavedDests]);
+  useEffect(() => { fetchSavedActivities(); }, [fetchSavedActivities]);
+
+  // Derived names for wizard pre-fill
+  const allSavedDestNames = savedDests.map((s) => s.destinations?.name).filter(Boolean);
+  const allSavedActNames  = savedActivities.map((s) => s.activities?.name).filter(Boolean);
+  const hasSaved = allSavedDestNames.length > 0 || allSavedActNames.length > 0;
+
+  const openWizardFromSaved = () => {
+    setWizardDests(allSavedDestNames);
+    setWizardActs(allSavedActNames);
+    setWizardOpen(true);
+  };
+
+  const closeWizard = () => {
+    setWizardOpen(false);
+    setWizardDests([]);
+    setWizardActs([]);
+    fetchTrips();
+  };
 
   const unsaveDest = async (savedId) => {
     await supabase.from("saved_destinations").delete().eq("id", savedId);
@@ -119,13 +166,34 @@ useEffect(() => {
 
   if (authLoading || !user) return null;
 
+  // ── Build from Saved banner
+  const BuildFromSavedBanner = () => (
+    <div style={S.savedBanner}>
+      <div style={S.savedBannerLeft}>
+        <span style={S.savedBannerMark}>✦</span>
+        <div>
+          <p style={S.savedBannerTitle}>Build a trip from your saved items</p>
+          <p style={S.savedBannerSub}>
+            {allSavedDestNames.length > 0 && `${allSavedDestNames.length} destination${allSavedDestNames.length > 1 ? "s" : ""}`}
+            {allSavedDestNames.length > 0 && allSavedActNames.length > 0 && " · "}
+            {allSavedActNames.length > 0 && `${allSavedActNames.length} activit${allSavedActNames.length > 1 ? "ies" : "y"}`}
+            {" "}ready to plan
+          </p>
+        </div>
+      </div>
+      <button style={S.savedBannerBtn} className="build-from-saved-btn" onClick={openWizardFromSaved}>
+        Build My Trip →
+      </button>
+    </div>
+  );
+
   return (
     <div style={S.page}>
       <style>{css}</style>
 
       {/* ── PROFILE HEADER ── */}
       <div style={S.profileHeader}>
-        <div style={S.profileHeaderInner}>
+        <div style={S.profileHeaderInner} className="profile-header-inner">
           <div style={S.avatarWrap}>
             {avatarUrl
               ? <img src={avatarUrl} alt={displayName} style={S.avatar} />
@@ -138,7 +206,8 @@ useEffect(() => {
             <p style={S.profileEmail}>{user.email}</p>
           </div>
           <div style={S.profileHeaderActions}>
-            <button style={S.buildTripBtn} className="build-trip-btn" onClick={() => { setWizardDests([]); setWizardOpen(true); }}>
+            <button style={S.buildTripBtn} className="build-trip-btn"
+              onClick={() => { setWizardDests([]); setWizardActs([]); setWizardOpen(true); }}>
               + Build New Trip
             </button>
             <button style={S.signOutBtn} className="sign-out-btn" onClick={handleSignOut}>
@@ -168,7 +237,7 @@ useEffect(() => {
 
       {/* ── TABS ── */}
       <div style={S.tabBar}>
-        <div style={S.tabBarInner}>
+        <div style={S.tabBarInner} className="tab-bar-inner">
           {TABS.map((t, i) => (
             <button
               key={t}
@@ -196,7 +265,8 @@ useEffect(() => {
                 <span style={S.emptyIcon}>✈️</span>
                 <h3 style={S.emptyTitle}>No trips yet</h3>
                 <p style={S.emptyText}>Build your first custom Kenya trip and it'll appear here.</p>
-                <button style={S.emptyBtn} className="build-trip-btn" onClick={() => { setWizardDests([]); setWizardOpen(true); }}>
+                <button style={S.emptyBtn} className="build-trip-btn"
+                  onClick={() => { setWizardDests([]); setWizardActs([]); setWizardOpen(true); }}>
                   Build My First Trip →
                 </button>
               </div>
@@ -208,7 +278,6 @@ useEffect(() => {
                   const n        = nights(trip.start_date, trip.end_date);
                   return (
                     <div key={trip.id} style={S.tripCard} className="trip-card">
-                      {/* Trip card header */}
                       <div style={S.tripCardTop} onClick={() => setExpandedTrip(expanded ? null : trip.id)}>
                         <div style={S.tripCardLeft}>
                           <div style={{ ...S.statusDot, backgroundColor: meta.dot }} />
@@ -230,24 +299,19 @@ useEffect(() => {
                           <span style={S.expandChevron}>{expanded ? "▴" : "▾"}</span>
                         </div>
                       </div>
-
-                      {/* Expanded details */}
                       {expanded && (
                         <div style={S.tripExpanded}>
                           <div style={S.tripDetailGrid}>
-                            <TripDetail label="Activities"     value={trip.activities.join(", ")} />
-                            <TripDetail label="Accommodation"  value={trip.accommodation_type} />
-                            <TripDetail label="Budget"         value={`${trip.currency} ${Number(trip.budget_min).toLocaleString()} – ${Number(trip.budget_max).toLocaleString()}`} />
-                            <TripDetail label="Submitted"      value={formatDate(trip.created_at)} />
-                            {trip.special_requests && <TripDetail label="Notes" value={trip.special_requests} full />}
-                            {trip.admin_notes       && <TripDetail label="From Our Team" value={trip.admin_notes} full highlight />}
+                            <TripDetail label="Activities"    value={trip.activities.join(", ")} />
+                            <TripDetail label="Accommodation" value={trip.accommodation_type} />
+                            <TripDetail label="Budget"        value={`${trip.currency} ${Number(trip.budget_min).toLocaleString()} – ${Number(trip.budget_max).toLocaleString()}`} />
+                            <TripDetail label="Submitted"     value={formatDate(trip.created_at)} />
+                            {trip.special_requests && <TripDetail label="Notes"         value={trip.special_requests} full />}
+                            {trip.admin_notes       && <TripDetail label="From Our Team" value={trip.admin_notes}      full highlight />}
                           </div>
                           <div style={S.tripExpandedActions}>
-                            <button
-                              style={S.reTripBtn}
-                              className="re-trip-btn"
-                              onClick={() => { setWizardDests(trip.destinations); setWizardOpen(true); }}
-                            >
+                            <button style={S.reTripBtn} className="re-trip-btn"
+                              onClick={() => { setWizardDests(trip.destinations); setWizardActs([]); setWizardOpen(true); }}>
                               Book Similar Trip →
                             </button>
                           </div>
@@ -264,6 +328,8 @@ useEffect(() => {
         {/* ── TAB 1: SAVED DESTINATIONS ── */}
         {activeTab === 1 && (
           <div>
+            {hasSaved && !loading.dests && !loading.acts && <BuildFromSavedBanner />}
+
             {loading.dests ? (
               <div style={S.savedGrid}>
                 {[1,2,3,4].map((i) => <div key={i} style={{ ...S.shimmer, height: 200 }} className="shimmer" />)}
@@ -295,11 +361,13 @@ useEffect(() => {
                           {d.tag && <span style={S.savedTag}>{d.tag}</span>}
                           <h3 style={S.savedName}>{d.name}</h3>
                           {d.description && <p style={S.savedDesc}>{d.description.slice(0, 80)}…</p>}
-                          <button
-                            style={S.savedPlanBtn}
-                            className="saved-plan-btn"
-                            onClick={() => { setWizardDests([d.name]); setWizardOpen(true); }}
-                          >
+                          <button style={S.savedPlanBtn} className="saved-plan-btn"
+                            onClick={() => {
+                              // Pre-fill this destination + all saved activities
+                              setWizardDests([d.name]);
+                              setWizardActs(allSavedActNames);
+                              setWizardOpen(true);
+                            }}>
                             Plan This Trip +
                           </button>
                         </div>
@@ -309,11 +377,12 @@ useEffect(() => {
                 </div>
                 {savedDests.length > 1 && (
                   <div style={{ textAlign: "center", marginTop: 32 }}>
-                    <button
-                      style={S.planAllBtn}
-                      className="plan-all-btn"
-                      onClick={() => { setWizardDests(savedDests.map((s) => s.destinations?.name).filter(Boolean)); setWizardOpen(true); }}
-                    >
+                    <button style={S.planAllBtn} className="plan-all-btn"
+                      onClick={() => {
+                        setWizardDests(allSavedDestNames);
+                        setWizardActs(allSavedActNames);
+                        setWizardOpen(true);
+                      }}>
                       Plan All {savedDests.length} Destinations Together →
                     </button>
                   </div>
@@ -326,6 +395,8 @@ useEffect(() => {
         {/* ── TAB 2: SAVED ACTIVITIES ── */}
         {activeTab === 2 && (
           <div>
+            {hasSaved && !loading.dests && !loading.acts && <BuildFromSavedBanner />}
+
             {loading.acts ? (
               <div style={S.actGrid}>
                 {[1,2,3,4].map((i) => <div key={i} style={{ ...S.shimmer, height: 100 }} className="shimmer" />)}
@@ -371,31 +442,22 @@ useEffect(() => {
         {/* ── TAB 3: ACCOUNT SETTINGS ── */}
         {activeTab === 3 && (
           <div style={S.settingsWrap}>
-            {/* Profile info */}
             <div style={S.settingsSection}>
               <h2 style={S.settingsSectionTitle}>Profile Information</h2>
-              <div style={S.settingsGrid}>
+              <div style={S.settingsGrid} className="settings-grid">
                 <div style={S.fieldGroup}>
                   <label style={S.label}>Full Name</label>
-                  <input
-                    type="text"
-                    style={S.input}
-                    className="settings-input"
+                  <input type="text" style={S.input} className="settings-input"
                     value={settingsForm.full_name}
                     onChange={(e) => setSettingsForm((f) => ({ ...f, full_name: e.target.value }))}
-                    placeholder="Your full name"
-                  />
+                    placeholder="Your full name" />
                 </div>
                 <div style={S.fieldGroup}>
                   <label style={S.label}>Phone Number</label>
-                  <input
-                    type="tel"
-                    style={S.input}
-                    className="settings-input"
+                  <input type="tel" style={S.input} className="settings-input"
                     value={settingsForm.phone}
                     onChange={(e) => setSettingsForm((f) => ({ ...f, phone: e.target.value }))}
-                    placeholder="+254 700 000000"
-                  />
+                    placeholder="+254 700 000000" />
                 </div>
                 <div style={S.fieldGroup}>
                   <label style={S.label}>Email Address</label>
@@ -411,31 +473,22 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Password */}
             <div style={S.settingsSection}>
               <h2 style={S.settingsSectionTitle}>Change Password</h2>
-              <div style={S.settingsGrid}>
+              <div style={S.settingsGrid} className="settings-grid">
                 <div style={S.fieldGroup}>
                   <label style={S.label}>New Password</label>
-                  <input
-                    type="password"
-                    style={S.input}
-                    className="settings-input"
+                  <input type="password" style={S.input} className="settings-input"
                     value={pwForm.password}
                     onChange={(e) => setPwForm((f) => ({ ...f, password: e.target.value }))}
-                    placeholder="Min. 8 characters"
-                  />
+                    placeholder="Min. 8 characters" />
                 </div>
                 <div style={S.fieldGroup}>
                   <label style={S.label}>Confirm Password</label>
-                  <input
-                    type="password"
-                    style={S.input}
-                    className="settings-input"
+                  <input type="password" style={S.input} className="settings-input"
                     value={pwForm.confirm}
                     onChange={(e) => setPwForm((f) => ({ ...f, confirm: e.target.value }))}
-                    placeholder="Repeat new password"
-                  />
+                    placeholder="Repeat new password" />
                 </div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 24 }}>
@@ -446,12 +499,11 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Danger zone */}
             <div style={{ ...S.settingsSection, borderColor: "#ffcdd2" }}>
               <h2 style={{ ...S.settingsSectionTitle, color: "#c62828" }}>Danger Zone</h2>
               <p style={{ fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", marginBottom: 20, lineHeight: 1.7 }}>
                 Signing out will end your current session. To permanently delete your account, contact us at{" "}
-                <a href="mailto:hello@VisitSasa.co.ke" style={{ color: "#c8a96e" }}>hello@VisitSasa.co.ke</a>.
+                <a href="mailto:info@VisitSasa.com" style={{ color: "#c8a96e" }}>info@VisitSasa.com</a>.
               </p>
               <button style={S.signOutDangerBtn} className="sign-out-danger-btn" onClick={handleSignOut}>
                 Sign Out
@@ -463,8 +515,9 @@ useEffect(() => {
 
       {wizardOpen && (
         <TripWizard
-          onClose={() => { setWizardOpen(false); setWizardDests([]); fetchTrips(); }}
+          onClose={closeWizard}
           initialDestinations={wizardDests}
+          initialActivities={wizardActs}
         />
       )}
     </div>
@@ -483,40 +536,32 @@ function TripDetail({ label, value, full, highlight }) {
 const S = {
   page: { minHeight: "100vh", backgroundColor: "#f7f4ef", fontFamily: "'Georgia', serif" },
 
-  // Header
-  profileHeader: { backgroundColor: "#0c1e14", padding: "48px 24px 0" },
+  profileHeader:      { backgroundColor: "#0c1e14", padding: "48px 24px 0" },
   profileHeaderInner: { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 24, paddingBottom: 32, flexWrap: "wrap" },
-  avatarWrap: { flexShrink: 0 },
-  avatar:        { width: 72, height: 72, borderRadius: "50%", objectFit: "cover", border: "3px solid #c8a96e" },
-  avatarInitials: { width: 72, height: 72, borderRadius: "50%", backgroundColor: "#c8a96e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontFamily: "'Georgia', serif", border: "3px solid rgba(255,255,255,0.2)" },
-  profileInfo:   { flex: 1 },
-  profileEyebrow: { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", margin: "0 0 6px" },
-  profileName:   { fontSize: 28, fontWeight: 400, color: "#fff", margin: "0 0 4px", letterSpacing: "-0.02em" },
-  profileEmail:  { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.45)", margin: 0 },
+  avatarWrap:         { flexShrink: 0 },
+  avatar:             { width: 72, height: 72, borderRadius: "50%", objectFit: "cover", border: "3px solid #c8a96e" },
+  avatarInitials:     { width: 72, height: 72, borderRadius: "50%", backgroundColor: "#c8a96e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontFamily: "'Georgia', serif", border: "3px solid rgba(255,255,255,0.2)" },
+  profileInfo:        { flex: 1 },
+  profileEyebrow:     { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", margin: "0 0 6px" },
+  profileName:        { fontSize: 28, fontWeight: 400, color: "#fff", margin: "0 0 4px", letterSpacing: "-0.02em" },
+  profileEmail:       { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.45)", margin: 0 },
   profileHeaderActions: { display: "flex", gap: 10, flexShrink: 0 },
   buildTripBtn:  { padding: "10px 22px", backgroundColor: "#c8a96e", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
   signOutBtn:    { padding: "10px 18px", backgroundColor: "transparent", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", transition: "all 0.2s" },
 
-  statPills: { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 0, borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 0 },
-  statPill:  { padding: "14px 32px 14px 0", display: "flex", flexDirection: "column", gap: 2 },
-  statNum:   { fontSize: 22, fontWeight: 400, color: "#c8a96e", letterSpacing: "-0.02em" },
-  statLabel: { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.35)", letterSpacing: "0.12em", textTransform: "uppercase" },
+  statPills:   { maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 0, borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 0 },
+  statPill:    { padding: "14px 32px 14px 0", display: "flex", flexDirection: "column", gap: 2 },
+  statNum:     { fontSize: 22, fontWeight: 400, color: "#c8a96e", letterSpacing: "-0.02em" },
+  statLabel:   { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.35)", letterSpacing: "0.12em", textTransform: "uppercase" },
   statDivider: { width: 1, height: 32, backgroundColor: "rgba(255,255,255,0.08)", margin: "0 32px 0 0" },
 
-  // Tabs
   tabBar:      { backgroundColor: "#fff", borderBottom: "1px solid #ece9e2", position: "sticky", top: 72, zIndex: 40 },
   tabBarInner: { maxWidth: 1100, margin: "0 auto", padding: "0 24px", display: "flex", gap: 0 },
-  tab: {
-    padding: "16px 20px", border: "none", background: "none", cursor: "pointer",
-    fontFamily: "'Helvetica Neue', sans-serif", fontSize: 13, color: "#888",
-    letterSpacing: "0.02em", borderBottom: "2px solid transparent",
-    transition: "color 0.15s, border-color 0.15s", whiteSpace: "nowrap",
-  },
-  tabActive: { color: "#204E59", borderBottomColor: "#204E59", fontWeight: 600 },
+  tab:         { padding: "16px 20px", border: "none", background: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontSize: 13, color: "#888", letterSpacing: "0.02em", borderBottom: "2px solid transparent", transition: "color 0.15s, border-color 0.15s", whiteSpace: "nowrap" },
+  tabActive:   { color: "#204E59", borderBottomColor: "#204E59", fontWeight: 600 },
 
   body: { maxWidth: 1100, margin: "0 auto", padding: "40px 24px 80px" },
 
-  // Loading / empty
   loadingList: { display: "flex", flexDirection: "column", gap: 12 },
   shimmer:     { height: 80, backgroundColor: "#e8e4de", borderRadius: 2 },
   emptyState:  { textAlign: "center", padding: "72px 24px" },
@@ -525,81 +570,85 @@ const S = {
   emptyText:   { fontSize: 14, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", margin: "0 0 24px", lineHeight: 1.7 },
   emptyBtn:    { display: "inline-block", padding: "12px 28px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none", transition: "background 0.2s" },
 
-  // Trips
-  tripList: { display: "flex", flexDirection: "column", gap: 12 },
-  tripCard: { backgroundColor: "#fff", border: "1px solid #ece9e2", overflow: "hidden", transition: "box-shadow 0.2s" },
+  // Build from Saved banner
+  savedBanner:      { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, backgroundColor: "#0c1e14", padding: "20px 28px", marginBottom: 28, flexWrap: "wrap" },
+  savedBannerLeft:  { display: "flex", alignItems: "center", gap: 16 },
+  savedBannerMark:  { fontSize: 20, color: "#c8a96e", flexShrink: 0 },
+  savedBannerTitle: { fontSize: 15, fontFamily: "'Georgia', serif", color: "#fff", margin: "0 0 4px", fontWeight: 400 },
+  savedBannerSub:   { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.45)", margin: 0, letterSpacing: "0.02em" },
+  savedBannerBtn:   { padding: "11px 24px", backgroundColor: "#c8a96e", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s", whiteSpace: "nowrap", flexShrink: 0 },
+
+  tripList:    { display: "flex", flexDirection: "column", gap: 12 },
+  tripCard:    { backgroundColor: "#fff", border: "1px solid #ece9e2", overflow: "hidden", transition: "box-shadow 0.2s" },
   tripCardTop: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px", cursor: "pointer", gap: 16 },
   tripCardLeft:  { display: "flex", alignItems: "center", gap: 16, flex: 1, minWidth: 0 },
   tripCardRight: { display: "flex", alignItems: "center", gap: 12, flexShrink: 0 },
-  statusDot: { width: 8, height: 8, borderRadius: "50%", flexShrink: 0 },
-  tripDests: { fontSize: 16, fontWeight: 400, margin: "0 0 4px", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
-  tripMeta:  { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", margin: 0 },
-  tripNights: { color: "#c8a96e" },
-  tripDot:    { margin: "0 6px", color: "#ddd" },
+  statusDot:   { width: 8, height: 8, borderRadius: "50%", flexShrink: 0 },
+  tripDests:   { fontSize: 16, fontWeight: 400, margin: "0 0 4px", color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" },
+  tripMeta:    { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", margin: 0 },
+  tripNights:  { color: "#c8a96e" },
+  tripDot:     { margin: "0 6px", color: "#ddd" },
   statusBadge: { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, padding: "4px 10px", borderRadius: 2 },
-  expandChevron: { fontSize: 12, color: "#bbb" },
-  tripExpanded:  { borderTop: "1px solid #f0ece6", padding: "20px 24px", backgroundColor: "#faf9f7" },
-  tripDetailGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px 24px", marginBottom: 20 },
+  expandChevron:       { fontSize: 12, color: "#bbb" },
+  tripExpanded:        { borderTop: "1px solid #f0ece6", padding: "20px 24px", backgroundColor: "#faf9f7" },
+  tripDetailGrid:      { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px 24px", marginBottom: 20 },
   tripExpandedActions: { display: "flex", justifyContent: "flex-end" },
-  reTripBtn: { padding: "10px 22px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
+  reTripBtn:   { padding: "10px 22px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
 
-  // Saved destinations
-  savedGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 },
-  savedCard: { backgroundColor: "#fff", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", transition: "transform 0.2s, box-shadow 0.2s" },
-  savedImgWrap: { position: "relative" },
-  savedImg:     { width: "100%", height: 180, objectFit: "cover", display: "block" },
+  savedGrid:        { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 },
+  savedCard:        { backgroundColor: "#fff", overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.07)", transition: "transform 0.2s, box-shadow 0.2s" },
+  savedImgWrap:     { position: "relative" },
+  savedImg:         { width: "100%", height: 180, objectFit: "cover", display: "block" },
   savedImgFallback: { width: "100%", height: 180, backgroundColor: "#e8e4de" },
-  savedRegion:  { position: "absolute", top: 12, left: 12, backgroundColor: "#c8a96e", color: "#fff", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", padding: "3px 8px" },
-  unsaveBtn:    { position: "absolute", top: 10, right: 10, width: 28, height: 28, borderRadius: "50%", border: "none", backgroundColor: "rgba(0,0,0,0.5)", color: "#fff", cursor: "pointer", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" },
-  savedBody:    { padding: "16px 18px 18px" },
-  savedTag:     { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 6 },
-  savedName:    { fontSize: 18, fontWeight: 400, margin: "0 0 8px", letterSpacing: "-0.01em" },
-  savedDesc:    { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", lineHeight: 1.65, margin: "0 0 14px" },
-  savedPlanBtn: { padding: "8px 16px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
-  planAllBtn:   { padding: "12px 32px", border: "1px solid #204E59", color: "#204E59", backgroundColor: "transparent", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "all 0.2s" },
+  savedRegion:      { position: "absolute", top: 12, left: 12, backgroundColor: "#c8a96e", color: "#fff", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", padding: "3px 8px" },
+  unsaveBtn:        { position: "absolute", top: 10, right: 10, width: 28, height: 28, borderRadius: "50%", border: "none", backgroundColor: "rgba(0,0,0,0.5)", color: "#fff", cursor: "pointer", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" },
+  savedBody:        { padding: "16px 18px 18px" },
+  savedTag:         { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 6 },
+  savedName:        { fontSize: 18, fontWeight: 400, margin: "0 0 8px", letterSpacing: "-0.01em" },
+  savedDesc:        { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", lineHeight: 1.65, margin: "0 0 14px" },
+  savedPlanBtn:     { padding: "8px 16px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
+  planAllBtn:       { padding: "12px 32px", border: "1px solid #204E59", color: "#204E59", backgroundColor: "transparent", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "all 0.2s" },
 
-  // Saved activities
-  actGrid: { display: "flex", flexDirection: "column", gap: 12 },
-  actCard: { backgroundColor: "#fff", display: "flex", alignItems: "center", gap: 0, border: "1px solid #ece9e2", overflow: "hidden", position: "relative", transition: "box-shadow 0.2s" },
-  actCardLeft: { flexShrink: 0 },
-  actThumb:    { width: 100, height: 90, objectFit: "cover", display: "block" },
+  actGrid:          { display: "flex", flexDirection: "column", gap: 12 },
+  actCard:          { backgroundColor: "#fff", display: "flex", alignItems: "center", gap: 0, border: "1px solid #ece9e2", overflow: "hidden", position: "relative", transition: "box-shadow 0.2s" },
+  actCardLeft:      { flexShrink: 0 },
+  actThumb:         { width: 100, height: 90, objectFit: "cover", display: "block" },
   actThumbFallback: { width: 100, height: 90, backgroundColor: "#e8e4de", display: "flex", alignItems: "center", justifyContent: "center" },
-  actCardBody:  { flex: 1, padding: "14px 16px" },
-  actCategory:  { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 4 },
-  actName:      { fontSize: 16, fontWeight: 400, margin: "0 0 4px", letterSpacing: "-0.01em" },
-  actDesc:      { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", margin: "0 0 8px", lineHeight: 1.6 },
-  actMeta:      { display: "flex", gap: 8 },
-  actMetaPill:  { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", backgroundColor: "#f7f4ef", color: "#666", padding: "3px 8px", letterSpacing: "0.04em" },
-  unsaveActBtn: { position: "absolute", top: 10, right: 10, width: 26, height: 26, borderRadius: "50%", border: "none", backgroundColor: "rgba(0,0,0,0.08)", color: "#aaa", cursor: "pointer", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" },
+  actCardBody:      { flex: 1, padding: "14px 16px" },
+  actCategory:      { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 4 },
+  actName:          { fontSize: 16, fontWeight: 400, margin: "0 0 4px", letterSpacing: "-0.01em" },
+  actDesc:          { fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#888", margin: "0 0 8px", lineHeight: 1.6 },
+  actMeta:          { display: "flex", gap: 8 },
+  actMetaPill:      { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", backgroundColor: "#f7f4ef", color: "#666", padding: "3px 8px", letterSpacing: "0.04em" },
+  unsaveActBtn:     { position: "absolute", top: 10, right: 10, width: 26, height: 26, borderRadius: "50%", border: "none", backgroundColor: "rgba(0,0,0,0.08)", color: "#aaa", cursor: "pointer", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" },
 
-  // Settings
-  settingsWrap:    { display: "flex", flexDirection: "column", gap: 32 },
-  settingsSection: { backgroundColor: "#fff", padding: "28px 32px", border: "1px solid #ece9e2" },
+  settingsWrap:         { display: "flex", flexDirection: "column", gap: 32 },
+  settingsSection:      { backgroundColor: "#fff", padding: "28px 32px", border: "1px solid #ece9e2" },
   settingsSectionTitle: { fontSize: 18, fontWeight: 400, margin: "0 0 24px", letterSpacing: "-0.01em", paddingBottom: 16, borderBottom: "1px solid #f0ece6" },
-  settingsGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 24px" },
-  fieldGroup:   { display: "flex", flexDirection: "column", gap: 8 },
-  label:        { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.12em", textTransform: "uppercase", color: "#666" },
-  input:        { padding: "11px 14px", border: "1px solid #ddd8d0", fontSize: 14, fontFamily: "'Helvetica Neue', sans-serif", color: "#1a1a1a", outline: "none", backgroundColor: "#fff", width: "100%", boxSizing: "border-box" },
-  fieldNote:    { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", color: "#bbb", margin: "4px 0 0" },
-  saveBtn:      { padding: "11px 28px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
+  settingsGrid:  { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 24px" },
+  fieldGroup:    { display: "flex", flexDirection: "column", gap: 8 },
+  label:         { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.12em", textTransform: "uppercase", color: "#666" },
+  input:         { padding: "11px 14px", border: "1px solid #ddd8d0", fontSize: 14, fontFamily: "'Helvetica Neue', sans-serif", color: "#1a1a1a", outline: "none", backgroundColor: "#fff", width: "100%", boxSizing: "border-box" },
+  fieldNote:     { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", color: "#bbb", margin: "4px 0 0" },
+  saveBtn:       { padding: "11px 28px", backgroundColor: "#204E59", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" },
   signOutDangerBtn: { padding: "11px 24px", backgroundColor: "transparent", color: "#c62828", border: "1px solid #ffcdd2", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontSize: 13, letterSpacing: "0.04em", transition: "all 0.2s" },
 };
 
 const css = `
-  .build-trip-btn:hover     { background: #b8954f !important; }
-  .sign-out-btn:hover       { border-color: rgba(255,255,255,0.4) !important; color: rgba(255,255,255,0.8) !important; }
-  .profile-tab:hover        { color: #204E59 !important; }
-  .trip-card:hover          { box-shadow: 0 4px 20px rgba(0,0,0,0.09) !important; }
-  .re-trip-btn:hover        { background: #163640 !important; }
-  .saved-card:hover         { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.11) !important; }
-  .unsave-btn:hover         { background: rgba(0,0,0,0.75) !important; }
-  .unsave-btn:hover         { background: rgba(0,0,0,0.2) !important; color: #c62828 !important; }
-  .saved-plan-btn:hover     { background: #163640 !important; }
-  .plan-all-btn:hover       { background: #204E59 !important; color: #fff !important; }
-  .act-card:hover           { box-shadow: 0 4px 20px rgba(0,0,0,0.09) !important; }
-  .save-btn:hover           { background: #163640 !important; }
-  .sign-out-danger-btn:hover { background: #fff5f5 !important; }
-  .settings-input:focus     { border-color: #c8a96e !important; outline: none; }
+  .build-trip-btn:hover       { background: #b8954f !important; }
+  .build-from-saved-btn:hover { background: #b8954f !important; }
+  .sign-out-btn:hover         { border-color: rgba(255,255,255,0.4) !important; color: rgba(255,255,255,0.8) !important; }
+  .profile-tab:hover          { color: #204E59 !important; }
+  .trip-card:hover            { box-shadow: 0 4px 20px rgba(0,0,0,0.09) !important; }
+  .re-trip-btn:hover          { background: #163640 !important; }
+  .saved-card:hover           { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.11) !important; }
+  .unsave-btn:hover           { background: rgba(0,0,0,0.2) !important; color: #c62828 !important; }
+  .saved-plan-btn:hover       { background: #163640 !important; }
+  .plan-all-btn:hover         { background: #204E59 !important; color: #fff !important; }
+  .act-card:hover             { box-shadow: 0 4px 20px rgba(0,0,0,0.09) !important; }
+  .save-btn:hover             { background: #163640 !important; }
+  .sign-out-danger-btn:hover  { background: #fff5f5 !important; }
+  .settings-input:focus       { border-color: #c8a96e !important; outline: none; }
   @keyframes shimmer {
     0%   { background-position: -600px 0; }
     100% { background-position:  600px 0; }

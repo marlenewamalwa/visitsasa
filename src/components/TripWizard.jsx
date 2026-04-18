@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const ACTIVITIES_LIST = [
   { id: "game_drives",     name: "Game Drives",          icon: "🚙" },
@@ -29,7 +30,7 @@ const STEPS = ["Destinations", "Dates & Travellers", "Activities", "Accommodatio
 
 export default function TripWizard({ onClose, initialDestinations = [], initialActivities = [] }) {
   const { user, profile } = useAuth();
-
+const navigate = useNavigate();
   const buildInit = () => ({
     destinations:       initialDestinations,
     start_date:         "",
@@ -495,24 +496,28 @@ export default function TripWizard({ onClose, initialDestinations = [], initialA
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%", maxWidth: 300 }}>
-                <Link
-                  to="/login"
-                  state={{ returnTo: "wizard" }}
-                  style={{ ...S.nextBtn, display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px" }}
-                  className="wizard-btn-primary"
-                  onClick={onClose}
-                >
-                  Sign In →
-                </Link>
-                <Link
-                  to="/signup"
-                  state={{ returnTo: "wizard" }}
-                  style={{ display: "block", textAlign: "center", textDecoration: "none", padding: "14px 24px", border: "1px solid #1a2f2a", color: "#1a2f2a", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s" }}
-                  className="wizard-btn-outline"
-                  onClick={onClose}
-                >
-                  Create Free Account →
-                </Link>
+                <button
+  style={{ ...S.nextBtn, display: "block", width: "100%", textAlign: "center", padding: "14px 24px", cursor: "pointer" }}
+  className="wizard-btn-primary"
+  onClick={() => {
+    localStorage.setItem("pendingTrip", JSON.stringify(form));
+    onClose();
+    navigate("/login", { state: { from: { pathname: "/profile" } } });
+  }}
+>
+  Sign In →
+</button>
+                <button
+  style={{ display: "block", width: "100%", textAlign: "center", padding: "14px 24px", border: "1px solid #1a2f2a", color: "#1a2f2a", backgroundColor: "transparent", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 600, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer", transition: "background 0.2s" }}
+  className="wizard-btn-outline"
+  onClick={() => {
+    localStorage.setItem("pendingTrip", JSON.stringify(form));
+    onClose();
+    navigate("/signup", { state: { from: { pathname: "/profile" } } });
+  }}
+>
+  Create Free Account →
+</button>
               </div>
             </div>
           </div>

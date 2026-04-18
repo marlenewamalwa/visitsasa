@@ -110,7 +110,7 @@ const SECTIONS = [
     title: "Contact",
     content: [
       {
-        body: "For questions about these Terms of Service, please email us at legal@visitsasa.com or write to us at VisitSasa, Nairobi, Kenya.",
+        body: "For questions about these Terms of Service, please email us at info@visitsasa.com or write to us at VisitSasa, Nairobi, Kenya.",
       },
     ],
   },
@@ -181,8 +181,8 @@ export default function TermsOfService() {
               <span style={S.footerMark}>✦</span>
               <p style={S.footerText}>
                 Questions? Email us at{" "}
-                <a href="mailto:legal@visitsasa.com" style={S.footerLink}>
-                  legal@visitsasa.com
+                <a href="mailto:info@visitsasa.com" style={S.footerLink}>
+                  info@visitsasa.com
                 </a>
               </p>
             </div>

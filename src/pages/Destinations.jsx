@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../supabaseClient";
+import { useAuth } from "../context/AuthContext";
 import TripWizard from "../components/TripWizard";
 import destinationsHero from "../assets/watamu.jpg";
 
 const REGION_ORDER = ["Mara", "Coast", "Rift Valley", "Northern", "Central", "Western", "Nairobi"];
 
 export default function Destinations() {
+  const { user } = useAuth();
   const [destinations, setDestinations] = useState([]);
   const [loading,      setLoading]      = useState(true);
   const [activeRegion, setActiveRegion] = useState("All");
-  const [selected,     setSelected]     = useState(null);   // expanded card
+  const [selected,     setSelected]     = useState(null);
   const [wizardOpen,   setWizardOpen]   = useState(false);
-  const [wizardDests,  setWizardDests]  = useState([]);
-  const [basket,       setBasket]       = useState([]);     // "add to trip" multi-select
+  const [savedIds,     setSavedIds]     = useState(new Set()); // destination_id set
+  const [savingId,     setSavingId]     = useState(null);
+  const [toastMsg,     setToastMsg]     = useState("");
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -26,6 +29,39 @@ export default function Destinations() {
     };
     fetch();
   }, []);
+
+  // Load saved destination IDs for current user
+  const fetchSaved = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("saved_destinations")
+      .select("destination_id")
+      .eq("user_id", user.id);
+    if (data) setSavedIds(new Set(data.map((s) => s.destination_id)));
+  }, [user]);
+
+  useEffect(() => { fetchSaved(); }, [fetchSaved]);
+
+  const toggleSave = async (dest) => {
+    if (!user) { showToast("Sign in to save destinations"); return; }
+    setSavingId(dest.id);
+    if (savedIds.has(dest.id)) {
+      await supabase.from("saved_destinations").delete()
+        .eq("user_id", user.id).eq("destination_id", dest.id);
+      setSavedIds((prev) => { const n = new Set(prev); n.delete(dest.id); return n; });
+      showToast("Removed from saved");
+    } else {
+      await supabase.from("saved_destinations").insert({ user_id: user.id, destination_id: dest.id });
+      setSavedIds((prev) => new Set([...prev, dest.id]));
+      showToast("Saved to your profile ✓");
+    }
+    setSavingId(null);
+  };
+
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(""), 2800);
+  };
 
   const regions = ["All", ...Array.from(new Set(
     destinations.map((d) => d.region).filter(Boolean)
@@ -42,17 +78,6 @@ export default function Destinations() {
     ? destinations
     : destinations.filter((d) => d.region === activeRegion);
 
-  const toggleBasket = (name) => {
-    setBasket((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
-    );
-  };
-
-  const openWizardWith = (names) => {
-    setWizardDests(names);
-    setWizardOpen(true);
-  };
-
   return (
     <div style={S.page}>
       <style>{css}</style>
@@ -65,7 +90,7 @@ export default function Destinations() {
           <h1 style={S.heroTitle}>Every Corner<br />of Kenya Awaits</h1>
           <p style={S.heroSub}>
             From the red dust of the Mara to the coral shores of the coast —
-            hand-pick the places that speak to you.
+            save the places that speak to you and build your trip when you're ready.
           </p>
           <div style={S.heroStats}>
             {[
@@ -80,7 +105,6 @@ export default function Destinations() {
             ))}
           </div>
         </div>
-        {/* Decorative diagonal */}
         <div style={S.heroDiag} />
       </section>
 
@@ -93,10 +117,7 @@ export default function Destinations() {
               <button
                 key={r}
                 onClick={() => { setActiveRegion(r); setSelected(null); }}
-                style={{
-                  ...S.filterTab,
-                  ...(activeRegion === r ? S.filterTabActive : {}),
-                }}
+                style={{ ...S.filterTab, ...(activeRegion === r ? S.filterTabActive : {}) }}
                 className={`filter-tab${activeRegion === r ? " filter-tab-active" : ""}`}
               >
                 {r}
@@ -116,7 +137,6 @@ export default function Destinations() {
       {/* ── GRID ── */}
       <section style={S.gridSection}>
         <div style={S.gridInner}>
-
           {loading ? (
             <div style={S.grid}>
               {[1,2,3,4,5,6].map((i) => (
@@ -132,7 +152,8 @@ export default function Destinations() {
             <div style={S.grid}>
               {filtered.map((d, i) => {
                 const isSelected = selected?.id === d.id;
-                const inBasket   = basket.includes(d.name);
+                const isSaved    = savedIds.has(d.id);
+                const isSaving   = savingId === d.id;
                 return (
                   <div
                     key={d.id}
@@ -160,22 +181,23 @@ export default function Destinations() {
                         <span style={S.durationBadge}>{d.duration_days}</span>
                       )}
 
-                      {/* Basket toggle (heart-style) */}
+                      {/* Save button — same pattern as Activities */}
                       <button
                         style={{
-                          ...S.basketBtn,
-                          backgroundColor: inBasket ? "#c8a96e" : "rgba(0,0,0,0.45)",
-                          color: inBasket ? "#fff" : "rgba(255,255,255,0.8)",
+                          ...S.saveBtn,
+                          backgroundColor: isSaved ? "#c8a96e" : "rgba(0,0,0,0.45)",
+                          color: "#fff",
                         }}
-                        className="basket-btn"
-                        onClick={(e) => { e.stopPropagation(); toggleBasket(d.name); }}
-                        title={inBasket ? "Remove from trip" : "Save to trip"}
+                        className="save-dest-btn"
+                        onClick={(e) => { e.stopPropagation(); toggleSave(d); }}
+                        disabled={isSaving}
+                        title={isSaved ? "Unsave" : "Save destination"}
                       >
-                        {inBasket ? "✓" : "+"}
+                        {isSaving ? "…" : isSaved ? "✓" : "♡"}
                       </button>
                     </div>
 
-                    {/* Info */}
+                    {/* Card body */}
                     <div style={S.cardBody}>
                       {d.tag && <span style={S.cardTag}>{d.tag}</span>}
                       <h3 style={S.cardName}>{d.name}</h3>
@@ -217,15 +239,15 @@ export default function Destinations() {
                         </button>
                         <button
                           style={{
-                            ...S.addTripBtn,
-                            backgroundColor: inBasket ? "#f0f7f0" : "#204E59",
-                            color: inBasket ? "#204E59" : "#fff",
-                            border: inBasket ? "1px solid #204E59" : "none",
+                            ...S.saveTextBtn,
+                            color: isSaved ? "#c8a96e" : "#204E59",
+                            borderColor: isSaved ? "#c8a96e" : "#204E59",
                           }}
-                          className="add-trip-btn"
-                          onClick={() => openWizardWith([d.name])}
+                          className="save-text-btn"
+                          onClick={() => toggleSave(d)}
+                          disabled={isSaving}
                         >
-                          {inBasket ? "Plan This Trip →" : "Add to My Trip +"}
+                          {isSaved ? "Saved ✓" : "Save Destination"}
                         </button>
                       </div>
                     </div>
@@ -237,53 +259,36 @@ export default function Destinations() {
         </div>
       </section>
 
-      {/* ── FLOATING BASKET ── */}
-      {basket.length > 0 && (
-        <div style={S.basket} className="basket-bar">
-          <div style={S.basketLeft}>
-            <span style={S.basketIcon}>✦</span>
-            <div>
-              <p style={S.basketTitle}>{basket.length} destination{basket.length > 1 ? "s" : ""} saved</p>
-              <p style={S.basketNames}>{basket.join(" · ")}</p>
-            </div>
-          </div>
-          <div style={S.basketActions}>
-            <button style={S.basketClear} className="basket-clear" onClick={() => setBasket([])}>Clear</button>
-            <button style={S.basketPlan} className="basket-plan" onClick={() => openWizardWith(basket)}>
-              Plan This Trip →
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* ── CTA STRIP ── */}
       <section style={S.ctaStrip}>
         <div style={S.ctaInner}>
           <div>
-            <h2 style={S.ctaTitle}>Can't decide? Let us help.</h2>
-            <p style={S.ctaSub}>Tell us what you're looking for and we'll build the perfect multi-destination itinerary.</p>
+            <h2 style={S.ctaTitle}>Ready to build your trip?</h2>
+            <p style={S.ctaSub}>Save destinations to your profile, then build your custom itinerary — our team will handle the rest.</p>
           </div>
-          <button style={S.ctaBtn} className="cta-main-btn" onClick={() => openWizardWith([])}>
+          <button style={S.ctaBtn} className="cta-main-btn" onClick={() => setWizardOpen(true)}>
             Start Building My Trip →
           </button>
         </div>
       </section>
 
+      {/* ── TOAST ── */}
+      {toastMsg && (
+        <div style={S.toast} className="toast-anim">
+          {toastMsg}
+        </div>
+      )}
+
       {wizardOpen && (
-        <TripWizard
-          onClose={() => { setWizardOpen(false); setWizardDests([]); }}
-          initialDestinations={wizardDests}
-        />
+        <TripWizard onClose={() => setWizardOpen(false)} />
       )}
     </div>
   );
 }
 
-// ── Styles ─────────────────────────────────────────────────────────────────────
 const S = {
   page: { fontFamily: "'Georgia', 'Times New Roman', serif", color: "#1a1a1a", backgroundColor: "#fff", minHeight: "100vh" },
 
-  // Hero
   hero: {
     position: "relative", height: 440, display: "flex", alignItems: "center",
     backgroundColor: "#0c1e14", backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden",
@@ -316,8 +321,7 @@ const S = {
     borderColor: "transparent transparent #fff transparent",
   },
 
-  // Filter bar
-  filterBar: { borderBottom: "1px solid #ece9e2", backgroundColor: "#fff", position: "sticky", top: 72, zIndex: 50 },
+  filterBar:   { borderBottom: "1px solid #ece9e2", backgroundColor: "#fff", position: "sticky", top: 72, zIndex: 50 },
   filterInner: { maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", gap: 20, overflowX: "auto", height: 56 },
   filterLabel: { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", color: "#bbb", whiteSpace: "nowrap", flexShrink: 0 },
   filterTabs:  { display: "flex", gap: 4, alignItems: "center" },
@@ -325,144 +329,82 @@ const S = {
     display: "flex", alignItems: "center", gap: 6, padding: "6px 14px",
     border: "1px solid transparent", backgroundColor: "transparent",
     fontFamily: "'Helvetica Neue', sans-serif", fontSize: 12, color: "#666",
-    cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.02em",
-    transition: "all 0.15s",
+    cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.02em", transition: "all 0.15s",
   },
   filterTabActive: { borderColor: "#204E59", color: "#204E59", backgroundColor: "#f0f6f8" },
   filterCount: { fontSize: 10, padding: "1px 6px", borderRadius: 10, fontWeight: 700, transition: "all 0.15s" },
 
-  // Grid
   gridSection: { padding: "56px 24px 80px" },
   gridInner:   { maxWidth: 1200, margin: "0 auto" },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-    gap: 24,
-    alignItems: "start",
-  },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24, alignItems: "start" },
 
   shimmerCard: { height: 380, backgroundColor: "#f0ece6" },
   empty: { textAlign: "center", padding: "80px 24px", color: "#aaa", fontFamily: "'Helvetica Neue', sans-serif", fontSize: 15 },
 
-  // Card
-  card: {
-    backgroundColor: "#fff", overflow: "hidden",
-    boxShadow: "0 2px 20px rgba(0,0,0,0.07)",
-    transition: "box-shadow 0.25s",
-    opacity: 0,
-  },
-  cardImgWrap: { position: "relative", overflow: "hidden" },
-  cardImg:     { width: "100%", height: 240, objectFit: "cover", display: "block", transition: "transform 0.5s ease" },
+  card: { backgroundColor: "#fff", overflow: "hidden", boxShadow: "0 2px 20px rgba(0,0,0,0.07)", transition: "box-shadow 0.25s", opacity: 0 },
+  cardImgWrap:     { position: "relative", overflow: "hidden" },
+  cardImg:         { width: "100%", height: 240, objectFit: "cover", display: "block", transition: "transform 0.5s ease" },
   cardImgFallback: { width: "100%", height: 240, backgroundColor: "#e8e4de" },
-  cardImgOverlay: {
-    position: "absolute", inset: 0,
-    background: "linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%)",
-    pointerEvents: "none",
-  },
+  cardImgOverlay:  { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%)", pointerEvents: "none" },
+
   regionBadge: {
     position: "absolute", top: 14, left: 14,
     backgroundColor: "#c8a96e", color: "#fff",
     fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.14em", textTransform: "uppercase",
-    padding: "4px 10px",
+    letterSpacing: "0.14em", textTransform: "uppercase", padding: "4px 10px",
   },
   durationBadge: {
     position: "absolute", top: 14, right: 52,
     backgroundColor: "rgba(0,0,0,0.6)", color: "#fff",
     fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif",
-    letterSpacing: "0.08em", padding: "4px 10px",
-    backdropFilter: "blur(4px)",
+    letterSpacing: "0.08em", padding: "4px 10px", backdropFilter: "blur(4px)",
   },
-  basketBtn: {
+  saveBtn: {
     position: "absolute", top: 12, right: 12,
     width: 32, height: 32, borderRadius: "50%",
-    border: "none", cursor: "pointer", fontSize: 14, fontWeight: 700,
+    border: "none", cursor: "pointer", fontSize: 14,
     display: "flex", alignItems: "center", justifyContent: "center",
     transition: "background 0.2s, transform 0.15s",
   },
 
-  // Card body
-  cardBody: { padding: "20px 22px 22px" },
-  cardTag:  { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 8 },
-  cardName: { fontSize: 22, fontWeight: 400, margin: "0 0 10px", letterSpacing: "-0.01em", lineHeight: 1.2 },
-  cardDesc: { fontSize: 13, color: "#666", fontFamily: "'Helvetica Neue', sans-serif", lineHeight: 1.7, margin: "0 0 18px" },
+  cardBody:    { padding: "20px 22px 22px" },
+  cardTag:     { display: "block", fontSize: 9, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", color: "#c8a96e", marginBottom: 8 },
+  cardName:    { fontSize: 22, fontWeight: 400, margin: "0 0 10px", letterSpacing: "-0.01em", lineHeight: 1.2 },
+  cardDesc:    { fontSize: 13, color: "#666", fontFamily: "'Helvetica Neue', sans-serif", lineHeight: 1.7, margin: "0 0 18px" },
 
-  // Expanded
   expandedContent: { borderTop: "1px solid #f0ece6", paddingTop: 16, marginBottom: 18 },
-  metaRow:    { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
-  metaLabel:  { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb" },
-  metaValue:  { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#444" },
+  metaRow:     { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
+  metaLabel:   { fontSize: 10, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb" },
+  metaValue:   { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", color: "#444" },
   highlightsWrap: { marginTop: 8 },
-  highlights: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 },
-  highlight:  { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", backgroundColor: "#f7f4ef", color: "#555", padding: "4px 10px", letterSpacing: "0.04em" },
+  highlights:  { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 },
+  highlight:   { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", backgroundColor: "#f7f4ef", color: "#555", padding: "4px 10px", letterSpacing: "0.04em" },
 
   cardActions: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 },
-  detailsBtn: {
-    background: "none", border: "none", cursor: "pointer", padding: 0,
-    fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif",
-    color: "#aaa", letterSpacing: "0.04em", transition: "color 0.15s",
-  },
-  addTripBtn: {
-    padding: "9px 18px", border: "none", cursor: "pointer",
-    fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700,
-    fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase",
-    transition: "all 0.2s",
-  },
+  detailsBtn:  { background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, fontFamily: "'Helvetica Neue', sans-serif", color: "#aaa", letterSpacing: "0.04em", transition: "color 0.15s" },
+  saveTextBtn: { padding: "8px 16px", backgroundColor: "transparent", border: "1px solid", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", transition: "all 0.2s" },
 
-  // Floating basket
-  basket: {
-    position: "fixed", bottom: 28, left: "50%", transform: "translateX(-50%)",
-    backgroundColor: "#0c1e14", color: "#fff",
-    padding: "16px 20px", zIndex: 90,
-    display: "flex", alignItems: "center", gap: 24,
-    boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
-    minWidth: 480, maxWidth: "90vw",
-    animation: "slideUp 0.3s ease",
-  },
-  basketLeft:    { display: "flex", alignItems: "center", gap: 14, flex: 1 },
-  basketIcon:    { fontSize: 16, color: "#c8a96e", flexShrink: 0 },
-  basketTitle:   { fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, margin: "0 0 2px", letterSpacing: "0.02em" },
-  basketNames:   { fontSize: 11, fontFamily: "'Helvetica Neue', sans-serif", color: "rgba(255,255,255,0.5)", margin: 0, letterSpacing: "0.04em" },
-  basketActions: { display: "flex", gap: 10, flexShrink: 0 },
-  basketClear: {
-    background: "none", border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.6)",
-    padding: "8px 16px", cursor: "pointer", fontSize: 12,
-    fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.06em", textTransform: "uppercase",
-    transition: "all 0.15s",
-  },
-  basketPlan: {
-    backgroundColor: "#c8a96e", color: "#fff", border: "none",
-    padding: "8px 20px", cursor: "pointer", fontSize: 12,
-    fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700,
-    letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s",
-  },
-
-  // CTA strip
   ctaStrip: { backgroundColor: "#0c1e14", padding: "56px 24px" },
   ctaInner: { maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 40, flexWrap: "wrap" },
   ctaTitle: { fontSize: "clamp(22px, 3vw, 36px)", fontWeight: 400, color: "#fff", margin: "0 0 10px", letterSpacing: "-0.02em" },
   ctaSub:   { fontSize: 14, color: "rgba(255,255,255,0.5)", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 300, margin: 0, lineHeight: 1.7 },
-  ctaBtn: {
-    padding: "14px 36px", backgroundColor: "#c8a96e", color: "#fff", border: "none",
-    cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700,
-    fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase",
-    transition: "background 0.2s, transform 0.15s", whiteSpace: "nowrap", flexShrink: 0,
-  },
+  ctaBtn:   { padding: "14px 36px", backgroundColor: "#c8a96e", color: "#fff", border: "none", cursor: "pointer", fontFamily: "'Helvetica Neue', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.08em", textTransform: "uppercase", transition: "background 0.2s, transform 0.15s", whiteSpace: "nowrap", flexShrink: 0 },
+
+  toast: { position: "fixed", bottom: 32, left: "50%", transform: "translateX(-50%)", backgroundColor: "#1a2f2a", color: "#fff", padding: "12px 24px", fontSize: 13, fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "0.04em", zIndex: 500, boxShadow: "0 8px 32px rgba(0,0,0,0.2)" },
 };
 
 const css = `
-  .filter-tab:hover     { border-color: #204E59 !important; color: #204E59 !important; }
-  .dest-card-anim       { animation: fadeUp 0.45s ease forwards; }
-  .dest-card-anim:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.13) !important; }
+  .filter-tab:hover      { border-color: #204E59 !important; color: #204E59 !important; }
+  .dest-card-anim        { animation: fadeUp 0.45s ease forwards; }
+  .dest-card-anim:hover  { box-shadow: 0 8px 40px rgba(0,0,0,0.13) !important; }
   .dest-card-anim:hover img { transform: scale(1.04); }
-  .basket-btn:hover     { transform: scale(1.12) !important; }
-  .details-btn:hover    { color: #204E59 !important; }
-  .add-trip-btn:hover   { opacity: 0.88; transform: translateY(-1px); }
-  .basket-clear:hover   { border-color: rgba(255,255,255,0.5) !important; color: #fff !important; }
-  .basket-plan:hover    { background: #b8954f !important; }
-  .cta-main-btn:hover   { background: #b8954f !important; transform: translateY(-1px); }
+  .save-dest-btn:hover   { transform: scale(1.12) !important; }
+  .details-btn:hover     { color: #204E59 !important; }
+  .save-text-btn:hover   { opacity: 0.75; }
+  .cta-main-btn:hover    { background: #b8954f !important; transform: translateY(-1px); }
+  .toast-anim            { animation: slideUp 0.3s ease; }
   @keyframes fadeUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
   @keyframes shimmer {
     0%   { background-position: -600px 0; }
     100% { background-position:  600px 0; }
@@ -473,7 +415,7 @@ const css = `
     animation: shimmer 1.6s infinite;
   }
   @media (max-width: 768px) {
-    .basket-bar { min-width: unset !important; flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; }
     .filter-inner { padding: 0 16px !important; }
+    .hero-content { padding: 0 24px !important; }
   }
 `;
