@@ -5,9 +5,9 @@ import { supabase } from "../supabaseClient";
 import coastal from "../assets/dianibeach.webp";
 import migration from "../assets/migration.webp";
 import vasha from "../assets/amboseli.webp";
-import ctabanner from "../assets/transport.jpg";
-import sunset from "../assets/sunset.jpg";
-import hike from "../assets/murima.jpg";
+import ctabanner from "../assets/transport.webp";
+import sunset from "../assets/sunset.webp";
+import hike from "../assets/murima.webp";
 
 const HERO_SLIDES = [
   {

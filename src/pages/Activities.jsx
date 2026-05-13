@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import TripWizard from "../components/TripWizard";
-import acthero from "../assets/girlsnorkeling.jpg";
+import acthero from "../assets/girlsnorkeling.webp";
 
 const DIFFICULTY_COLOR = {
   Easy:     { color: "#2e7d32", bg: "#e8f5e9" },

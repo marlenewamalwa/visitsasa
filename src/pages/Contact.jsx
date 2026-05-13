@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import TripWizard from "../components/TripWizard";
-import contactHeroBg from "../assets/nairobi2.jpg";
+import contactHeroBg from "../assets/nairobi2.webp";
 
 const ENQUIRY_TYPES = [
   "Planning a new trip",

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import TripWizard from "../components/TripWizard";
-import destinationsHero from "../assets/watamu.jpg";
+import destinationsHero from "../assets/watamu.webp";
 
 const REGION_ORDER = ["Mara", "Coast", "Rift Valley", "Northern", "Central", "Western", "Nairobi"];
 

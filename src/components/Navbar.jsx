@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import TripWizard from "./TripWizard";
 import { supabase } from "../supabaseClient";
-import logo from "../assets/visitsasa.jpg";
+import logo from "../assets/visitsasa.webp";
 
 const NAV_LINKS = [
   { label: "Destinations", to: "/destinations" },

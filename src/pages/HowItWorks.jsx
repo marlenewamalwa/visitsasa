@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import TripWizard from "../components/TripWizard";
-import heroBg from "../assets/nairobi1.jpg";
+import heroBg from "../assets/nairobi1.webp";
 
 /* ── DATA ── */
 const STEPS = [

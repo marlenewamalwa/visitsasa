@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import aboutBg from "../assets/nairobi3.jpg";
+import aboutBg from "../assets/nairobi3.webp";
 
 const VALUES = [
   {

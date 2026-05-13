@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import heroBg from "../assets/nairobi2.jpg";
-import culture from "../assets/culture.jpg";
-import planning from "../assets/planning.jpg";
-import money from "../assets/money.jpg";
-import health from "../assets/stethoscope.jpg";
-import wildlife from "../assets/leopard.jpg";
+import heroBg from "../assets/nairobi2.webp";
+import culture from "../assets/culture.webp";
+import planning from "../assets/planning.webp";
+import money from "../assets/money.webp";
+import health from "../assets/stethoscope.webp";
+import wildlife from "../assets/leopard.webp";
 
 const CATEGORIES = [
   {
